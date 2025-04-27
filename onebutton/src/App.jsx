@@ -1,24 +1,17 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
-// import Navbar  from './components/navbar'
 import Navbar from './components/Navbar'
 import Ticker1 from './components/Ticker1'
-import Nbottom from './components/Nbottom'
-import Ticker2 from './components/Ticker2'
-import Homep from './components/products/Homep'
-import Minimal from './components/products/Minimal'
 import Footer from './components/Footer'
-import Collections from './components/products/Collections'
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Category from "./components/Categories/Category";
 import Home  from './components/HomePage/Home'
-import CategoryDetail from './components/Categories/CategoryDetail'
+
 import NotBasic from './components/Categories/NotBasic'
 import Basic from "./components/Categories/Basic"
 import Minimals from "./components/Categories/Minimals"
-import MainProduct from './components/products/mainproduct'
 import Login from "./components/Profile/Login"
 import WishlistPage from "../src/components/Wishlist/WishlistPage"
 import MainProduct2 from './components/products/MainProduct2'
@@ -37,7 +30,6 @@ import Coupons from './Admin/Coupons'
 import UpdateCoupon from './Admin/Update-Coupon'
 import AddCoupon from './Admin/Add-Coupon'
 import AllUsers from './Admin/AllUsers'
-import { Toaster } from 'react-hot-toast';
 import AllProducts from './components/Categories/AllProducts'
 
 function App() {
