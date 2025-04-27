@@ -1,0 +1,185 @@
+// import React, { useEffect, useState } from "react";
+// import { Heart } from "lucide-react";
+// import { useNavigate } from "react-router-dom";
+// import axios from "axios";
+
+// export default function ProductGrid() {
+//   const [products, setProducts] = useState([]);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     axios.get("http://127.0.0.1:8000/api/products", {
+//       headers: { "Content-Type": "application/json" },
+//       withCredentials: false,
+//     })
+//     .then(response => {
+//       const allProducts = response.data;
+
+//       // Filter products by category
+//       const notSoBasicProducts = allProducts
+//         .filter(product => product.category?.toLowerCase() === "notsobasic")
+//         .sort((a, b) => b.popularity - a.popularity)
+//         .slice(0, 4); // Top 4 from "notsobasic"
+
+//       const minimalProducts = allProducts
+//         .filter(product => product.category?.toLowerCase() === "minimals")
+//         .sort((a, b) => b.popularity - a.popularity)
+//         .slice(0, 4); // Top 4 from "minimals"
+
+//       // Combine both
+//       const combinedProducts = [...notSoBasicProducts, ...minimalProducts];
+
+//       setProducts(combinedProducts);
+//     })
+//     .catch(error => console.error("Error fetching products:", error));
+//   }, []);
+
+//   return (
+//     <div className="container mx-auto p-4 lg:p-10">
+      
+//       {/* Title Section */}
+//       <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
+//         <h2 className="text-xl font-bold">Popular Picks</h2>
+//       </div>
+
+//       {/* Product Grid */}
+//       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+//         {products.map((product) => (
+//           <div key={product.id} className="relative hover:border border-neutral-300 rounded-lg shadow-md p-4 flex flex-col">
+            
+//             {/* Wishlist Icon */}
+//             <button className="absolute top-5 right-5 text-gray-500 hover:text-red-500">
+//               <Heart className="w-6 h-6" />
+//             </button>
+
+//             {/* Product Image with Hover Effect */}
+//             <img 
+//               src={`http://127.0.0.1:8000/storage/${product.image}`} 
+//               alt={product.name} 
+//               className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
+//               onClick={() => navigate(`/product/${product.id}`, { state: product })}
+//               onMouseEnter={(e) => e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.hover_image}`}  
+//               onMouseLeave={(e) => e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.image}`}
+//             />
+
+//             {/* Product Name */}
+//             <h3 className="text-sm sm:text-base md:text-lg font-semibold mt-2">
+//               {product.name}
+//             </h3>
+
+//             {/* Product Price */}
+//             <p className="text-gray-600">₹{product.price}</p>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+import React from "react";
+import { Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+const fetchProducts = async () => {
+  const response = await axios.get("http://127.0.0.1:8000/api/products", {
+    headers: { "Content-Type": "application/json" },
+    withCredentials: false,
+  });
+
+  const allProducts = response.data;
+
+  // Filter products by category
+  const notSoBasicProducts = allProducts
+    .filter((product) => product.category?.toLowerCase() === "notsobasic")
+    .sort((a, b) => b.popularity - a.popularity)
+    .slice(0, 4);
+
+  const minimalProducts = allProducts
+    .filter((product) => product.category?.toLowerCase() === "minimals")
+    .sort((a, b) => b.popularity - a.popularity)
+    .slice(0, 4);
+
+  // Combine both
+  return [...notSoBasicProducts, ...minimalProducts];
+};
+
+export default function ProductGrid() {
+  const navigate = useNavigate();
+
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["filtered-products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg font-semibold">Loading popular picks...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg font-semibold text-red-500">Failed to load products.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4 lg:p-10">
+      {/* Title Section */}
+      <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
+        <h2 className="text-xl font-bold">Popular Picks</h2>
+      </div>
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="relative hover:border border-neutral-300 rounded-lg shadow-md p-4 flex flex-col"
+          >
+            {/* Wishlist Icon */}
+            <button className="absolute top-5 right-5 text-gray-500 hover:text-red-500">
+              <Heart className="w-6 h-6" />
+            </button>
+
+            {/* Product Image with Hover Effect */}
+            <img
+              src={`http://127.0.0.1:8000/storage/${product.image}`}
+              alt={product.name}
+              className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
+              onClick={() =>
+                navigate(`/product/${product.id}`, { state: product })
+              }
+              onMouseEnter={(e) =>
+                (e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.hover_image}`)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.image}`)
+              }
+            />
+
+            {/* Product Name */}
+            <h3 className="text-sm sm:text-base md:text-lg font-semibold mt-2">
+              {product.name}
+            </h3>
+
+            {/* Product Price */}
+            <p className="text-gray-600">₹{product.price}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
