@@ -17,7 +17,7 @@ export default function Navbar() {
       }
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/search?query=${searchQuery}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/search?query=${searchQuery}`);
         setSearchResults(response.data);
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -86,7 +86,7 @@ export default function Navbar() {
                       onClick={() => { setIsOpen(false); setSearchOpen(false); }}
                     >
                       <img 
-                        src={`http://127.0.0.1:8000/storage/${product.image}`} 
+                        src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`} 
                         alt={product.name} 
                         className="w-10 h-10 object-cover mr-3" 
                       />

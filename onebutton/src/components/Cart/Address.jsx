@@ -10,7 +10,7 @@ function AddressSelection() {
 
     async function fetchAddress() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/get-previous-address', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/get-previous-address`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data) {

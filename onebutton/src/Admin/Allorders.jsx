@@ -211,7 +211,7 @@ export default function AdminOrders() {
 
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:8000/api/adminallorders", {
+            .get(`${import.meta.env.VITE_API_URL}/adminallorders`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -231,7 +231,7 @@ export default function AdminOrders() {
     const fetchCartDetails = (ordersData) => {
         ordersData.forEach(order => {
             axios
-                .get(`http://127.0.0.1:8000/api/carts/${order.cart_id}`)
+                .get(`${import.meta.env.VITE_API_URL}/carts/${order.cart_id}`)
                 .then(response => {
                     setCartDetails(prev => ({
                         ...prev,
@@ -244,7 +244,7 @@ export default function AdminOrders() {
 
     const updateOrderStatus = (orderId, newStatus) => {
         axios
-            .post("http://127.0.0.1:8000/api/update-status", {
+            .post(`${import.meta.env.VITE_API_URL}/update-status`, {
                 id: orderId,
                 order_status: newStatus
             })
@@ -436,7 +436,7 @@ export default function AdminOrders() {
                                                 {cartDetails[order.cart_id].items.map(item => (
                                                     <li key={item.id} className="flex items-center mb-2">
                                                         <img
-                                                            src={`http://127.0.0.1:8000/storage/${item.product.image}`}
+                                                            src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
                                                             alt={item.product.name}
                                                             className="w-16 h-16 object-cover rounded mr-2"
                                                         />

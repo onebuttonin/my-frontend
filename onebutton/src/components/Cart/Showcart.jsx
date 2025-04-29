@@ -381,7 +381,7 @@ export default function Cart() {
   const fetchCartData = async () => {
     if (!token) return {}; // Prevent fetching if not logged in
 
-    const cartResponse = await axios.get("http://127.0.0.1:8000/api/cart", {
+    const cartResponse = await axios.get(`${import.meta.env.VITE_API_URL}/cart`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -389,14 +389,14 @@ export default function Cart() {
     setCartId(cartId);
     localStorage.setItem("cart_id", cartId);
 
-    const cartDetails = await axios.get(`http://127.0.0.1:8000/api/cart/${cartId}`, {
+    const cartDetails = await axios.get(`${import.meta.env.VITE_API_URL}/cart/${cartId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return cartDetails.data;
   };
 
   const fetchCoupons = async () => {
-    const res = await axios.get("http://127.0.0.1:8000/api/coupons");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/coupons`);
     return res.data;
   };
 
@@ -413,7 +413,7 @@ export default function Cart() {
 
   const removeItemMutation = useMutation({
     mutationFn: async (product_id) => {
-      await axios.delete(`http://127.0.0.1:8000/api/cart/${product_id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/cart/${product_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
     },
@@ -423,7 +423,7 @@ export default function Cart() {
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ product_id, quantity }) => {
       await axios.put(
-        `http://127.0.0.1:8000/api/cart/${product_id}`,
+        `${import.meta.env.VITE_API_URL}/cart/${product_id}`,
         { quantity },
         {
           headers: {
@@ -452,7 +452,7 @@ export default function Cart() {
 
     axios
       .post(
-        "http://127.0.0.1:8000/api/apply-coupon",
+        `${import.meta.env.VITE_API_URL}/apply-coupon`,
         { code: coupon, cart_id: cartId },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -484,7 +484,7 @@ export default function Cart() {
     }
     axios
       .post(
-        "http://127.0.0.1:8000/api/remove-coupon",
+        `${import.meta.env.VITE_API_URL}/remove-coupon`,
         { cart_id: cartId, code: appliedCoupon },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -640,7 +640,7 @@ export default function Cart() {
                 <img
                   src={
                     item.product?.image
-                      ? `http://127.0.0.1:8000/storage/${item.product.image}`
+                      ? `${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`
                       : "/placeholder.png"
                   }
                   alt={item.product?.name || "Product"}

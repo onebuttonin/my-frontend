@@ -14,7 +14,7 @@ export default function ProductGrid() {
   
   useEffect(() => {
     // Fetch products from Laravel API
-    axios.get("http://127.0.0.1:8000/api/products", {
+    axios.get(`${import.meta.env.VITE_API_URL}/products`, {
       headers: { "Content-Type": "application/json" },
       withCredentials: false,  // Ensure no issues with CORS credentials
     })
@@ -48,12 +48,12 @@ export default function ProductGrid() {
 
             {/* Product Image with Hover Effect */}
             <img 
-              src={`http://127.0.0.1:8000/storage/${product.image}`} 
+              src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`} 
               alt={product.name} 
               className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
               onClick={() => navigate(`/product/${product.id}`, { state: product })}
-              onMouseEnter={(e) => e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.hover_image}`}  
-              onMouseLeave={(e) => e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.image}`}
+              onMouseEnter={(e) => e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.hover_image}`}  
+              onMouseLeave={(e) => e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.image}`}
             />
 
             {/* Product Name */}

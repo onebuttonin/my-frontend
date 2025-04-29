@@ -15,7 +15,7 @@ export default function ProductList() {
     // Fetch products from backend
     const fetchProducts = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/products");
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
             setProducts(response.data);
             setFilteredProducts(response.data);
 
@@ -31,7 +31,7 @@ export default function ProductList() {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/products/${id}`);
+                await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`);
                 fetchProducts(); // Refresh after deletion
             } catch (error) {
                 console.error("Error deleting product:", error);
@@ -108,7 +108,7 @@ export default function ProductList() {
             filteredProducts.map((product) => (
                 <tr key={product.id} className="border">
                     <td className="p-3 text-center">
-                        <img src={`http://127.0.0.1:8000/storage/${product.image}`} 
+                        <img src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`} 
                              alt={product.name} className="w-16 h-16 object-cover mx-auto" />
                     </td>
                     <td className="p-3 text-center">{product.name}</td>

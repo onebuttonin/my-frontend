@@ -23,13 +23,13 @@ export default function EditProduct() {
     const [success, setSuccess] = useState("");
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/products/${id}`)
+        axios.get(`${import.meta.env.VITE_API_URL}/products/${id}`)
             .then((response) => setProduct(response.data))
             .catch(() => setError("Failed to fetch product details."));
     }, [id]);
 
     const updateSizeStock = (size, stock) => {
-        axios.put(`http://127.0.0.1:8000/api/products/${id}/update-size`, { size, stock })
+        axios.put(`${import.meta.env.VITE_API_URL}/products/${id}/update-size`, { size, stock })
             .then((response) => {
                 setProduct(prev => ({ ...prev, availableSizes: response.data.availableSizes }));
                 setSuccess("Size updated successfully!");
@@ -39,7 +39,7 @@ export default function EditProduct() {
 
     const addSize = () => {
         if (!newSize || newStock <= 0) return;
-        axios.put(`http://127.0.0.1:8000/api/products/${id}/add-size`, { size: newSize, stock: newStock })
+        axios.put(`${import.meta.env.VITE_API_URL}/products/${id}/add-size`, { size: newSize, stock: newStock })
             .then((response) => {
                 setProduct(prev => ({ ...prev, availableSizes: response.data.availableSizes }));
                 setNewSize("");
@@ -50,7 +50,7 @@ export default function EditProduct() {
     };
 
     const deleteSize = (size) => {
-        axios.delete(`http://127.0.0.1:8000/api/products/${id}/delete-size`, { data: { size } })
+        axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}/delete-size`, { data: { size } })
             .then((response) => {
                 setProduct(prev => ({ ...prev, availableSizes: response.data.availableSizes }));
                 setSuccess("Size deleted successfully!");
@@ -60,7 +60,7 @@ export default function EditProduct() {
 
     const addColor = () => {
         if (!newColor) return;
-        axios.put(`http://127.0.0.1:8000/api/products/${id}/add-color`, { color: newColor })
+        axios.put(`${import.meta.env.VITE_API_URL}/products/${id}/add-color`, { color: newColor })
             .then((response) => {
                 setProduct(prev => ({ ...prev, availableColors: response.data.availableColors }));
                 setSuccess("Color added successfully!");
@@ -69,7 +69,7 @@ export default function EditProduct() {
     };
 
     const deleteColor = (color) => {
-        axios.delete(`http://127.0.0.1:8000/api/products/${id}/delete-color`, { data: { color } })
+        axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}/delete-color`, { data: { color } })
             .then((response) => {
                 setProduct(prev => ({ ...prev, availableColors: response.data.availableColors }));
                 setSuccess("Color deleted successfully!");

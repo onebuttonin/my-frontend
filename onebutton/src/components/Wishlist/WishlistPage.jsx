@@ -263,7 +263,7 @@ export default function ProductGrid() {
     if (!token) throw new Error("No token");
 
     const { data: wishlistItems } = await axios.get(
-      "http://127.0.0.1:8000/api/wishlist",
+      `${import.meta.env.VITE_API_URL}/wishlist`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -277,7 +277,7 @@ export default function ProductGrid() {
       const productDetails = await Promise.all(
         wishlistItems.map(async (item) => {
           const { data } = await axios.get(
-            `http://127.0.0.1:8000/api/products/${item.product_id}`,
+            `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -307,7 +307,7 @@ export default function ProductGrid() {
 
   const deleteMutation = useMutation({
     mutationFn: async (productId) => {
-      await axios.delete(`http://127.0.0.1:8000/api/wishlist/${productId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/wishlist/${productId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
     },
@@ -330,7 +330,7 @@ export default function ProductGrid() {
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/add-cart",
+        `${import.meta.env.VITE_API_URL}/add-cart`,
         { product_id: productId, size: selectedSize, quantity: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -471,16 +471,16 @@ export default function ProductGrid() {
                 </button>
   
                 <img
-                  src={`http://127.0.0.1:8000/storage/${item.product?.image || 'default.jpg'}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || 'default.jpg'}`}
                   alt={item.product?.name || 'Product'}
                   className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
                   onMouseEnter={(e) => {
                     if (item.product?.hover_image) {
-                      e.currentTarget.src = `http://127.0.0.1:8000/storage/${item.product.hover_image}`;
+                      e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product.hover_image}`;
                     }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.src = `http://127.0.0.1:8000/storage/${item.product?.image || 'default.jpg'}`;
+                    e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || 'default.jpg'}`;
                   }}
                 />
   

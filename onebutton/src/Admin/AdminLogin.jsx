@@ -18,7 +18,7 @@ export default function AdminAuth() {
       const token = localStorage.getItem("admin_token");
       if (token) {
         try {
-          const response = await axios.get("http://127.0.0.1:8000/api/admin/profile", {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setAdmin(response.data);
@@ -35,7 +35,7 @@ export default function AdminAuth() {
   // ✅ Handle Login (Step 1)
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/admin/login", {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/admin/login`, {
         email,
         password,
       });
@@ -49,7 +49,7 @@ export default function AdminAuth() {
   // ✅ Handle OTP Verification (Step 2)
   const handleVerifyOtp = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/admin/verify-otp", {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/admin/verify-otp`, {
         email,
         otp,
       });
@@ -69,7 +69,7 @@ export default function AdminAuth() {
   const fetchAdminProfile = async () => {
     try {
       const token = localStorage.getItem("admin_token");
-      const response = await axios.get("http://127.0.0.1:8000/api/admin/profile", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

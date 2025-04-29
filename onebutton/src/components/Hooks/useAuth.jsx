@@ -10,7 +10,7 @@ export const useAuth = () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          await axios.get("http://127.0.0.1:8000/api/user-token", {
+          await axios.get(`${import.meta.env.VITE_API_URL}/user-token`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setIsLoggedIn(true);

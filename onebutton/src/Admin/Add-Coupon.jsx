@@ -33,7 +33,7 @@ export default function AddCoupon() {
         setSuccess("");
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/add-coupon", {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-coupon`, {
                 ...formData,
                 is_active: formData.is_active ? 1 : 0, // Convert boolean to int
             });

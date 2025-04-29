@@ -9,7 +9,7 @@ export default function AllUsers() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/Allusers");
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/Allusers`);
                 
                 // Ensure correct data extraction
                 const userData = Array.isArray(response.data) && Array.isArray(response.data[0]) 

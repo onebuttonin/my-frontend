@@ -46,7 +46,7 @@ export default function ProductDetails() {
     
 
   
-    axios.get("http://127.0.0.1:8000/api/cart", {
+    axios.get(`${import.meta.env.VITE_API_URL}/cart`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => {
@@ -65,7 +65,7 @@ export default function ProductDetails() {
 
     if (product && product.category) {
       axios
-        .get("http://127.0.0.1:8000/api/products")
+        .get(`${import.meta.env.VITE_API_URL}/products`)
         .then((response) => {
           const filtered = response.data
             .filter(
@@ -96,7 +96,7 @@ export default function ProductDetails() {
       }
   
       await axios.post(
-        "http://127.0.0.1:8000/api/add-cart",
+         `${import.meta.env.VITE_API_URL}/add-cart`,
         { product_id: productId, size: selectedSize, quantity: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -120,7 +120,7 @@ const addToWishlist = async (productId) => {
     }
 
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/wishlist",
+      `${import.meta.env.VITE_API_URL}/wishlist`,
       { product_id: productId },
       {
         headers: {
@@ -146,12 +146,12 @@ const addToWishlist = async (productId) => {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/products/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/products/${id}`)
       .then((response) => {
         setProduct(response.data);
         setSelectedImage(
           response.data.thumbnail_images?.[0] 
-            ? `http://127.0.0.1:8000/storage/${response.data.thumbnail_images[0].replace("public/", "")}`
+            ? `${import.meta.env.VITE_BASE_URL}/storage/${response.data.thumbnail_images[0].replace("public/", "")}`
             : ""
         );
         setLoading(false);
@@ -200,7 +200,7 @@ const addToWishlist = async (productId) => {
                       </button>
                     )}
                     <img
-                      src={`http://127.0.0.1:8000/storage/${img.replace("public/", "")}`}
+                      src={`${import.meta.env.VITE_BASE_URL}/storage/${img.replace("public/", "")}`}
                       alt={`Thumbnail ${index}`}
                       className="w-full h-125 lg:h-auto object-cover"
                     />
@@ -216,7 +216,7 @@ const addToWishlist = async (productId) => {
           {/* Large Screens: Thumbnails */}
           <div className="hidden lg:flex flex-col space-y-3 w-[15%]">
   {product.thumbnail_images.map((img, index) => {
-    const imageUrl = `http://127.0.0.1:8000/storage/${img.replace("public/", "")}`;
+    const imageUrl = `${import.meta.env.VITE_BASE_URL}/storage/${img.replace("public/", "")}`;
     return (
       <img
         key={index}
@@ -392,15 +392,15 @@ const addToWishlist = async (productId) => {
           </button>
 
           <img
-            src={`http://127.0.0.1:8000/storage/${product.image}`}
+            src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`}
             alt={product.name}
             className="w-full h-60 md:h-72 lg:h-80 object-cover transition duration-300 ease-in-out cursor-pointer"
             onClick={() => navigate(`/product/${product.id}`, { state: product })}
             onMouseEnter={(e) =>
-              (e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.hover_image}`)
+              (e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.hover_image}`)
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.image}`)
+              (e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.image}`)
             }
           />
 

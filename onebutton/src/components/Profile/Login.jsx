@@ -226,7 +226,7 @@ export default function OtpAuth() {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await axios.get("http://127.0.0.1:8000/api/user-token", {
+          const res = await axios.get(`${import.meta.env.VITE_API_URL}/user-token`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(res.data);
@@ -242,7 +242,7 @@ export default function OtpAuth() {
 
   const sendOtp = async () => {
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/send-otp", { phone });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/send-otp`, { phone });
       toast.success(res.data.message);
       alert(res.data.otp);
       setStep(2);
@@ -253,7 +253,7 @@ export default function OtpAuth() {
 
   const verifyOtp = async () => {
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/verify-otp", { phone, otp });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { phone, otp });
       localStorage.setItem("token", res.data.token);
       if (res.data.registered) {
         toast.success("Login Successful!");
@@ -270,7 +270,7 @@ export default function OtpAuth() {
 
   const registerUser = async () => {
     try {
-      await axios.post("http://127.0.0.1:8000/api/register", { phone, name, email });
+      await axios.post(`${import.meta.env.VITE_API_URL}/register`, { phone, name, email });
       toast.success("Registered Successfully!");
       setTimeout(() => navigate("/"), 1000);
     } catch (err) {

@@ -19,7 +19,7 @@ export default function EditProduct() {
 
     // Fetch product details
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/products/${id}`)
+        axios.get(`${import.meta.env.VITE_API_URL}/products/${id}`)
             .then((response) => {
                 const product = response.data;
                 setFormData({
@@ -56,7 +56,7 @@ export default function EditProduct() {
 
         try {
             const response = await axios.put(
-                `http://127.0.0.1:8000/api/products/${id}`, 
+                `${import.meta.env.VITE_API_URL}/products/${id}`, 
                 updatedData, 
                 { headers: { "Content-Type": "application/json" } }
             );

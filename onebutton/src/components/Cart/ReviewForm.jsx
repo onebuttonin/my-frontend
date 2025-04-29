@@ -12,7 +12,7 @@ const ReviewForm = ({ productId, accessToken }) => {
   useEffect(() => {
     const checkAlreadyRated = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/check-rating`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/check-rating`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -41,7 +41,7 @@ const ReviewForm = ({ productId, accessToken }) => {
     setSubmitting(true);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/products/ratings', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/products/ratings`, {
         product_id: productId,
         rating: newRating,
         review: newReview,

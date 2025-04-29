@@ -17,7 +17,7 @@ export default function AllProducts() {
   }, []);
 
   const fetchProducts = () => {
-    axios.get("http://127.0.0.1:8000/api/products", {
+    axios.get(`${import.meta.env.VITE_API_URL}/products`, {
       headers: { "Content-Type": "application/json" },
       withCredentials: false,
     })
@@ -37,7 +37,7 @@ export default function AllProducts() {
   };
 
   const fetchWishlist = () => {
-    axios.get("http://127.0.0.1:8000/api/wishlist", {
+    axios.get(`${import.meta.env.VITE_API_URL}/wishlist`, {
       headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     })
@@ -57,7 +57,7 @@ export default function AllProducts() {
       }
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/wishlist",
+        `${import.meta.env.VITE_API_URL}/wishlist`,
         { product_id: productId },
         {
           headers: {
@@ -114,12 +114,12 @@ export default function AllProducts() {
 
             {/* Product Image with Hover Effect */}
             <img 
-              src={`http://127.0.0.1:8000/storage/${product.image}`} 
+              src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`} 
               alt={product.name} 
               className="w-full h-60 lg:h-100 object-cover transition-all duration-300 cursor-pointer"
               onClick={() => navigate(`/product/${product.id}`, { state: product })}
-              onMouseEnter={(e) => e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.hover_image}`}  
-              onMouseLeave={(e) => e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.image}`}
+              onMouseEnter={(e) => e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.hover_image}`}  
+              onMouseLeave={(e) => e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/${product.image}`}
             />
 
             {/* Product Name */}

@@ -148,14 +148,14 @@ import { Heart } from "lucide-react";
 import toast from "react-hot-toast";
 
 const fetchProducts = async () => {
-  const response = await axios.get("http://127.0.0.1:8000/api/products");
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
   return response.data;
 };
 
 const fetchWishlist = async () => {
   const token = localStorage.getItem("token");
   if (!token) return [];
-  const response = await axios.get("http://127.0.0.1:8000/api/wishlist", {
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}/wishlist`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data.map((item) => item.product_id);
@@ -187,7 +187,7 @@ export default function ProductGrid() {
       }
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/wishlist",
+        `${import.meta.env.VITE_API_URL}/wishlist`,
         { product_id: productId },
         {
           headers: {
@@ -251,12 +251,12 @@ export default function ProductGrid() {
               </button>
 
               <img
-                src={`http://127.0.0.1:8000/storage/${product.image}`}
+                src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`}
                 alt={product.name}
                 className="w-full h-60 lg:h-100 object-cover"
                 onClick={() => navigate(`/product/${product.id}`, { state: product })}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.hover_image}`)
+                  (e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.hover_image}`)
                 }
                 onMouseLeave={(e) =>
                   (e.currentTarget.src = `http://127.0.0.1:8000/storage/${product.image}`)

@@ -450,7 +450,7 @@ export default function PlaceOrder() {
 
     async function fetchData() {
       try {
-        const userRes = await axios.get("http://127.0.0.1:8000/api/user-token", {
+        const userRes = await axios.get(`${import.meta.env.VITE_API_URL}/user-token`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUserId(userRes.data.id);
@@ -458,7 +458,7 @@ export default function PlaceOrder() {
 
         const cartId = localStorage.getItem("cart_id");
         if (cartId) {
-          const cartRes = await axios.get(`http://127.0.0.1:8000/api/cart/${cartId}`, {
+          const cartRes = await axios.get(`${import.meta.env.VITE_API_URL}/cart/${cartId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
@@ -471,7 +471,7 @@ export default function PlaceOrder() {
           setError("Cart ID missing.");
         }
 
-        const addressRes = await axios.get('http://127.0.0.1:8000/api/get-previous-address', {
+        const addressRes = await axios.get(`${import.meta.env.VITE_API_URL}/get-previous-address`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (addressRes.data) {
@@ -604,14 +604,14 @@ export default function PlaceOrder() {
   };
 
   const finalizeOrder = async (token) => {
-    const response = await axios.post("http://127.0.0.1:8000/api/orders", order, {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, order, {
       headers: { Authorization: `Bearer ${token}` }
     });
     console.log("Order placed:", response.data);
     toast.success("Order placed successfully!");
     setError("");
 
-    await axios.post("http://127.0.0.1:8000/api/cart/update-status", {
+    await axios.post(`${import.meta.env.VITE_API_URL}/cart/update-status`, {
       cart_id: order.cart_id,
       status: 'completed'
     }, {

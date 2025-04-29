@@ -657,7 +657,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 const fetchOrders = async () => {
   const token = localStorage.getItem("token");
-  const res = await axios.get("http://127.0.0.1:8000/api/allorders", {
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/allorders`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data;
@@ -665,7 +665,7 @@ const fetchOrders = async () => {
 
 const fetchCartById = async (cartId) => {
   const token = localStorage.getItem("token");
-  const res = await axios.get(`http://127.0.0.1:8000/api/cart/${cartId}`, {
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/cart/${cartId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data.items;
@@ -773,7 +773,8 @@ export default function OrderDetails() {
                 {cartQueries[index]?.data?.map((item) => (
                   <li key={item.product.id} className="flex items-center mb-2 border-b pb-2">
                     <img
-                      src={`http://127.0.0.1:8000/storage/${item.product.image}`}
+                    
+                      src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
                       alt={item.product.name}
                       className="w-20 h-20 object-cover rounded-lg mr-2"
                     />
@@ -825,7 +826,7 @@ export default function OrderDetails() {
                 {pastCartQueries[index]?.data?.map((item) => (
                   <div key={item.id} className="flex items-center mb-4">
                     <img
-                      src={`http://127.0.0.1:8000/storage/${item.product.image}`}
+                      src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
                       alt={item.product.name}
                       className="w-20 h-20 object-cover rounded-lg mr-4"
                     />
@@ -863,7 +864,7 @@ export default function OrderDetails() {
                 onClick={async () => {
                   try {
                     await axios.post(
-                      "http://127.0.0.1:8000/api/update-order-status",
+                      `${import.meta.env.VITE_API_URL}/update-order-status`,
                       { id: cancelOrderId, order_status: "cancelled" },
                       { headers: { Authorization: `Bearer ${token}` } }
                     );

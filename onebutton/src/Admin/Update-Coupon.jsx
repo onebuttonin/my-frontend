@@ -19,7 +19,7 @@ export default function UpdateCoupon() {
     useEffect(() => {
         const fetchCoupon = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/coupons/${id}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/coupons/${id}`);
                 setCoupon({
                     value: response.data.value || "",
                     min_order_value: response.data.min_order_value || "",
@@ -57,7 +57,7 @@ export default function UpdateCoupon() {
         updatedData.is_active = coupon.is_active ? 1 : 0;
 
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/update-coupon/${id}`, updatedData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/update-coupon/${id}`, updatedData);
 
             if (response.status === 200) {
                 setSuccess("Coupon updated successfully!");

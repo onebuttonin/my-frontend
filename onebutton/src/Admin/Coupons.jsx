@@ -14,7 +14,7 @@ export default function Coupons() {
 
     const fetchCoupons = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/coupons");
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/coupons`);
             setCoupons(response.data);
         } catch (error) {
             setError("Failed to fetch coupons");
@@ -26,7 +26,7 @@ export default function Coupons() {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this coupon?")) return;
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/coupons/${id}`);
+            await axios.delete(`${import.meta.env.VITE_API_URL}/coupons/${id}`);
             setCoupons(coupons.filter((coupon) => coupon.id !== id));
         } catch (error) {
             alert("Failed to delete coupon");

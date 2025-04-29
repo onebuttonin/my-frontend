@@ -265,7 +265,7 @@ export default function AddProduct() {
         });
     
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/add-products", formDataToSend, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-products`, formDataToSend, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
     
