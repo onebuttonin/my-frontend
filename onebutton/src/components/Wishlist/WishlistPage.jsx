@@ -259,11 +259,14 @@ export default function ProductGrid() {
 
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    alert("Please log in first!");
-    navigate("/login");
-    return;
-  }
+
+  useEffect(() => {
+    if (!token) {
+      alert("Please log in first!");
+      navigate("/login");
+    }
+  }, [token, navigate]);
+  
 
   const fetchWishlist = async () => {
     if (!token) throw new Error("No token");
@@ -306,7 +309,7 @@ export default function ProductGrid() {
   const { data: wishlist, isLoading } = useQuery({
     queryKey: ['wishlist'],
     queryFn: fetchWishlist,
-    enabled: () => Boolean(isLoggedIn), // ✅ fixed here
+    enabled: !!token, // ✅ fixed here
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5,
   });
