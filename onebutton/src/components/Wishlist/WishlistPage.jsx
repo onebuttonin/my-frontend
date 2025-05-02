@@ -310,7 +310,7 @@ export default function ProductGrid() {
     if (!token) throw new Error("No token");
   
     try {
-      const { data: wishlistItems } = await axios.get(
+      const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/wishlist`,
         {
           headers: {
@@ -320,6 +320,10 @@ export default function ProductGrid() {
           withCredentials: true,
         }
       );
+  
+      console.log("Wishlist API response:", response);
+  
+      const wishlistItems = response.data;
   
       if (Array.isArray(wishlistItems) && wishlistItems.length > 0) {
         const productDetails = await Promise.all(
@@ -348,6 +352,7 @@ export default function ProductGrid() {
       return [];
     }
   };
+  
   
 
   const { data: wishlist, isLoading } = useQuery({
