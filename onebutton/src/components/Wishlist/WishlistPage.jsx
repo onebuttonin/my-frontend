@@ -268,43 +268,87 @@ export default function ProductGrid() {
   }, [token, navigate]);
   
 
+  // const fetchWishlist = async () => {
+  //   if (!token) throw new Error("No token");
+
+  //   const { data: wishlistItems } = await axios.get(
+  //     `${import.meta.env.VITE_API_URL}/wishlist`,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //       withCredentials: true,
+  //     }
+  //   );
+
+  //   if (wishlistItems.length > 0) {
+  //     const productDetails = await Promise.all(
+  //       wishlistItems.map(async (item) => {
+  //         const { data } = await axios.get(
+  //           `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //               "Content-Type": "application/json",
+  //             },
+  //           }
+  //         );
+  //         return {
+  //           ...item,
+  //           product: { ...data },
+  //         };
+  //       })
+  //     );
+  //     return productDetails;
+  //   }
+
+  //   return [];
+  // };
+
   const fetchWishlist = async () => {
     if (!token) throw new Error("No token");
-
-    const { data: wishlistItems } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/wishlist`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-
-    if (wishlistItems.length > 0) {
-      const productDetails = await Promise.all(
-        wishlistItems.map(async (item) => {
-          const { data } = await axios.get(
-            `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          return {
-            ...item,
-            product: { ...data },
-          };
-        })
+  
+    try {
+      const { data: wishlistItems } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/wishlist`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
       );
-      return productDetails;
+  
+      if (Array.isArray(wishlistItems) && wishlistItems.length > 0) {
+        const productDetails = await Promise.all(
+          wishlistItems.map(async (item) => {
+            const { data } = await axios.get(
+              `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            return {
+              ...item,
+              product: { ...data },
+            };
+          })
+        );
+        return productDetails;
+      }
+  
+      return [];
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+      return [];
     }
-
-    return [];
   };
+  
 
   const { data: wishlist, isLoading } = useQuery({
     queryKey: ['wishlist'],
