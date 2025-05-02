@@ -259,6 +259,12 @@ export default function ProductGrid() {
 
   const token = localStorage.getItem("token");
 
+  if (!token) {
+    alert("Please log in first!");
+    navigate("/login");
+    return;
+  }
+
   const fetchWishlist = async () => {
     if (!token) throw new Error("No token");
 
@@ -322,11 +328,7 @@ export default function ProductGrid() {
       return;
     }
 
-    if (!token) {
-      alert("Please log in first!");
-      navigate("/login");
-      return;
-    }
+   
 
     try {
       await axios.post(
@@ -348,11 +350,7 @@ export default function ProductGrid() {
     deleteMutation.mutate(productId);
   };
 
-  if (!isLoggedIn) {
-    toast.error("Please log in.");
-    setTimeout(() => navigate("/login"), 1500);
-    return null;
-  }
+  
 
   // return (
   //   <div className="container mx-auto p-4 lg:p-10">
