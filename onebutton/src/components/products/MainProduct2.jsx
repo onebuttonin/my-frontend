@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { X,Heart, Minus, Plus } from "lucide-react";
 import "swiper/css";
@@ -31,32 +31,29 @@ export default function ProductDetails() {
   const [cartId, setCartId] = useState(null); // State to store cart_id
   const token = localStorage.getItem("token");
   const [similarProducts, setSimilarProducts] = useState([]);
-
+  const location = useLocation();
   
 
   // Fetch the existing cart_id when the component mounts
   useEffect(() => {
     const token = localStorage.getItem("token");
   
-    if (!token) {
-      console.error("No token found. Please log in.");
-      return;
-    }
+    // if (!token) {
+    //   console.error("No token found. Please log in.");
+    //   return;
+    // }
 
     
-
-  
     axios.get(`${import.meta.env.VITE_API_URL}/cart`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => {
-      console.log("Cart Response:", response.data);
-  
+      
       if (response.data.id && response.data.status === "pending") {
         setCartId(response.data.id);
-        console.log("Pending Cart ID:", response.data.id);
+        // console.log("Pending Cart ID:", response.data.id);
       } else {
-        console.log("No pending cart found.");
+        // console.log("No pending cart found.");
       }
     })
     .catch(error => {
@@ -76,7 +73,7 @@ export default function ProductDetails() {
         })
         .catch((err) => console.error("Error fetching similar products:", err));
     }
-  }, [product]);
+  }, [product, token, navigate, location]);
 
   
   
@@ -91,8 +88,11 @@ export default function ProductDetails() {
       const token = localStorage.getItem("token");
   
       if (!token) {
+        if (!localStorage.getItem("redirectAfterLogin")) {
+          localStorage.setItem("redirectAfterLogin", location.pathname);
+        }
+        toast.error("Please log in first!");
         navigate("/login");
-        return;
       }
   
       await axios.post(

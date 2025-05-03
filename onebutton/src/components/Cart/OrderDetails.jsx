@@ -648,7 +648,7 @@
 
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { useAuth } from "/src/components/Hooks/useAuth";
 import { useQuery, useQueries } from "@tanstack/react-query";
 import axios from "axios";
@@ -676,16 +676,27 @@ export default function OrderDetails() {
   const isLoggedIn = useAuth();
   const token = localStorage.getItem("token");
   const [cancelOrderId, setCancelOrderId] = useState(null);
+  const location = useLocation();
+
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     toast.error("Please log in.");
+  //     const timeout = setTimeout(() => {
+  //       navigate("/login");
+  //     }, 1500);
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [isLoggedIn, navigate]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      toast.error("Please log in.");
-      const timeout = setTimeout(() => {
+      if (!token) {
+        if (!localStorage.getItem("redirectAfterLogin")) {
+          localStorage.setItem("redirectAfterLogin", location.pathname);
+        }
+        alert("Please log in first!");
         navigate("/login");
-      }, 1500);
-      return () => clearTimeout(timeout);
-    }
-  }, [isLoggedIn, navigate]);
+      }
+    }, [token, navigate, location]);
 
   const {
     data: allOrders = [],

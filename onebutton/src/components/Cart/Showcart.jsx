@@ -355,7 +355,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -369,14 +369,18 @@ export default function Cart() {
   const queryClient = useQueryClient();
 
   const token = localStorage.getItem("token");
+  const location = useLocation();
 
   // Redirect non-logged-in users
   useEffect(() => {
-    if (!token) {
-      toast.error("Please log in to view your cart.");
-      navigate("/login");
-    }
-  }, [navigate, token]);
+      if (!token) {
+        if (!localStorage.getItem("redirectAfterLogin")) {
+          localStorage.setItem("redirectAfterLogin", location.pathname);
+        }
+        alert("Please log in first!");
+        navigate("/login");
+      }
+    }, [token, navigate, location]);
 
 
 
@@ -628,7 +632,7 @@ export default function Cart() {
       <Toaster position="top-center" reverseOrder={false} />
       {!cartData?.items || cartData.items.length === 0 ? (
         <div className="flex justify-center items-center h-60">
-          <p className="text-gray-500 text-lg font-medium">No item found</p>
+          <p className="text-gray-500 text-lg font-medium">No Item Found In Cart</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
