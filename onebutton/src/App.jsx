@@ -31,6 +31,7 @@ import UpdateCoupon from './Admin/Update-Coupon'
 import AddCoupon from './Admin/Add-Coupon'
 import AllUsers from './Admin/AllUsers'
 import AllProducts from './components/Categories/AllProducts'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -41,6 +42,7 @@ function App() {
         {/* Always Visible  */}
         <Ticker1 /> 
         <Navbar />
+        <ScrollToTop />
         <Routes>
         <Route path="/" element={<Home />} />
 
