@@ -378,6 +378,8 @@ export default function Cart() {
     }
   }, [navigate, token]);
 
+
+
   const fetchCartData = async () => {
     if (!token) return {}; // Prevent fetching if not logged in
 

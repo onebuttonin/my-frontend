@@ -254,7 +254,9 @@ export default function ProductGrid() {
   const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState(null);
   const [showSizeSelector, setShowSizeSelector] = useState(null);
-  const isLoggedIn = useAuth();
+  // const isLoggedIn = useAuth();
+  const isLoggedIn = !!localStorage.getItem("token");
+
   const queryClient = useQueryClient();
 
   const token = localStorage.getItem("token");
@@ -262,103 +264,59 @@ export default function ProductGrid() {
 
   useEffect(() => {
     if (!token) {
-      alert("Please log in first!");
+      toast.error("Please log in first!");
       navigate("/login");
     }
   }, [token, navigate]);
   
 
-  // const fetchWishlist = async () => {
-  //   if (!token) throw new Error("No token");
-
-  //   const { data: wishlistItems } = await axios.get(
-  //     `${import.meta.env.VITE_API_URL}/wishlist`,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //       withCredentials: true,
-  //     }
-  //   );
-
-  //   if (wishlistItems.length > 0) {
-  //     const productDetails = await Promise.all(
-  //       wishlistItems.map(async (item) => {
-  //         const { data } = await axios.get(
-  //           `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //               "Content-Type": "application/json",
-  //             },
-  //           }
-  //         );
-  //         return {
-  //           ...item,
-  //           product: { ...data },
-  //         };
-  //       })
-  //     );
-  //     return productDetails;
-  //   }
-
-  //   return [];
-  // };
-
   const fetchWishlist = async () => {
     if (!token) throw new Error("No token");
-  
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/wishlist`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-  
-      console.log("Wishlist API response:", response);
-  
-      const wishlistItems = response.data;
-  
-      if (Array.isArray(wishlistItems) && wishlistItems.length > 0) {
-        const productDetails = await Promise.all(
-          wishlistItems.map(async (item) => {
-            const { data } = await axios.get(
-              `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            return {
-              ...item,
-              product: { ...data },
-            };
-          })
-        );
-        return productDetails;
+
+    const { data: wishlistItems } = await axios.get(
+      `${import.meta.env.VITE_API_URL}/wishlist`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
       }
-  
-      return [];
-    } catch (error) {
-      console.error("Error fetching wishlist:", error);
-      return [];
+    );
+
+    if (wishlistItems.length > 0) {
+      const productDetails = await Promise.all(
+        wishlistItems.map(async (item) => {
+          const { data } = await axios.get(
+            `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          return {
+            ...item,
+            product: { ...data },
+          };
+        })
+      );
+      return productDetails;
     }
+
+    return [];
   };
+
+ 
+  
   
   
 
-  const { data: wishlist, isLoading } = useQuery({
+  const { data: wishlist = [], isLoading } = useQuery({
     queryKey: ['wishlist'],
     queryFn: fetchWishlist,
-    enabled: !!token, // ✅ fixed here
+    enabled: isLoggedIn, // ✅ fixed here
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5,
   });
@@ -404,98 +362,7 @@ export default function ProductGrid() {
 
   
 
-  // return (
-  //   <div className="container mx-auto p-4 lg:p-10">
-  //     <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
-  //       <h2 className="text-xl font-bold">Wishlist</h2>
-  //     </div>
-
-  //     {isLoading ? (
-  //       <p className="text-center text-gray-500">Loading...</p>
-  //     ) : (
-  //       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-  //         {wishlist.length > 0 ? (
-  //           wishlist.map((item) => (
-  //             <div
-  //               key={item.product_id}
-  //               className="relative hover:border border-neutral-300 rounded-lg shadow-md p-4 flex flex-col"
-  //               onClick={() => navigate(`/product/${item.product_id}`, { state: item.product })}
-  //             >
-  //               <button
-  //                 className="absolute top-5 left-5 text-gray-500 hover:text-red-500"
-  //                 onClick={(e) => handleDelete(e, item.product_id)}
-  //               >
-  //                 <Trash className="w-6 h-6" />
-  //               </button>
-
-  //               <img
-  //                 src={`http://127.0.0.1:8000/storage/${item.product?.image || 'default.jpg'}`}
-  //                 alt={item.product?.name || 'Product'}
-  //                 className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
-  //                 onMouseEnter={(e) => {
-  //                   if (item.product?.hover_image) {
-  //                     e.currentTarget.src = `http://127.0.0.1:8000/storage/${item.product.hover_image}`;
-  //                   }
-  //                 }}
-  //                 onMouseLeave={(e) => {
-  //                   e.currentTarget.src = `http://127.0.0.1:8000/storage/${item.product?.image || 'default.jpg'}`;
-  //                 }}
-  //               />
-
-  //               <h3 className="text-sm sm:text-base md:text-lg font-semibold mt-2">
-  //                 {item.product?.name || "Unnamed Product"}
-  //               </h3>
-
-  //               <p className="text-gray-600">₹{item.product?.price || "N/A"}</p>
-
-  //               {showSizeSelector === item.product_id ? (
-  //                 <div className="flex justify-center mt-2">
-  //                   {Object.entries(item.product.availableSizes).map(([size]) => (
-  //                     <button
-  //                       key={size}
-  //                       className={`px-3 py-1 mx-1 border rounded-md ${selectedSize === size ? 'bg-black text-white' : 'bg-gray-200'}`}
-  //                       onClick={(e) => {
-  //                         e.stopPropagation();
-  //                         setSelectedSize(size);
-  //                       }}
-  //                     >
-  //                       {size.toUpperCase()}
-  //                     </button>
-  //                   ))}
-  //                 </div>
-  //               ) : (
-  //                 <button
-  //                   className="mt-2 w-full py-2 bg-black text-white font-bold text-sm rounded-lg hover:bg-gray-800 transition-all"
-  //                   onClick={(e) => {
-  //                     e.stopPropagation();
-  //                     setShowSizeSelector(item.product_id);
-  //                   }}
-  //                 >
-  //                   Add To Cart
-  //                 </button>
-  //               )}
-
-  //               {showSizeSelector === item.product_id && (
-  //                 <button
-  //                   className="mt-2 w-full py-2 bg-black text-white font-bold text-sm rounded-lg hover:bg-gray-800 transition-all"
-  //                   onClick={(e) => {
-  //                     e.stopPropagation();
-  //                     handleAddToCart(item.product_id);
-  //                   }}
-  //                 >
-  //                   Add
-  //                 </button>
-  //               )}
-  //             </div>
-  //           ))
-  //         ) : (
-  //           <p className="text-center text-gray-500">No items in wishlist</p>
-  //         )}
-  //       </div>
-  //     )}
-  //   </div>
-  // );
-
+ 
   return (
     <div className="container mx-auto p-4 lg:p-10">
       <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
