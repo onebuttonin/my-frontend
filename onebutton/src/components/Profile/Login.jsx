@@ -251,6 +251,33 @@ export default function OtpAuth() {
     }
   };
 
+  // const verifyOtp = async () => {
+  //   try {
+  //     const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { phone, otp });
+  //     localStorage.setItem("token", res.data.token);
+  //     if (res.data.registered) {
+  //       toast.success("Login Successful!");
+  //       setUser(res.data.user);
+  //       setTimeout(() => navigate("/"), 1000);
+  //     } else {
+  //       setIsRegistered(false);
+  //       setStep(3);
+  //     }
+  //   } catch (err) {
+  //     toast.error("Invalid or expired OTP.");
+  //   }
+  // };
+
+  // const registerUser = async () => {
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_API_URL}/register`, { phone, name, email });
+  //     toast.success("Registered Successfully!");
+  //     setTimeout(() => navigate("/"), 1000);
+  //   } catch (err) {
+  //     toast.error("Registration failed. Please try again.");
+  //   }
+  // };
+
   const verifyOtp = async () => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { phone, otp });
@@ -258,7 +285,12 @@ export default function OtpAuth() {
       if (res.data.registered) {
         toast.success("Login Successful!");
         setUser(res.data.user);
-        setTimeout(() => navigate("/"), 1000);
+  
+        // Get the redirect path from localStorage, or default to "/"
+        const redirectPath = localStorage.getItem("redirectAfterLogin") || "/"; 
+        localStorage.removeItem("redirectAfterLogin");  // Remove it after using
+  
+        setTimeout(() => navigate(redirectPath), 1000);  // Redirect to the saved path or home
       } else {
         setIsRegistered(false);
         setStep(3);
@@ -267,16 +299,22 @@ export default function OtpAuth() {
       toast.error("Invalid or expired OTP.");
     }
   };
-
+  
   const registerUser = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/register`, { phone, name, email });
       toast.success("Registered Successfully!");
-      setTimeout(() => navigate("/"), 1000);
+      
+      // Redirect after successful registration
+      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/"; 
+      localStorage.removeItem("redirectAfterLogin");  // Clean up the redirect path
+  
+      setTimeout(() => navigate(redirectPath), 1000);  // Redirect to wishlist or home
     } catch (err) {
       toast.error("Registration failed. Please try again.");
     }
   };
+  
 
   const logout = () => {
     localStorage.removeItem("token");

@@ -243,7 +243,7 @@
 
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useAuth } from "/src/components/Hooks/useAuth";
@@ -261,13 +261,28 @@ export default function ProductGrid() {
 
   const token = localStorage.getItem("token");
 
+  const location = useLocation();
 
+
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     localStorage.setItem("redirectAfterLogin", window.location.pathname);
+  //     navigate("/login");
+  //   }
+  // }, [token, navigate]);
+  
   useEffect(() => {
     if (!token) {
-      toast.error("Please log in first!");
+      if (!localStorage.getItem("redirectAfterLogin")) {
+        localStorage.setItem("redirectAfterLogin", location.pathname);
+      }
+      alert("Please log in first!");
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [token, navigate, location]);
+  
+
   
 
   const fetchWishlist = async () => {
