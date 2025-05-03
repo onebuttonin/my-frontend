@@ -202,6 +202,7 @@ const addToWishlist = async (productId) => {
                     <img
                       src={`${import.meta.env.VITE_BASE_URL}/storage/${img.replace("public/", "")}`}
                       alt={`Thumbnail ${index}`}
+                      loading="lazy"
                       className="w-full h-125 lg:h-auto object-cover"
                     />
                     <div className="absolute bottom-0 left-0 w-full">
