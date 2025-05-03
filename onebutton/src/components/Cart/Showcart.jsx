@@ -377,7 +377,7 @@ export default function Cart() {
         if (!localStorage.getItem("redirectAfterLogin")) {
           localStorage.setItem("redirectAfterLogin", location.pathname);
         }
-        alert("Please log in first!");
+        toast.error("Please log in first!");
         navigate("/login");
       }
     }, [token, navigate, location]);
