@@ -226,7 +226,7 @@ export default function OtpAuth() {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await axios.get(`${import.meta.env.VITE_API_URL}/user-token`, {
+          const res = await axios.get("http://127.0.0.1:8000/api/user-token", {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(res.data);
@@ -241,80 +241,45 @@ export default function OtpAuth() {
   }, []);
 
   const sendOtp = async () => {
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/send-otp`, { phone });
-      toast.success(res.data.message);
-      alert(res.data.otp);
-      setStep(2);
-    } catch (err) {
-      toast.error("Failed to send OTP");
-    }
-  };
+  try {
+    const res = await axios.post("http://127.0.0.1:8000/api/send-otp", { email });
+    toast.success(res.data.message);
+    alert(res.data.otp);
+    setStep(2);
+  } catch (err) {
+    toast.error("Failed to send OTP");
+  }
+};
 
-  // const verifyOtp = async () => {
-  //   try {
-  //     const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { phone, otp });
-  //     localStorage.setItem("token", res.data.token);
-  //     if (res.data.registered) {
-  //       toast.success("Login Successful!");
-  //       setUser(res.data.user);
-  //       setTimeout(() => navigate("/"), 1000);
-  //     } else {
-  //       setIsRegistered(false);
-  //       setStep(3);
-  //     }
-  //   } catch (err) {
-  //     toast.error("Invalid or expired OTP.");
-  //   }
-  // };
-
-  // const registerUser = async () => {
-  //   try {
-  //     await axios.post(`${import.meta.env.VITE_API_URL}/register`, { phone, name, email });
-  //     toast.success("Registered Successfully!");
-  //     setTimeout(() => navigate("/"), 1000);
-  //   } catch (err) {
-  //     toast.error("Registration failed. Please try again.");
-  //   }
-  // };
 
   const verifyOtp = async () => {
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { phone, otp });
-      localStorage.setItem("token", res.data.token);
-      if (res.data.registered) {
-        toast.success("Login Successful!");
-        setUser(res.data.user);
-  
-        // Get the redirect path from localStorage, or default to "/"
-        const redirectPath = localStorage.getItem("redirectAfterLogin") || "/"; 
-        localStorage.removeItem("redirectAfterLogin");  // Remove it after using
-  
-        setTimeout(() => navigate(redirectPath), 1000);  // Redirect to the saved path or home
-      } else {
-        setIsRegistered(false);
-        setStep(3);
-      }
-    } catch (err) {
-      toast.error("Invalid or expired OTP.");
+  try {
+    const res = await axios.post("http://127.0.0.1:8000/api/verify-otp", { email, otp });
+    localStorage.setItem("token", res.data.token);
+    if (res.data.registered) {
+      toast.success("Login Successful!");
+      setUser(res.data.user);
+      setTimeout(() => navigate("/"), 1000);
+    } else {
+      setIsRegistered(false);
+      setStep(3);
     }
-  };
-  
+  } catch (err) {
+    toast.error("Invalid or expired OTP.");
+  }
+};
+
+
   const registerUser = async () => {
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/register`, { phone, name, email });
-      toast.success("Registered Successfully!");
-      
-      // Redirect after successful registration
-      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/"; 
-      localStorage.removeItem("redirectAfterLogin");  // Clean up the redirect path
-  
-      setTimeout(() => navigate(redirectPath), 1000);  // Redirect to wishlist or home
-    } catch (err) {
-      toast.error("Registration failed. Please try again.");
-    }
-  };
-  
+  try {
+    await axios.post("http://127.0.0.1:8000/api/register", { email, name, phone });
+    toast.success("Registered Successfully!");
+    setTimeout(() => navigate("/"), 1000);
+  } catch (err) {
+    toast.error("Registration failed. Please try again.");
+  }
+};
+
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -357,28 +322,25 @@ export default function OtpAuth() {
         <motion.div {...animationProps} className="bg-white p-6 rounded-2xl shadow-md w-96">
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div key="step1" {...animationProps}>
-                <h2 className="text-xl font-semibold text-center mb-4">Login</h2>
-                <label className="block text-gray-700 mb-1">Phone Number</label>
-                <div className="flex items-center border rounded-lg px-3 py-2">
-                  <span className="text-gray-600">+91</span>
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="ml-2 outline-none w-full"
-                    placeholder="Enter 10-digit number"
-                    maxLength={10}
-                  />
-                </div>
-                <button
-                  onClick={sendOtp}
-                  className="w-full mt-4 py-2 bg-gray-900 text-white rounded-lg"
-                >
-                  Send OTP
-                </button>
-              </motion.div>
-            )}
+  <motion.div key="step1" {...animationProps}>
+    <h2 className="text-xl font-semibold text-center mb-4">Login</h2>
+    <label className="block text-gray-700 mb-1">Email</label>
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      className="w-full border rounded-lg px-3 py-2"
+      placeholder="Enter your email"
+    />
+    <button
+      onClick={sendOtp}
+      className="w-full mt-4 py-2 bg-gray-900 text-white rounded-lg"
+    >
+      Send OTP
+    </button>
+  </motion.div>
+)}
+
 
             {step === 2 && (
               <motion.div key="step2" {...animationProps}>
@@ -399,34 +361,36 @@ export default function OtpAuth() {
             )}
 
             {step === 3 && (
-              <motion.div key="step3" {...animationProps}>
-                <h2 className="text-xl font-semibold text-center mb-4">Register</h2>
-                <label className="block text-gray-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 mb-3"
-                  placeholder="Enter your name"
-                />
+  <motion.div key="step3" {...animationProps}>
+    <h2 className="text-xl font-semibold text-center mb-4">Register</h2>
 
-                <label className="block text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 mb-3"
-                  placeholder="Enter your email"
-                />
+    <label className="block text-gray-700 mb-1">Name</label>
+    <input
+      type="text"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+      className="w-full border rounded-lg px-3 py-2 mb-3"
+      placeholder="Enter your name"
+    />
 
-                <button
-                  onClick={registerUser}
-                  className="w-full mt-4 py-2 bg-green-500 text-white rounded-lg"
-                >
-                  Register
-                </button>
-              </motion.div>
-            )}
+    <label className="block text-gray-700 mb-1">Phone Number</label>
+    <input
+      type="text"
+      value={phone}
+      onChange={(e) => setPhone(e.target.value)}
+      className="w-full border rounded-lg px-3 py-2 mb-3"
+      placeholder="Enter your phone"
+    />
+
+    <button
+      onClick={registerUser}
+      className="w-full mt-4 py-2 bg-green-500 text-white rounded-lg"
+    >
+      Register
+    </button>
+  </motion.div>
+)}
+
           </AnimatePresence>
         </motion.div>
       )}
