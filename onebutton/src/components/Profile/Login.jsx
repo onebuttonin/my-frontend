@@ -226,7 +226,7 @@ export default function OtpAuth() {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await axios.get("http://127.0.0.1:8000/api/user-token", {
+          const res = await axios.get(`${import.meta.env.VITE_API_URL}/user-token`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(res.data);
@@ -241,45 +241,80 @@ export default function OtpAuth() {
   }, []);
 
   const sendOtp = async () => {
-  try {
-    const res = await axios.post("http://127.0.0.1:8000/api/send-otp", { email });
-    toast.success(res.data.message);
-    alert(res.data.otp);
-    setStep(2);
-  } catch (err) {
-    toast.error("Failed to send OTP");
-  }
-};
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/send-otp`, { email });
+      toast.success(res.data.message);
+      alert(res.data.otp);
+      setStep(2);
+    } catch (err) {
+      toast.error("Failed to send OTP");
+    }
+  };
 
+  // const verifyOtp = async () => {
+  //   try {
+  //     const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { phone, otp });
+  //     localStorage.setItem("token", res.data.token);
+  //     if (res.data.registered) {
+  //       toast.success("Login Successful!");
+  //       setUser(res.data.user);
+  //       setTimeout(() => navigate("/"), 1000);
+  //     } else {
+  //       setIsRegistered(false);
+  //       setStep(3);
+  //     }
+  //   } catch (err) {
+  //     toast.error("Invalid or expired OTP.");
+  //   }
+  // };
+
+  // const registerUser = async () => {
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_API_URL}/register`, { phone, name, email });
+  //     toast.success("Registered Successfully!");
+  //     setTimeout(() => navigate("/"), 1000);
+  //   } catch (err) {
+  //     toast.error("Registration failed. Please try again.");
+  //   }
+  // };
 
   const verifyOtp = async () => {
-  try {
-    const res = await axios.post("http://127.0.0.1:8000/api/verify-otp", { email, otp });
-    localStorage.setItem("token", res.data.token);
-    if (res.data.registered) {
-      toast.success("Login Successful!");
-      setUser(res.data.user);
-      setTimeout(() => navigate("/"), 1000);
-    } else {
-      setIsRegistered(false);
-      setStep(3);
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/verify-otp`, { email, otp });
+      localStorage.setItem("token", res.data.token);
+      if (res.data.registered) {
+        toast.success("Login Successful!");
+        setUser(res.data.user);
+  
+        // Get the redirect path from localStorage, or default to "/"
+        const redirectPath = localStorage.getItem("redirectAfterLogin") || "/"; 
+        localStorage.removeItem("redirectAfterLogin");  // Remove it after using
+  
+        setTimeout(() => navigate(redirectPath), 1000);  // Redirect to the saved path or home
+      } else {
+        setIsRegistered(false);
+        setStep(3);
+      }
+    } catch (err) {
+      toast.error("Invalid or expired OTP.");
     }
-  } catch (err) {
-    toast.error("Invalid or expired OTP.");
-  }
-};
-
-
+  };
+  
   const registerUser = async () => {
-  try {
-    await axios.post("http://127.0.0.1:8000/api/register", { email, name, phone });
-    toast.success("Registered Successfully!");
-    setTimeout(() => navigate("/"), 1000);
-  } catch (err) {
-    toast.error("Registration failed. Please try again.");
-  }
-};
-
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/register`, { email, name, phone });
+      toast.success("Registered Successfully!");
+      
+      // Redirect after successful registration
+      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/"; 
+      localStorage.removeItem("redirectAfterLogin");  // Clean up the redirect path
+  
+      setTimeout(() => navigate(redirectPath), 1000);  // Redirect to wishlist or home
+    } catch (err) {
+      toast.error("Registration failed. Please try again.");
+    }
+  };
+  
 
   const logout = () => {
     localStorage.removeItem("token");
