@@ -243,8 +243,8 @@ export default function OtpAuth() {
   const sendOtp = async () => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/send-otp`, { email });
-      toast.success(res.data.message);
-      alert(res.data.otp);
+      // toast.success(res.data.message);
+      toast.success("OTP Sent To Email Successfully");
       setStep(2);
     } catch (err) {
       toast.error("Failed to send OTP");
