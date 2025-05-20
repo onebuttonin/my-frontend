@@ -808,19 +808,22 @@ export default function OrderDetails() {
             </p>
 
             <div className="mt-4 flex space-x-4">
-              <button
-                onClick={() => trackOrder(order.id)}
-                className="bg-neutral-500 text-white px-4 py-2 rounded hover:bg-neutral-600"
-              >
-                Track Order
-              </button>
-              <button
-                onClick={() => setCancelOrderId(order.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                Cancel Order
-              </button>
-            </div>
+  <button
+    onClick={() => trackOrder(order.id)}
+    className="bg-neutral-500 text-white px-4 py-2 rounded hover:bg-neutral-600"
+  >
+    Track Order
+  </button>
+  {order.order_status === "Order Placed" && (
+    <button
+      onClick={() => setCancelOrderId(order.id)}
+      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+    >
+      Cancel Order
+    </button>
+  )}
+</div>
+
           </div>
         ))}
 

@@ -32,6 +32,7 @@ import AddCoupon from './Admin/Add-Coupon'
 import AllUsers from './Admin/AllUsers'
 import AllProducts from './components/Categories/AllProducts'
 import ScrollToTop from './components/ScrollToTop'
+import Invoice from './Admin/Invoice'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -93,6 +94,7 @@ function App() {
         <Route path='/Admin/Coupons' element={<Coupons />} />
         <Route path='/Admin/update-coupon/:id' element={<UpdateCoupon/>}/>
         <Route path='/Admin/Add-Coupon' element={<AddCoupon />} />
+        <Route path='/Admin/ProductInvoice/:orderId' element={<Invoice />} />
         </Route>
 
        </Routes>

@@ -395,6 +395,7 @@ export default function AdminOrders() {
                                 <th className="border border-gray-300 p-2">Payment Type</th>
                                 <th className="border border-gray-300 p-2">Status</th>
                                 <th className="border border-gray-300 p-2">Actions</th>
+                                <th className="border border-gray-300 p-2">Invoice</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -471,6 +472,14 @@ export default function AdminOrders() {
                                             <option value="Delivered">Delivered</option>
                                         </select>
                                     </td>
+                                      <td>
+    <button
+        className="border bg-red-500 px-3 py-1 rounded text-white"
+        onClick={() => navigate(`/Admin/ProductInvoice/${order.id}`)}
+    >
+        Invoice
+    </button>
+</td>
                                 </tr>
                             ))}
                         </tbody>
