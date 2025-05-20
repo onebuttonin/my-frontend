@@ -12,12 +12,12 @@ export default function AdminInvoice() {
 
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:8000/api/orders/${orderId}`, {
+            .get(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(res => {
                 setOrder(res.data);
-                return axios.get(`http://127.0.0.1:8000/api/carts/${res.data.cart_id}`);
+                return axios.get(`${import.meta.env.VITE_API_URL}/carts/${res.data.cart_id}`);
             })
             .then(res => setCart(res.data))
             .catch(err => console.error(err));
