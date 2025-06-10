@@ -45,7 +45,7 @@ const ReviewsSection = ({ productId }) => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`http://127.0.0.1:8000/api/products/ratings/${productId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/ratings/${productId}`);
       setReviews(response.data); // your backend gives array directly
       
     } catch (err) {
@@ -69,7 +69,7 @@ const ReviewsSection = ({ productId }) => {
       // You must send Bearer token if backend is protected
       const token = localStorage.getItem('token'); // assuming you store JWT token in localStorage
 
-      await axios.post('http://127.0.0.1:8000/api/products/ratings', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/products/ratings`, {
         product_id: productId,
         rating: newRating,
         review: newReview,
@@ -99,7 +99,7 @@ const ReviewsSection = ({ productId }) => {
     try {
       const token = localStorage.getItem('token');
 
-      await axios.delete(`http://127.0.0.1:8000/api/ratings/${ratingId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/ratings/${ratingId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
