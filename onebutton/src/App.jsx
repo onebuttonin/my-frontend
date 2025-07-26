@@ -33,6 +33,9 @@ import AllUsers from './Admin/AllUsers'
 import AllProducts from './components/Categories/AllProducts'
 import ScrollToTop from './components/ScrollToTop'
 import Invoice from './Admin/Invoice'
+import ReturnAndExchange from './components/footer/Return&Exchange'
+import ContactUs from './components/footer/Contactus'
+import ShippingInfo from './components/footer/ShippingInfo'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -97,6 +100,11 @@ function App() {
         <Route path='/Admin/ProductInvoice/:orderId' element={<Invoice />} />
         </Route>
 
+
+         <Route path = "/Return&Exchange"  element={<ReturnAndExchange/>}/>
+         <Route path = "/Contactus"  element={<ContactUs/>}/>
+         <Route path = "/ShippingInformation"  element={<ShippingInfo/>}/>
+           
        </Routes>
       
        <Footer /> 

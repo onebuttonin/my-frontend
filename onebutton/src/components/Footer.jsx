@@ -13,9 +13,9 @@ export default function Footer() {
       <div>
         <h3 className="text-lg font-bold mb-3">Customer Support</h3>
         <ul className="space-y-2 text-sm text-gray-700">
-          <li><a href="#" className="hover:text-black">Contact Us</a></li>
+          <li><a href="/Contactus" className="hover:text-black">Contact Us</a></li>
           <li><a href="#" className="hover:text-black">FAQs</a></li>
-          <li><a href="#" className="hover:text-black">Help Center</a></li>
+          <li><a href="/Contactus" className="hover:text-black">Help Center</a></li>
         </ul>
       </div>
 
@@ -23,9 +23,9 @@ export default function Footer() {
       <div>
         <h3 className="text-lg font-bold mb-3">Exchange & Returns</h3>
         <ul className="space-y-2 text-sm text-gray-700">
-          <li><a href="#" className="hover:text-black">Return Policy</a></li>
-          <li><a href="#" className="hover:text-black">Exchange Process</a></li>
-          <li><a href="#" className="hover:text-black">Refund Guidelines</a></li>
+          <li><a href="/Return&Exchange" className="hover:text-black">Return Policy</a></li>
+          <li><a href="/Return&Exchange" className="hover:text-black">Exchange Process</a></li>
+          <li><a href="/Return&Exchange" className="hover:text-black">Refund Guidelines</a></li>
         </ul>
       </div>
 
@@ -34,7 +34,7 @@ export default function Footer() {
         <h3 className="text-lg font-bold mb-3">Order Details</h3>
         <ul className="space-y-2 text-sm text-gray-700">
           <li><a href="#" className="hover:text-black">Track My Order</a></li>
-          <li><a href="#" className="hover:text-black">Shipping Information</a></li>
+          <li><a href="/ShippingInformation" className="hover:text-black">Shipping Information</a></li>
           <li><a href="#" className="hover:text-black">Payment Options</a></li>
         </ul>
       </div>

@@ -189,7 +189,7 @@ export default function Homep() {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
         {products.map((product) => (
           <div
             key={product.id}
@@ -203,7 +203,8 @@ export default function Homep() {
               loading="lazy"
               src={`${import.meta.env.VITE_BASE_URL}/storage/${product.image}`}
               alt={product.name}
-              className="w-full h-60 lg:h-100 object-cover transition-all duration-50"
+              className="w-full h-60 lg:h-100 object-cover lg:object-contain transition-all duration-150"
+              
               onClick={() =>
                 navigate(`/product/${product.id}`, { state: product })
               }

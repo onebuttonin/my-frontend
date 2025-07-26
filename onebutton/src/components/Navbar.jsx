@@ -37,7 +37,7 @@ export default function Navbar() {
         </button>
 
         {/* Logo */}
-        <h1 className="text-3xl font-bold flex-1">OneButton</h1>
+        <h1 className="text-3xl font-bold flex-1" href="/">OneButton</h1>
 
         {/* Icons */}
         <ul className="hidden md:flex space-x-4">
