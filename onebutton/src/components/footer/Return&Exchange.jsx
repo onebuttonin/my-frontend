@@ -41,7 +41,7 @@ export default function ReturnAndExchange() {
           href="mailto:onebutton.co@gmail.com"
           className="text-blue-600 underline hover:text-blue-800"
         >
-          onebuttonco@gmail.com
+          onebutton.co@gmail.com
         </a>{" "}
         with the following details:
       </p>

@@ -13,7 +13,7 @@ export default function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.location.href = `mailto:onebuttonco@gmail.com?subject=Customer Inquiry from ${formData.name}&body=Name: ${formData.name}%0AEmail: ${formData.email}%0AMessage: ${formData.message}`;
+    window.location.href = `mailto:onebutton.co@gmail.com?subject=Customer Inquiry from ${formData.name}&body=Name: ${formData.name}%0AEmail: ${formData.email}%0AMessage: ${formData.message}`;
   };
 
   return (
@@ -28,7 +28,7 @@ export default function ContactUs() {
           href="mailto:onebutton.co@gmail.com"
           className="text-blue-600 underline hover:text-blue-800"
         >
-          onebuttonco@gmail.com
+          onebutton.co@gmail.com
         </a>
         . Or, you can use the contact form below:
       </p>
