@@ -119,7 +119,7 @@ export default function ProductGrid() {
                   (e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.hover_image}`)
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.src = `${import.meta.env.VITE_API_URL}/storage/${product.image}`)
+                  (e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${product.image}`)
                 }
               />
 
