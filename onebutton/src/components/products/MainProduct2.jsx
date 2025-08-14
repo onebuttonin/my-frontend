@@ -32,6 +32,8 @@ export default function ProductDetails() {
   const token = localStorage.getItem("token");
   const [similarProducts, setSimilarProducts] = useState([]);
   const location = useLocation();
+  const [avgRating, setAvgRating] = useState(0);
+const [totalReviews, setTotalReviews] = useState(0);
   
 
   // Fetch the existing cart_id when the component mounts
@@ -163,8 +165,9 @@ const addToWishlist = async (productId) => {
   }, [id]);
 
     
-
-
+// main div py-0
+// productname black semibold
+// product price black semibold
 
   if (loading) {
     return (
@@ -176,7 +179,8 @@ const addToWishlist = async (productId) => {
   if (!product) return <p>Product not found!</p>;
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-4 py-0">
+
       <Toaster position="top-center" reverseOrder={false} />
       <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
         {/* Left: Image Section */}
@@ -249,10 +253,31 @@ const addToWishlist = async (productId) => {
 
         {/* Right: Product Details */}
         <div className="flex flex-col w-full lg:pl-6">
-        <h1 className="text-2xl text-gray-700 font-semibold md:text-xl lg:text-3xl lg:font-bold lg:mb-3">{product.name}</h1>
+        <h1 className="text-2xl text-black font-semibold md:text-xl lg:text-3xl lg:font-bold lg:mb-3">{product.name}</h1>
 
 {/* Price */}
-<p className="text-gray-600 text-xl md:text-xl lg:text-2xl lg:mb-3">{product.price}</p>
+<p className="text-black text-xl font-semibold md:text-xl lg:text-2xl lg:mb-3">
+  ₹{product.price}
+</p>
+
+{/* Show rating below price */}
+{totalReviews > 0 && (
+  <div className="flex items-center gap-2 mb-3">
+    {/* Stars */}
+    {Array.from({ length: 5 }).map((_, i) => {
+      const starValue = i + 1;
+      if (avgRating >= starValue) {
+        return <span key={i} style={{ color: "gold", fontSize: "20px" }}>★</span>;
+      } else if (avgRating >= starValue - 0.5) {
+        return <span key={i} style={{ color: "gold", fontSize: "20px" }}>☆</span>;
+      }
+      return <span key={i} style={{ color: "#ccc", fontSize: "20px" }}>★</span>;
+    })}
+    <span className="text-gray-700 font-medium">
+      {avgRating.toFixed(1)} ({totalReviews} reviews)
+    </span>
+  </div>
+)}
 
 {/* Color Selector */}
 {product?.availableColors && product.availableColors.length > 0 ? (
@@ -334,9 +359,9 @@ const addToWishlist = async (productId) => {
 </div>
           {/* {product.description && <p className="mt-4 text-gray-600">{product.description}</p>} */}
 
-          <button className="w-full lg:w-[70%] text-xs px-4 py-2 bg-black text-white font-semibold rounded-md hover:bg-gray-800 transition mt-3"
+          <button className="w-full lg:w-[70%] text-xm px-4 py-2 bg-black text-white font-semibold rounded-md hover:bg-gray-800 transition mt-3"
           onClick={() =>  {handleAddToCart(product.id) }}>
-            Add to Cart
+            ADD TO BAG
           </button>
         
 
@@ -346,6 +371,23 @@ const addToWishlist = async (productId) => {
           </button>
           {showDescription && <div className="w-full lg:w-[70%] bg-gray-100 p-4 rounded-md text-sm">{product.description}</div>}
 
+     {/* Reviews section */}
+<div className="mt-1">
+  <ReviewsSection
+    productId={product.id}
+    onRatingData={(avg, total) => {
+      setAvgRating(avg);
+      setTotalReviews(total);
+    }}
+  />
+</div>
+      
+          <button onClick={() => setShowOffer(!showOffer)} className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-2">
+            Offers
+            <span className="text-xl">{showOffer ? "−" : "+"}</span>
+          </button>
+          {showOffer && <div className="w-full lg:w-[70%] bg-gray-100 p-4 rounded-md text-sm">{product.offers}</div>}
+
           <button onClick={() => setShowPolicy(!showPolicy)} className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-2">
             Return & Exchange
             <span className="text-xl">{showPolicy ? "−" : "+"}</span>
@@ -354,18 +396,7 @@ const addToWishlist = async (productId) => {
 
          
 
-           {/* REVIEWS SECTION */}
-      <div className="mt-1">
-        <ReviewsSection productId={product.id} />
-      </div>
-
-
-
-          <button onClick={() => setShowOffer(!showOffer)} className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-2">
-            Offers
-            <span className="text-xl">{showOffer ? "−" : "+"}</span>
-          </button>
-          {showOffer && <div className="w-full lg:w-[70%] bg-gray-100 p-4 rounded-md text-sm">{product.offers}</div>}
+      
         </div>
 
       </div>
