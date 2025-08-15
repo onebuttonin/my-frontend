@@ -32,7 +32,7 @@ export default function ProductGrid() {
     <div className="container mx-auto p-4 lg:p-10">
       
       {/* Minimal & Show All Section with Thick Background */}
-      <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
+      <div className="text-center bg-neutral-100 px-4 py-3 mb-4">
         <h2 className="text-xl font-bold">Minimals</h2>
       </div>
 
