@@ -185,7 +185,7 @@ export default function Homep() {
 
       {/* Title Section */}
       <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
-        <h2 className="text-xl font-bold">Popular Picks</h2>
+        <h2 className="text-xl font-bold">New Popular</h2>
       </div>
 
       {/* Product Grid */}

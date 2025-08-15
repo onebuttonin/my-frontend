@@ -42,6 +42,7 @@ import Nbottom from "../Nbottom";
 import Homep from "/src/components/products/Homep";
 import Minimal from "/src/components/products/Minimal";
 import Collections from "/src/components/products/Collections";
+import Ticker3 from "../Ticker3";
 
 // Memoize static components to prevent unnecessary re-renders
 const MemoizedNbottom = React.memo(Nbottom);
@@ -52,6 +53,7 @@ export default memo (function HomePages() {
   return (
     <div>
       <MemoizedNbottom />
+      <Ticker3/>
       <Homep />
       <MemoizedMinimal />
       <MemoizedCollections />

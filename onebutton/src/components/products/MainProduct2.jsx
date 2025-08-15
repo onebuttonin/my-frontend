@@ -179,7 +179,7 @@ const addToWishlist = async (productId) => {
   if (!product) return <p>Product not found!</p>;
 
   return (
-    <div className="container mx-auto px-4 py-0">
+    <div className="container mx-auto px-4 lg:py-6">
 
       <Toaster position="top-center" reverseOrder={false} />
       <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
