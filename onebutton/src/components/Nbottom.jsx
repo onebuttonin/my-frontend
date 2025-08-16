@@ -65,8 +65,8 @@ export default function Nbottom() {
     "/images/WEB2.jpg",
   ];
   const smallScreenImages = [
-    "/images/main image-1.jpg",
-    "/images/main image-1.jpg",
+    "/images/main image-3.jpg",
+    "/images/main image-3.jpg",
   ];
 
   return (
