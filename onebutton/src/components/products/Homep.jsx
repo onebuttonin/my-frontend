@@ -229,10 +229,8 @@ export default function Homep() {
   //     </div>
   //   </div>
   // );
-  
-  
   return (
-  <div className="container mx-auto px-2 lg:px-10 py-10">
+  <div className="container mx-auto px-2 lg:px-10">
     {/* Preload hover images */}
     <div className="hidden">
       {products.map((product) => (
@@ -246,7 +244,7 @@ export default function Homep() {
     </div>
 
     {/* Title Section */}
-    <div className="text-center px-4 py-3 bg-neutral-100 mb-4">
+    <div className="text-center px-4 py-3 mb-4">
       <h2 className="text-xl font-bold">New Popular</h2>
     </div>
 
