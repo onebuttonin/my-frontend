@@ -61,13 +61,13 @@ import "swiper/css";
 export default function Nbottom() {
   // Images for large and small screens
   const largeScreenImages = [
-    "/images/WEB.jpg",
-    "/images/WEB2.jpg",
+    "/images/WEB1.1.jpg",
+    "/images/WEB2.1.jpg",
   ];
   const smallScreenImages = [
     "/images/main image-1.1.jpg",
-    "/images/main image2.1.jpg",
     "/images/main image-2.2.jpg",
+    // "/images/main image-2.3.jpg",
   ];
 
   return (
