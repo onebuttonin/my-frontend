@@ -44,7 +44,7 @@ function App() {
     <>
 <div>
         {/* Always Visible  */}
-        <Ticker1 /> 
+        {/* <Ticker1 />  */}
         <Navbar />
         <ScrollToTop />
         <Routes>
