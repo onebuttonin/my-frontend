@@ -43,7 +43,7 @@ export default function Nbottom() {
   ];
 
   return (
-    <div className="container mx-auto flex justify-center items-center mt-10 bg-neutral-100 max-h-[450px]">
+    <div className="container mx-auto flex justify-center items-center lg:hidden mt-10 bg-neutral-100 max-h-[450px]">
       <img
         src={images[0]} // Always show only the first image
         alt="Banner"
