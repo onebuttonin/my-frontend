@@ -53,10 +53,94 @@
 // }
 
 
+
+// last
+
+// import React from "react";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Autoplay } from "swiper/modules";
+// import "swiper/css";
+
+// export default function Nbottom() {
+//   // Images for large and small screens
+//   const largeScreenImages = [
+//     "/images/WEB1.1.jpg",
+//     "/images/WEB2.1.jpg",
+//   ];
+//   const smallScreenImages = [
+//     "/images/main image-1.1.jpg",
+//     "/images/main image-2.2.jpg",
+//   ];
+
+//   return (
+//     <div className="container mx-auto flex justify-center items-center bg-neutral-100">
+//       {/* Large Screen Slider */}
+//       <div className="hidden lg:block w-full">
+//         <Swiper
+//           modules={[Autoplay]}
+//           loop={true}
+//           autoplay={{
+//             delay: 3000,
+//             disableOnInteraction: false,
+//           }}
+//           speed={800}
+//           slidesPerView={1}
+//           centeredSlides={true}
+//         >
+//           {largeScreenImages.map((src, idx) => (
+//             <SwiperSlide key={idx} className="flex justify-center items-center">
+//               <img
+//                 src={src}
+//                 alt={`Large Slide ${idx}`}
+//                 className="h-full max-h-[450px] w-auto object-contain"
+//                 style={{
+//                   display: "block",
+//                   margin: "0 auto",
+//                 }}
+//               />
+//             </SwiperSlide>
+//           ))}
+//         </Swiper>
+//       </div>
+
+//       {/* Small Screen Slider */}
+//       <div className="block lg:hidden w-full">
+//         <Swiper
+//           modules={[Autoplay]}
+//           loop={true}
+//           autoplay={{
+//             delay: 3000,
+//             disableOnInteraction: false,
+//           }}
+//           speed={800}
+//           slidesPerView={1}
+//           centeredSlides={true}
+//         >
+//           {smallScreenImages.map((src, idx) => (
+//             <SwiperSlide key={idx} className="flex justify-center items-center">
+//               <img
+//                 src={src}
+//                 alt={`Small Slide ${idx}`}
+//                 className="h-full max-h-[600px] w-auto object-contain" // taller for small screens
+//                 style={{
+//                   display: "block",
+//                   margin: "0 auto",
+//                 }}
+//               />
+//             </SwiperSlide>
+//           ))}
+//         </Swiper>
+//       </div>
+//     </div>
+//   );
+// }
+
+
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/pagination";
 
 export default function Nbottom() {
   // Images for large and small screens
@@ -70,30 +154,40 @@ export default function Nbottom() {
   ];
 
   return (
-    <div className="container mx-auto flex justify-center items-center bg-neutral-100">
+    <div className="relative w-full bg-black">
+      {/* Overlay Text */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-4">
+        <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
+          ONE BUTTON
+        </h1>
+        <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
+          Luxury Redefined
+        </p>
+        <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase rounded-full shadow-lg hover:bg-neutral-200 transition">
+          Explore Collection
+        </button>
+      </div>
+
+      {/* Dark Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
+
       {/* Large Screen Slider */}
       <div className="hidden lg:block w-full">
         <Swiper
-          modules={[Autoplay]}
+          modules={[Autoplay, Pagination]}
           loop={true}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          speed={800}
+          autoplay={{ delay: 3500, disableOnInteraction: false }}
+          speed={1000}
           slidesPerView={1}
-          centeredSlides={true}
+          centeredSlides
+          pagination={{ clickable: true }}
         >
           {largeScreenImages.map((src, idx) => (
-            <SwiperSlide key={idx} className="flex justify-center items-center">
+            <SwiperSlide key={idx}>
               <img
                 src={src}
                 alt={`Large Slide ${idx}`}
-                className="h-full max-h-[450px] w-auto object-contain"
-                style={{
-                  display: "block",
-                  margin: "0 auto",
-                }}
+                className="w-full h-[90vh] object-cover"
               />
             </SwiperSlide>
           ))}
@@ -103,26 +197,20 @@ export default function Nbottom() {
       {/* Small Screen Slider */}
       <div className="block lg:hidden w-full">
         <Swiper
-          modules={[Autoplay]}
+          modules={[Autoplay, Pagination]}
           loop={true}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          speed={800}
+          autoplay={{ delay: 3500, disableOnInteraction: false }}
+          speed={1000}
           slidesPerView={1}
-          centeredSlides={true}
+          centeredSlides
+          pagination={{ clickable: true }}
         >
           {smallScreenImages.map((src, idx) => (
-            <SwiperSlide key={idx} className="flex justify-center items-center">
+            <SwiperSlide key={idx}>
               <img
                 src={src}
                 alt={`Small Slide ${idx}`}
-                className="h-full max-h-[600px] w-auto object-contain" // taller for small screens
-                style={{
-                  display: "block",
-                  margin: "0 auto",
-                }}
+                className="w-full h-[70vh] object-cover"
               />
             </SwiperSlide>
           ))}
