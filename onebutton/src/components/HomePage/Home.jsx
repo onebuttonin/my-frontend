@@ -57,7 +57,7 @@ export default memo (function HomePages() {
       <Ticker3/>
       <Sale></Sale>
       <Homep />
-      <MemoizedMinimal />
+      {/* <MemoizedMinimal /> */}
       <MemoizedCollections />
     </div>
   );
