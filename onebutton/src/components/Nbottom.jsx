@@ -150,14 +150,14 @@ export default function Nbottom() {
   ];
   const smallScreenImages = [
     // "/images/main image-1.1.jpg",
-    "/images/Poster-1.jpg",
+    // "/images/Poster-1.jpg",
     // "/images/main image-2.4.jpg",
     "/images/Sale-image-3.jpg",
      "/images/Poster-2.jpg",
   ];
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full bg:adaptive">
       {/* Overlay Text */}
      <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
   <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
