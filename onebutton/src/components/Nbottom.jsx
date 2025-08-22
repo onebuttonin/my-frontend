@@ -149,24 +149,28 @@ export default function Nbottom() {
     "/images/WEB2.1.jpg",
   ];
   const smallScreenImages = [
-    "/images/main image-1.1.jpg",
-    "/images/main image-2.2.jpg",
+    // "/images/main image-1.1.jpg",
+    "/images/Poster-1.jpg",
+    // "/images/main image-2.4.jpg",
+    "/images/Sale-image-3.jpg",
+     "/images/Poster-2.jpg",
   ];
 
   return (
-    <div className="relative w-full bg-black">
+    <div className="relative w-full">
       {/* Overlay Text */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-4">
-        <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
-          ONE BUTTON
-        </h1>
-        <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
-          Luxury Redefined
-        </p>
-        <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase rounded-full shadow-lg hover:bg-neutral-200 transition">
-          Explore Collection
-        </button>
-      </div>
+     <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
+  <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
+    ONE BUTTON
+  </h1>
+  <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
+    Luxury Redefined
+  </p>
+  <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase  shadow-lg hover:bg-neutral-200 transition">
+    Explore Collection
+  </button>
+</div>
+
 
       {/* Dark Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
@@ -210,7 +214,7 @@ export default function Nbottom() {
               <img
                 src={src}
                 alt={`Small Slide ${idx}`}
-                className="w-full h-[70vh] object-cover"
+                className="w-full h-[70vh] object-contain"
               />
             </SwiperSlide>
           ))}
