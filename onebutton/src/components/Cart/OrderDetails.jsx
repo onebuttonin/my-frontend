@@ -750,155 +750,202 @@ export default function OrderDetails() {
     !isPageLoading && currentOrders.length === 0 && pastOrdersList.length === 0;
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <Toaster position="top-center" reverseOrder={false} />
-      <h2 className="text-2xl font-bold mb-4 text-center">Order Details</h2>
+  <div className="container mx-auto px-4 py-10 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <Toaster position="top-center" reverseOrder={false} />
 
-      {/* Loading */}
-      {isPageLoading && (
-        <div className="flex justify-center items-center h-40">
-          <p className="text-black font-semibold text-lg">Loading your orders, please wait...</p>
+    <h2 className="text-3xl font-semibold mb-8 text-center tracking-wide text-gray-900">
+      Order Details
+    </h2>
+
+    {/* Loading */}
+    {isPageLoading && (
+      <div className="flex justify-center items-center h-40">
+        <p className="text-gray-800 font-medium text-lg">
+          Loading your orders, please wait...
+        </p>
+      </div>
+    )}
+
+    {/* No Orders */}
+    {showNoOrders && (
+      <div className="flex justify-center items-center h-40">
+        <p className="text-gray-600 font-medium text-lg">No orders found.</p>
+      </div>
+    )}
+
+    {/* Current Orders */}
+    {!isPageLoading &&
+      currentOrders.length > 0 &&
+      currentOrders.map((order, index) => (
+        <div
+          key={order.id}
+          className="bg-white shadow-md p-6 mb-6 border border-gray-200"
+        >
+          <h3 className="text-xl font-semibold mb-2 text-gray-900">
+            Order ID: {order.id}
+          </h3>
+          <p className="text-gray-700">
+            <span className="font-medium">Customer:</span> {order.name}
+          </p>
+          <p className="text-gray-700">
+            <span className="font-medium">Address:</span> {order.street1},{" "}
+            {order.city}, {order.state} - {order.pincode}
+          </p>
+          <p className="text-gray-700">
+            <span className="font-medium">Mobile:</span> {order.mobile}
+          </p>
+
+          <div className="mt-6">
+            <h4 className="font-semibold text-gray-900 mb-3">
+              Ordered Products:
+            </h4>
+            <ul>
+              {cartQueries[index]?.data?.map((item) => (
+                <li
+                  key={item.product.id}
+                  className="flex items-center mb-4 pb-4 border-b border-gray-200"
+                >
+                  <img
+                    src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
+                    alt={item.product.name}
+                    className="w-24 h-24 object-cover mr-4 shadow-sm"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {item.product.name}
+                    </p>
+                    <p className="text-gray-600">
+                      Size: {item.size.toUpperCase()}
+                    </p>
+                    <p className="text-gray-600">Quantity: {item.quantity}</p>
+                    <p className="text-gray-800">
+                      Price: ₹{item.product.price}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="mt-4 font-semibold text-gray-900">
+            Order Status:{" "}
+            <span className="bg-gray-100 px-2 py-1">{order.order_status}</span>
+          </p>
+          <p className="mt-2 font-semibold text-gray-900">
+            Bag Total:{" "}
+            <span className="bg-gray-100 px-2 py-1">₹{order.cart_total}</span>
+          </p>
+
+          <div className="mt-6 flex space-x-4">
+            <button
+              onClick={() => trackOrder(order.id)}
+              className="bg-gray-900 text-white px-5 py-2 hover:bg-gray-800 transition"
+            >
+              Track Order
+            </button>
+            {order.order_status === "Order Placed" && (
+              <button
+                onClick={() => setCancelOrderId(order.id)}
+                className="bg-red-600 text-white px-5 py-2 hover:bg-red-700 transition"
+              >
+                Cancel Order
+              </button>
+            )}
+          </div>
         </div>
-      )}
+      ))}
 
-      {/* Show only clean message if no orders */}
-      {showNoOrders && (
-        <div className="flex justify-center items-center h-40">
-          <p className="text-gray-700 font-semibold text-lg">No orders found.</p>
-        </div>
-      )}
+    {/* Past Orders */}
+    {!isPageLoading && pastOrdersList.length > 0 && (
+      <>
+        <h2 className="text-3xl font-semibold mb-8 mt-12 text-center tracking-wide text-gray-900">
+          Past Orders
+        </h2>
+        {pastOrdersList.map((order, index) => (
+          <div
+            key={order.id}
+            className="bg-white shadow-md p-6 mb-6 border border-gray-200"
+          >
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Order ID: {order.id}
+            </h3>
+            <p className="text-gray-700">Status: {order.order_status}</p>
 
-      {/* Show current orders */}
-      {!isPageLoading &&
-        currentOrders.length > 0 &&
-        currentOrders.map((order, index) => (
-          <div key={order.id} className="border p-4 mb-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
-            <p><span className="font-semibold">Customer:</span> {order.name}</p>
-            <p><span className="font-semibold">Address:</span> {order.street1}, {order.city}, {order.state} - {order.pincode}</p>
-            <p><span className="font-semibold">Mobile:</span> {order.mobile}</p>
-
-            <div className="mt-4">
-              <h4 className="font-semibold">Ordered Products:</h4>
-              <ul>
-                {cartQueries[index]?.data?.map((item) => (
-                  <li key={item.product.id} className="flex items-center mb-2 border-b pb-2">
-                    <img
-                    
-                      src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
-                      alt={item.product.name}
-                      className="w-20 h-20 object-cover rounded-lg mr-2"
-                    />
-                    <div>
-                      <p className="font-semibold">{item.product.name}</p>
-                      <p>Size: {item.size.toUpperCase()}</p>
-                      <p>Quantity: {item.quantity}</p>
-                      <p>Price: ₹{item.product.price}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            <div className="mt-6">
+              {pastCartQueries[index]?.data?.map((item) => (
+                <div key={item.id} className="flex items-center mb-6">
+                  <img
+                    src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
+                    alt={item.product.name}
+                    className="w-24 h-24 object-cover mr-4 shadow-sm"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {item.product.name}
+                    </p>
+                    <p className="text-gray-600">Size: {item.size}</p>
+                    <p className="text-gray-600">Quantity: {item.quantity}</p>
+                    <p className="text-gray-800">
+                      Price: ₹{item.product.price}
+                    </p>
+                    {order.order_status === "Delivered" && (
+                      <ReviewForm
+                        productId={item.product.id}
+                        accessToken={token}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-
-            <p className="mt-4 font-semibold">
-              Order Status: <span className="px-2 py-1 rounded bg-gray-200">{order.order_status}</span>
-            </p>
-            <p className="mt-4 font-semibold">
-              Bag Total: <span className="px-2 py-1 rounded bg-gray-200">₹{order.cart_total}</span>
-            </p>
-
-            <div className="mt-4 flex space-x-4">
-  <button
-    onClick={() => trackOrder(order.id)}
-    className="bg-neutral-500 text-white px-4 py-2 rounded hover:bg-neutral-600"
-  >
-    Track Order
-  </button>
-  {order.order_status === "Order Placed" && (
-    <button
-      onClick={() => setCancelOrderId(order.id)}
-      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-    >
-      Cancel Order
-    </button>
-  )}
-</div>
-
           </div>
         ))}
+      </>
+    )}
 
-      {/* Past orders section */}
-      {!isPageLoading && pastOrdersList.length > 0 && (
-        <>
-          <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Past Orders</h2>
-          {pastOrdersList.map((order, index) => (
-            <div key={order.id} className="border p-4 mb-4 rounded-lg shadow">
-              <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
-              <p>Status: {order.order_status}</p>
-
-              <div className="mt-4">
-                {pastCartQueries[index]?.data?.map((item) => (
-                  <div key={item.id} className="flex items-center mb-4">
-                    <img
-                      src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
-                      alt={item.product.name}
-                      className="w-20 h-20 object-cover rounded-lg mr-4"
-                    />
-                    <div>
-                      <p>{item.product.name}</p>
-                      <p>Size: {item.size}</p>
-                      <p>Quantity: {item.quantity}</p>
-                      <p>Price: ₹{item.product.price}</p>
-                      {order.order_status === "Delivered" && (
-                        <ReviewForm productId={item.product.id} accessToken={token} />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </>
-      )}
-
-      {/* Cancel Confirmation Modal */}
-      {cancelOrderId && (
-        <div className="fixed inset-0 bg-neutral-100 bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-md max-w-sm w-full text-center">
-            <h3 className="text-lg font-semibold mb-4">Cancel Order</h3>
-            <p className="mb-6">Are you sure you want to cancel this order?</p>
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={() => setCancelOrderId(null)}
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                No
-              </button>
-              <button
-                onClick={async () => {
-                  try {
-                    await axios.post(
-                      `${import.meta.env.VITE_API_URL}/update-order-status`,
-                      { id: cancelOrderId, order_status: "cancelled" },
-                      { headers: { Authorization: `Bearer ${token}` } }
-                    );
-                    toast.success("Order cancelled successfully.");
-                    setCancelOrderId(null);
-                    window.location.reload();
-                  } catch (error) {
-                    console.error("Failed to cancel order:", error);
-                    toast.error("Failed to cancel order.");
-                    setCancelOrderId(null);
-                  }
-                }}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                Yes, Cancel
-              </button>
-            </div>
+    {/* Cancel Modal */}
+    {cancelOrderId && (
+      <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="bg-white p-8 shadow-lg max-w-sm w-full text-center">
+          <h3 className="text-xl font-semibold mb-4 text-gray-900">
+            Cancel Order
+          </h3>
+          <p className="mb-6 text-gray-700">
+            Are you sure you want to cancel this order?
+          </p>
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={() => setCancelOrderId(null)}
+              className="bg-gray-300 px-5 py-2 hover:bg-gray-400 transition"
+            >
+              No
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  await axios.post(
+                    `${import.meta.env.VITE_API_URL}/update-order-status`,
+                    { id: cancelOrderId, order_status: "cancelled" },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                  );
+                  toast.success("Order cancelled successfully.");
+                  setCancelOrderId(null);
+                  window.location.reload();
+                } catch (error) {
+                  console.error("Failed to cancel order:", error);
+                  toast.error("Failed to cancel order.");
+                  setCancelOrderId(null);
+                }
+              }}
+              className="bg-red-600 text-white px-5 py-2 hover:bg-red-700 transition"
+            >
+              Yes, Cancel
+            </button>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
+
 }

@@ -628,138 +628,154 @@ export default function Cart() {
   // );
  
   return (
-    <div className="container mx-auto px-4 py-6">
-      <Toaster position="top-center" reverseOrder={false} />
-      {!cartData?.items || cartData.items.length === 0 ? (
-        <div className="flex justify-center items-center h-60">
-          <p className="text-gray-500 text-lg font-medium">No Item Found In Cart</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
-          <div className="bg-white p-4 shadow-md rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
-            {cartData.items.map((item) => (
-              <div
-                key={item.product_id}
-                className="flex items-center border-b pb-4 mb-4"
-              >
-                <img
-                  src={
-                    item.product?.image
-                      ? `${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`
-                      : "/placeholder.png"
-                  }
-                  alt={item.product?.name || "Product"}
-                  className="w-24 h-24 object-cover rounded-lg"
-                  onClick={() =>
-                    item.product &&
-                    navigate(`/product/${item.product.id}`, {
-                      state: item.product,
-                    })
-                  }
-                />
-                <div className="ml-4 flex-1">
-                  <h3 className="text-lg font-semibold">{item.product?.name}</h3>
-                  <p className="text-gray-500">₹{item.product?.price}</p>
-                  <p className="text-gray-700 mt-1">
-                    <span className="font-medium">Size:</span> {item.size}
-                  </p>
-                  <div className="flex items-center mt-2">
-                    <button
-                      onClick={() =>
-                        updateQuantityMutation.mutate({
-                          product_id: item.product_id,
-                          quantity: item.quantity - 1,
-                        })
-                      }
-                      className="bg-gray-200 px-2 py-1 rounded"
-                    >
-                      -
-                    </button>
-                    <span className="mx-2">{item.quantity}</span>
-                    <button
-                      onClick={() =>
-                        updateQuantityMutation.mutate({
-                          product_id: item.product_id,
-                          quantity: item.quantity + 1,
-                        })
-                      }
-                      className="bg-gray-200 px-2 py-1 rounded"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <button
-                  onClick={() => removeItemMutation.mutate(item.product_id)}
-                  className="text-red-500 hover:text-red-700 ml-4"
-                >
-                  🗑
-                </button>
-              </div>
-            ))}
-          </div>
-  
-          <div className="bg-white p-4 shadow-md rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-            <div className="flex items-center mb-4">
-              <input
-                type="text"
-                placeholder="Enter Coupon Code"
-                value={coupon}
-                onChange={(e) => setCoupon(e.target.value)}
-                className="flex-1 border rounded-lg px-3 py-2 mr-2"
+  <div className="container mx-auto px-4 py-10">
+    <Toaster position="top-center" reverseOrder={false} />
+    {!cartData?.items || cartData.items.length === 0 ? (
+      <div className="flex justify-center items-center h-60">
+        <p className="text-gray-500 text-lg font-medium tracking-wide">
+          No Item Found In Cart
+        </p>
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 items-start">
+        {/* Shopping Cart */}
+        <div className="bg-white/90 backdrop-blur-md border border-gray-200 p-6">
+          <h2 className="text-2xl font-semibold mb-6 tracking-wide">Shopping Cart</h2>
+
+          {cartData.items.map((item) => (
+            <div
+              key={item.product_id}
+              className="flex items-center border-b border-gray-200 pb-6 mb-6"
+            >
+              <img
+                src={
+                  item.product?.image
+                    ? `${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`
+                    : "/placeholder.png"
+                }
+                alt={item.product?.name || "Product"}
+                className="w-28 h-28 object-cover cursor-pointer"
+                onClick={() =>
+                  item.product &&
+                  navigate(`/product/${item.product.id}`, {
+                    state: item.product,
+                  })
+                }
               />
+
+              <div className="ml-6 flex-1">
+                <h3 className="text-lg font-semibold tracking-tight">
+                  {item.product?.name}
+                </h3>
+                <p className="text-gray-600 mt-1">₹{item.product?.price}</p>
+                <p className="text-gray-800 mt-1">
+                  <span className="font-medium">Size:</span> {item.size}
+                </p>
+
+                <div className="flex items-center mt-3">
+                  <button
+                    onClick={() =>
+                      updateQuantityMutation.mutate({
+                        product_id: item.product_id,
+                        quantity: item.quantity - 1,
+                      })
+                    }
+                    className="px-3 py-1 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+                  >
+                    -
+                  </button>
+                  <span className="mx-3">{item.quantity}</span>
+                  <button
+                    onClick={() =>
+                      updateQuantityMutation.mutate({
+                        product_id: item.product_id,
+                        quantity: item.quantity + 1,
+                      })
+                    }
+                    className="px-3 py-1 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
               <button
-                onClick={applyCoupon}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                onClick={() => removeItemMutation.mutate(item.product_id)}
+                className="text-red-500 hover:text-red-700 ml-6 text-xl"
               >
-                Apply
+                🗑
               </button>
             </div>
-  
-            {appliedCoupon && (
-              <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg mb-4">
-                <span className="text-green-700 font-semibold">
-                  Coupon: {appliedCoupon.code}
-                </span>
-                <button
-                  onClick={removeCoupon}
-                  className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-  
-            <div className="flex justify-between mb-2">
+          ))}
+        </div>
+
+        {/* Order Summary */}
+        <div className="bg-white/90 backdrop-blur-md border border-gray-200 p-6">
+          <h2 className="text-2xl font-semibold mb-6 tracking-wide">Order Summary</h2>
+
+          {/* Coupon */}
+          <div className="flex items-center mb-6">
+            <input
+              type="text"
+              placeholder="Enter Coupon Code"
+              value={coupon}
+              onChange={(e) => setCoupon(e.target.value)}
+              className="flex-1 border border-gray-300 px-4 py-2 tracking-wide focus:outline-none"
+            />
+            <button
+              onClick={applyCoupon}
+              className="ml-3 px-5 py-2 bg-black text-white tracking-wide hover:bg-gray-800 transition"
+            >
+              Apply
+            </button>
+          </div>
+
+          {appliedCoupon && (
+            <div className="flex justify-between items-center bg-green-100 p-3 border border-green-300 mb-6">
+              <span className="text-green-700 font-semibold">
+                Coupon: {appliedCoupon.code}
+              </span>
+              <button
+                onClick={removeCoupon}
+                className="bg-red-500 text-white px-3 py-1 hover:bg-red-600 transition"
+              >
+                Remove
+              </button>
+            </div>
+          )}
+
+          {/* Price Details */}
+          <div className="space-y-3 text-gray-800">
+            <div className="flex justify-between">
               <span>Subtotal:</span>
               <span>₹{subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between">
               <span>Discount:</span>
               <span>-₹{discount.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between">
               <span>Delivery Charge:</span>
               <span>₹{deliveryCharge.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between font-semibold text-lg">
+            <div className="flex justify-between text-lg font-semibold border-t border-gray-300 pt-3">
               <span>Total:</span>
               <span>₹{total.toFixed(2)}</span>
             </div>
-  
-            <button
-              className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-              onClick={() => navigate("/orders")}
-            >
-              Proceed to Checkout
-            </button>
           </div>
+
+          <button
+            className="mt-6 w-full bg-black text-white py-3 tracking-wide hover:bg-gray-800 transition"
+            onClick={() => navigate("/orders")}
+          >
+            Proceed to Checkout
+          </button>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
+
   
 
 }

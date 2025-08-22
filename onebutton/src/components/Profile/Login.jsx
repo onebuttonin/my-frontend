@@ -332,103 +332,128 @@ export default function OtpAuth() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-80 bg-gray-50">
-         <Toaster position="top-center" reverseOrder={false} />
+  <div className="flex flex-col items-center justify-center min-h-80 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <Toaster position="top-center" reverseOrder={false} />
 
-      {loading ? (
-        <div className="flex items-center justify-center">
-          <div className="w-16 h-16 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+    {loading ? (
+      <div className="flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+      </div>
+    ) : user ? (
+      <motion.div
+        {...animationProps}
+        className="bg-white/90 backdrop-blur-md p-8 w-96 border border-gray-200"
+      >
+        <h2 className="text-2xl font-light tracking-wide mb-6 text-center text-gray-800">
+          User Details
+        </h2>
+        <div className="space-y-2 text-gray-700">
+          <p>
+            <span className="font-semibold">Name:</span> {user.name}
+          </p>
+          <p>
+            <span className="font-semibold">Phone:</span> {user.phone}
+          </p>
+          <p>
+            <span className="font-semibold">Email:</span> {user.email}
+          </p>
         </div>
-      ) : user ? (
-        <motion.div {...animationProps} className="bg-white p-6 rounded-2xl shadow-md w-96">
-          <h2 className="text-2xl font-bold mb-4">User Details</h2>
-          <p><span className="font-semibold">Name:</span> {user.name}</p>
-          <p><span className="font-semibold">Phone:</span> {user.phone}</p>
-          <p><span className="font-semibold">Email:</span> {user.email}</p>
 
-          <button
-            onClick={logout}
-            className="w-full mt-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Logout
-          </button>
-        </motion.div>
-      ) : (
-        <motion.div {...animationProps} className="bg-white p-6 rounded-2xl shadow-md w-96">
-          <AnimatePresence mode="wait">
-            {step === 1 && (
-  <motion.div key="step1" {...animationProps}>
-    <h2 className="text-xl font-semibold text-center mb-4">Login</h2>
-    <label className="block text-gray-700 mb-1">Email</label>
-    <input
-      type="email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      className="w-full border rounded-lg px-3 py-2"
-      placeholder="Enter your email"
-    />
-    <button
-      onClick={sendOtp}
-      className="w-full mt-4 py-2 bg-gray-900 text-white rounded-lg"
-    >
-      Send OTP
-    </button>
-  </motion.div>
-)}
+        <button
+          onClick={logout}
+          className="w-full mt-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition duration-300 shadow-md"
+        >
+          Logout
+        </button>
+      </motion.div>
+    ) : (
+      <motion.div
+        {...animationProps}
+        className="bg-white/90 backdrop-blur-md p-8 w-96 border border-gray-200"
+      >
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <motion.div key="step1" {...animationProps}>
+              <h2 className="text-2xl font-light tracking-wide text-center mb-6">
+                Login
+              </h2>
+              <label className="block text-gray-600 mb-2 font-medium">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="Enter your email"
+              />
+              <button
+                onClick={sendOtp}
+                className="w-full mt-6 py-3 bg-gray-900 text-white hover:bg-gray-800 transition duration-300 shadow-md"
+              >
+                Send OTP
+              </button>
+            </motion.div>
+          )}
 
+          {step === 2 && (
+            <motion.div key="step2" {...animationProps}>
+              <h2 className="text-xl font-light tracking-wide text-center mb-6">
+                Verify OTP
+              </h2>
+              <label className="block text-gray-600 mb-2 font-medium">OTP</label>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="w-full border border-gray-300  px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="Enter the OTP"
+              />
+              <button
+                onClick={verifyOtp}
+                className="w-full mt-6 py-3 bg-gray-900 text-white hover:bg-gray-800 transition duration-300 shadow-md"
+              >
+                Verify OTP
+              </button>
+            </motion.div>
+          )}
 
-            {step === 2 && (
-              <motion.div key="step2" {...animationProps}>
-                <label className="block text-gray-700 mb-1">Enter OTP:</label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2"
-                />
-                <button
-                  onClick={verifyOtp}
-                  className="w-full mt-4 py-2 bg-gray-900 text-white rounded-lg"
-                >
-                  Verify OTP
-                </button>
-              </motion.div>
-            )}
+          {step === 3 && (
+            <motion.div key="step3" {...animationProps}>
+              <h2 className="text-2xl font-light tracking-wide text-center mb-6">
+                Register
+              </h2>
 
-            {step === 3 && (
-  <motion.div key="step3" {...animationProps}>
-    <h2 className="text-xl font-semibold text-center mb-4">Register</h2>
+              <label className="block text-gray-600 mb-2 font-medium">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="Enter your name"
+              />
 
-    <label className="block text-gray-700 mb-1">Name</label>
-    <input
-      type="text"
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-      className="w-full border rounded-lg px-3 py-2 mb-3"
-      placeholder="Enter your name"
-    />
+              <label className="block text-gray-600 mb-2 font-medium">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="Enter your phone"
+              />
 
-    <label className="block text-gray-700 mb-1">Phone Number</label>
-    <input
-      type="text"
-      value={phone}
-      onChange={(e) => setPhone(e.target.value)}
-      className="w-full border rounded-lg px-3 py-2 mb-3"
-      placeholder="Enter your phone"
-    />
+              <button
+                onClick={registerUser}
+                className="w-full mt-6 py-3 bg-green-600 text-white hover:bg-green-700 transition duration-300 shadow-md"
+              >
+                Register
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    )}
+  </div>
+);
 
-    <button
-      onClick={registerUser}
-      className="w-full mt-4 py-2 bg-green-500 text-white rounded-lg"
-    >
-      Register
-    </button>
-  </motion.div>
-)}
-
-          </AnimatePresence>
-        </motion.div>
-      )}
-    </div>
-  );
 }
