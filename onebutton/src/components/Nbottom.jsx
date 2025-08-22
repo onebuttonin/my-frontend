@@ -214,7 +214,7 @@ export default function Nbottom() {
               <img
                 src={src}
                 alt={`Small Slide ${idx}`}
-                className="w-full h-[70vh] object-contain"
+                className="w-full h-[70vh] object-cover"
               />
             </SwiperSlide>
           ))}
