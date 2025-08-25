@@ -156,7 +156,7 @@ export default function Nbottom() {
     // "/images/Sale-image-3.jpg",
     //  "/images/Poster-2.jpg",
      "/images/Coming-soon-3.jpg",
-     "/images/Sale-Poster-4.jpg"
+     "/images/Sale-Poster-5.jpg"
   ];
 
   return (
@@ -202,7 +202,7 @@ export default function Nbottom() {
       </div>
 
       {/* Small Screen Slider */}
-      {/* <div className="block lg:hidden w-full">
+      <div className="block lg:hidden w-full">
         <Swiper
           modules={[Autoplay, Pagination]}
           loop={true}
@@ -217,13 +217,13 @@ export default function Nbottom() {
               <img
                 src={src}
                 alt={`Small Slide ${idx}`}
-                className="w-full h-[70vh] object-contain"
+                className="w-full h-[70vh] object-cover"
               />
             </SwiperSlide>
           ))}
         </Swiper>
-      </div> */}
-      <div className="block lg:hidden w-full">
+      </div>
+      {/* <div className="block lg:hidden w-full">
   <Swiper
     modules={[Autoplay, Pagination]}
     loop={true}
@@ -246,7 +246,7 @@ export default function Nbottom() {
       </SwiperSlide>
     ))}
   </Swiper>
-</div>
+</div> */}
 
     </div>
   );
