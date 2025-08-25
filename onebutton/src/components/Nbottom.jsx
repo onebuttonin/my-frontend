@@ -145,7 +145,8 @@ import "swiper/css/pagination";
 export default function Nbottom() {
   // Images for large and small screens
   const largeScreenImages = [
-    "/images/WEB1.1.jpg",
+    "images/Coming-soon-1.1.jpg",
+    // "/images/WEB1.1.jpg",
     "/images/WEB2.1.jpg",
   ];
   const smallScreenImages = [
@@ -154,7 +155,7 @@ export default function Nbottom() {
     // "/images/main image-2.4.jpg",
     // "/images/Sale-image-3.jpg",
     //  "/images/Poster-2.jpg",
-     "/images/Coming-soon-1.jpg",
+     "/images/Coming-soon-2.jpg",
      "/images/Sale-Poster-2.jpg"
   ];
 
