@@ -155,8 +155,8 @@ export default function Nbottom() {
     // "/images/main image-2.4.jpg",
     // "/images/Sale-image-3.jpg",
     //  "/images/Poster-2.jpg",
-     "/images/Coming-soon-2.jpg",
-     "/images/Sale-Poster-2.jpg"
+     "/images/Coming-soon-3.jpg",
+     "/images/Sale-Poster-4.jpg"
   ];
 
   return (
@@ -202,7 +202,7 @@ export default function Nbottom() {
       </div>
 
       {/* Small Screen Slider */}
-      <div className="block lg:hidden w-full">
+      {/* <div className="block lg:hidden w-full">
         <Swiper
           modules={[Autoplay, Pagination]}
           loop={true}
@@ -222,7 +222,32 @@ export default function Nbottom() {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
+      </div> */}
+      <div className="block lg:hidden w-full">
+  <Swiper
+    modules={[Autoplay, Pagination]}
+    loop={true}
+    autoplay={{ delay: 3500, disableOnInteraction: false }}
+    speed={600} // reduced speed for smoother swipe
+    slidesPerView={1}
+    centeredSlides
+    pagination={{ clickable: true }}
+    className="w-full"
+  >
+    {smallScreenImages.map((src, idx) => (
+      <SwiperSlide key={idx} className="relative">
+        <img
+          src={src}
+          alt={`Small Slide ${idx}`}
+          loading="lazy" // ✅ prevents lag by lazy loading
+          className="w-full h-[70vh] object-center object-cover select-none pointer-events-none"
+          draggable="false" // ✅ prevents drag lag
+        />
+      </SwiperSlide>
+    ))}
+  </Swiper>
+</div>
+
     </div>
   );
 }

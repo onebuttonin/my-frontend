@@ -58,7 +58,7 @@ export default memo (function HomePages() {
       <Sale></Sale>
       {/* <Homep /> */}
       {/* <MemoizedMinimal /> */}
-      <MemoizedCollections />
+      {/* <MemoizedCollections /> */}
     </div>
   );
 });
