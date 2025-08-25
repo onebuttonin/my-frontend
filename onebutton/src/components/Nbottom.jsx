@@ -152,8 +152,10 @@ export default function Nbottom() {
     // "/images/main image-1.1.jpg",
     // "/images/Poster-1.jpg",
     // "/images/main image-2.4.jpg",
-    "/images/Sale-image-3.jpg",
-     "/images/Poster-2.jpg",
+    // "/images/Sale-image-3.jpg",
+    //  "/images/Poster-2.jpg",
+     "/images/Coming-soon-1.jpg",
+     "/images/Sale-Poster-2.jpg"
   ];
 
   return (
