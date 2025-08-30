@@ -36,6 +36,7 @@ import Invoice from './Admin/Invoice'
 import ReturnAndExchange from './components/footer/Return&Exchange'
 import ContactUs from './components/footer/Contactus'
 import ShippingInfo from './components/footer/ShippingInfo'
+import AboutUs from './components/footer/Aboutus'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -104,6 +105,7 @@ function App() {
          <Route path = "/Return&Exchange"  element={<ReturnAndExchange/>}/>
          <Route path = "/Contactus"  element={<ContactUs/>}/>
          <Route path = "/ShippingInformation"  element={<ShippingInfo/>}/>
+         <Route path="/AboutUs" element={<AboutUs/>}/>
            
        </Routes>
       

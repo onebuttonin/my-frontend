@@ -488,13 +488,13 @@ export default function Navbar() {
           Orders
         </Link>
         <Link
-          to="#"
+          to="/AboutUs"
           className="text-sm uppercase tracking-wider hover:opacity-70"
         >
           About
         </Link>
         <Link
-          to="#"
+          to="/Contactus"
           className="text-sm uppercase tracking-wider hover:opacity-70"
         >
           Contact
@@ -547,14 +547,14 @@ export default function Navbar() {
               Wishlist
             </Link>
             <a
-              href="#"
+              href="/AboutUs"
               className="text-gray-700 uppercase tracking-wide"
               onClick={() => setIsOpen(false)}
             >
               About
             </a>
             <a
-              href="#"
+              href="/Contactus"
               className="text-gray-700 uppercase tracking-wide"
               onClick={() => setIsOpen(false)}
             >
