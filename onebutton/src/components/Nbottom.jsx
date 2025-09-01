@@ -156,7 +156,8 @@ export default function Nbottom() {
     // "/images/Sale-image-3.jpg",
     //  "/images/Poster-2.jpg",
      "/images/Coming-soon-3.jpg",
-     "/images/Sale-Poster-5.jpg"
+     "/images/Sale-Poster-5.jpg",
+     "/images/bharat-reel-1.png",
   ];
 
   return (

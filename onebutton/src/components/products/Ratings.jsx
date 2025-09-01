@@ -293,52 +293,59 @@ const ReviewsSection = ({ productId, onRatingData }) => {
     return stars;
   };
 
-  return (
-    <div style={{ maxWidth: '600px', margin: 'auto' }}>
-      <button
-        className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-2"
-        onClick={() => setShowReview(!showReview)}
-      >
-        Ratings
-        <span className="text-xl">{showReview ? '-' : '+'}</span>
-      </button>
+ return (
+  <div style={{ maxWidth: '600px', margin: 'auto' }}>
+    {/* Ratings Accordion Button */}
+    <button
+      className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center 
+                 text-gray-800 font-medium px-5 py-3 border 
+                  mt-2 hover:bg-gray-50 transition"
+      onClick={() => setShowReview(!showReview)}
+    >
+      Ratings
+      <span className="text-xl">{showReview ? '−' : '+'}</span>
+    </button>
 
-     
+    {/* Reviews Section */}
+    {showReview && (
+      <div className="w-full lg:w-[70%] border border-gray-300 rounded-md p-4 mt-2 bg-white shadow-sm">
+        {loading ? (
+          <p className="text-gray-600">Loading reviews...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : reviews.length === 0 ? (
+          <p className="text-gray-500 text-sm">No reviews yet.</p>
+        ) : (
+          reviews.map((r) => (
+            <div key={r.id} className="border-b border-gray-200 py-4 last:border-b-0">
+              {/* Stars + Rating Value */}
+              <div className="flex items-center gap-2">
+                <div className="flex">{renderStars(r.rating)}</div>
+                <span className="text-sm text-gray-600 font-medium">{r.rating.toFixed(1)}/5</span>
+              </div>
 
-{showReview && (
-  <div className="w-full lg:w-[70%] border border-gray-300 rounded-md p-4 mt-2">
-    {loading ? (
-      <p>Loading reviews...</p>
-    ) : error ? (
-      <p className="text-red-500">{error}</p>
-    ) : reviews.length === 0 ? (
-      <p>No reviews yet.</p>
-    ) : (
-      reviews.map((r) => (
-        <div key={r.id} className="border-b border-gray-200 py-4">
-          {/* Stars at top */}
-          <div className="flex">{renderStars(r.rating)}</div>
+              {/* Profile icon + name */}
+              <div className="flex items-center mt-3">
+                <div className="w-10 h-10 rounded-full border flex items-center justify-center bg-gray-100 mr-3">
+                  <User className="w-5 h-5 text-gray-500" />
+                </div>
+                <span className="font-semibold text-gray-800">
+                  {r.user?.name || 'Anonymous'}
+                </span>
+              </div>
 
-          {/* Profile icon + name */}
-          <div className="flex items-center mt-2">
-            <div className="w-10 h-10 rounded-full border flex items-center justify-center bg-gray-100 mr-3">
-              <User className="w-5 h-5 text-gray-500" />
+              {/* Review text */}
+              {r.review && (
+                <p className="text-gray-700 mt-3 leading-relaxed">{r.review}</p>
+              )}
             </div>
-            <span className="font-semibold">{r.user?.name || 'Anonymous'}</span>
-          </div>
-
-          {/* Review text */}
-          {r.review && (
-            <p className="text-gray-700 mt-2">{r.review}</p>
-          )}
-        </div>
-      ))
+          ))
+        )}
+      </div>
     )}
   </div>
-)}
+);
 
-    </div>
-  );
 };
 
 export default ReviewsSection;

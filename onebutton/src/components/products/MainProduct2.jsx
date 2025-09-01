@@ -20,7 +20,7 @@ export default function ProductDetails() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showSizeChart, setShowSizeChart] = useState(false);
-  const [showDescription, setShowDescription] = useState(false);
+  const [showDescription, setShowDescription] = useState(true);
   const [showPolicy, setShowPolicy] = useState(false);
   const [showOffer, setShowOffer] = useState(false);
   const [showReview, setShowReview] = useState(false);
@@ -252,42 +252,46 @@ const addToWishlist = async (productId) => {
         </div>
 
         {/* Right: Product Details */}
-        <div className="flex flex-col w-full lg:pl-6">
-        <h1 className="text-2xl text-black font-semibold md:text-xl lg:text-3xl lg:font-bold lg:mb-3">{product.name}</h1>
+<div className="flex flex-col w-full lg:pl-6">
+  {/* Product Name */}
+  <h1 className="text-2xl md:text-xl lg:text-3xl font-semibold tracking-wide text-gray-900 mb-2 lg:mb-3">
+    {product.name}
+  </h1>
 
-{/* Price */}
-<p className="text-black text-xl font-semibold md:text-xl lg:text-2xl lg:mb-3">
-  ₹{product.price}
-</p>
+  {/* Price */}
+  <p className="text-xl md:text-xl lg:text-2xl font-medium text-gray-900 mb-3">
+    ₹{product.price}
+  </p>
 
-{/* Show rating below price */}
-{totalReviews > 0 && (
-  <div className="flex items-center gap-2 mb-3">
-    {/* Stars */}
-    {Array.from({ length: 5 }).map((_, i) => {
-      const starValue = i + 1;
-      if (avgRating >= starValue) {
-        return <span key={i} style={{ color: "gold", fontSize: "20px" }}>★</span>;
-      } else if (avgRating >= starValue - 0.5) {
-        return <span key={i} style={{ color: "gold", fontSize: "20px" }}>☆</span>;
-      }
-      return <span key={i} style={{ color: "#ccc", fontSize: "20px" }}>★</span>;
-    })}
-    <span className="text-gray-700 font-medium">
-      {avgRating.toFixed(1)} ({totalReviews} reviews)
-    </span>
-  </div>
-)}
+  {/* Show rating */}
+  {totalReviews > 0 && (
+    <div className="flex items-center gap-2 mb-4">
+      {Array.from({ length: 5 }).map((_, i) => {
+        const starValue = i + 1;
+        if (avgRating >= starValue) {
+          return <span key={i} className="text-yellow-500 text-lg">★</span>;
+        } else if (avgRating >= starValue - 0.5) {
+          return <span key={i} className="text-yellow-500 text-lg">☆</span>;
+        }
+        return <span key={i} className="text-gray-400 text-lg">★</span>;
+      })}
+      <span className="text-gray-600 text-sm font-medium">
+        {avgRating.toFixed(1)} ({totalReviews} reviews)
+      </span>
+    </div>
+  )}
 
 {/* Color Selector */}
-{product?.availableColors && product.availableColors.length > 0 ? (
-  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-4 text-center sm:text-left">
-    <h3 className="text-xl sm:text-base lg:text-lg font-semibold">Colors:</h3>
-    <div className="flex justify-center sm:justify-start space-x-3 mt-2 sm:mt-0">
+{product?.availableColors?.length > 0 ? (
+  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-4 sm:justify-start justify-center">
+    <h3 className="text-base lg:text-lg font-medium text-gray-800 text-center sm:text-left">
+      Colors:
+    </h3>
+    <div className="flex space-x-3 mt-2 sm:mt-0 justify-center sm:justify-start">
       {product.availableColors.map((color, index) => (
         <button
           key={index}
-          className={`w-10 h-10 sm:w-8 sm:h-8 rounded-full border-2 ${
+          className={`w-9 h-9 border rounded-full ${
             selectedColor === color ? "border-black" : "border-gray-300"
           }`}
           style={{ backgroundColor: color }}
@@ -297,107 +301,110 @@ const addToWishlist = async (productId) => {
     </div>
   </div>
 ) : (
-  <p className="text-gray-500 text-sm">No colors available</p>
+  <p className="text-gray-500 text-sm text-center sm:text-left">No colors available</p>
 )}
 
-{/* Size and Quantity Selector */}
-<div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 text-center sm:text-left">
-  {/* Size Selector */}
-  <div className="flex flex-col items-center sm:items-start">
-    <div className="flex items-center space-x-3">
-      <h3 className="text-xl sm:text-base lg:text-lg font-semibold">Size:</h3>
+{/* Size Selector */}
+<div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-4 sm:justify-start justify-center">
+  <div className="text-center sm:text-left">
+    <div className="flex items-center justify-center sm:justify-start space-x-3">
+      <h3 className="text-base lg:text-lg font-medium text-gray-800">Size:</h3>
       <button
         onClick={() => setShowSizeChart(true)}
-        className="text-xs sm:text-sm lg:text-base text-gray-700 font-semibold underline hover:text-black"
+        className="text-xs sm:text-sm text-gray-700 underline hover:text-black"
       >
         Size Chart
       </button>
     </div>
 
-    {/* Size Selector Buttons */}
-    
-
     {product?.availableSizes && Object.keys(product.availableSizes).length > 0 ? (
-  <div className="flex justify-center sm:justify-start space-x-3 mt-2 sm:mt-0">
-    {Object.keys(product.availableSizes).map((size) => (
-      <button
-        key={size}
-        className={`text-sm sm:text-sm lg:text-lg font-medium px-4 sm:px-3 py-2 sm:py-1 border rounded-md transition hover:bg-black hover:text-white 
-          ${selectedSize === size ? "bg-black text-white" : ""}`}
-        onClick={() => setSelectedSize(size)} // Set selected size
-      >
-        {size.toUpperCase()} {/* Display size in uppercase (optional) */}
-      </button>
-    ))}
-  </div>
-) : (
-  <p className="text-gray-500 text-sm mt-1">No sizes available</p>
-)}
-
-  </div>
-
-  {/* Sliding Size Chart */}
-  {showSizeChart && (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                    bg-white shadow-lg z-50 p-4 rounded-lg 
-                    w-[90%] max-w-[400px] h-[350px] sm:h-[400px]">
-      <button
-        onClick={() => setShowSizeChart(false)}
-        className="absolute top-2 right-3 text-gray-600 hover:text-black"
-      >
-        <X size={24} />
-      </button>
-
-      <div className="w-full flex flex-col items-center">
-        <h3 className="text-lg font-semibold mb-3 text-center">Size Chart</h3>
-        <p className="text-sm text-center">
-          📏 **Example:** S - 38in, M - 40in, L - 42in, XL - 44in, XXL - 46in.
-        </p>
+      <div className="flex space-x-3 mt-2 justify-center sm:justify-start">
+        {["s", "m", "l", "xl", "xxl"].map((size) =>
+          product.availableSizes[size] ? (
+            <button
+              key={size}
+              className={`px-4 py-2 border text-sm lg:text-base font-medium transition 
+                ${
+                  selectedSize === size
+                    ? "bg-black text-white"
+                    : "hover:bg-black hover:text-white border-gray-400"
+                }`}
+              onClick={() => setSelectedSize(size)}
+            >
+              {size.toUpperCase()}
+            </button>
+          ) : null
+        )}
       </div>
+    ) : (
+      <p className="text-gray-500 text-sm mt-1 text-center sm:text-left">No sizes available</p>
+    )}
+  </div>
+</div>
+
+
+  {/* Add to Bag */}
+  <button
+    onClick={() => handleAddToCart(product.id)}
+    className="w-full lg:w-[70%] mt-5 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+  >
+    ADD TO BAG
+  </button>
+
+  {/* Accordion Sections */}
+  <button
+    onClick={() => setShowDescription(!showDescription)}
+    className="w-full lg:w-[70%] h-12 mt-5 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+  >
+    Product Details
+    <span className="text-xl">{showDescription ? "−" : "+"}</span>
+  </button>
+  {showDescription && (
+    <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
+      {product.description}
     </div>
   )}
+
+   {/* Reviews */}
+  <div className="mt-6">
+    <ReviewsSection
+      productId={product.id}
+      onRatingData={(avg, total) => {
+        setAvgRating(avg);
+        setTotalReviews(total);
+      }}
+    />
+  </div>
+
+  <button
+    onClick={() => setShowOffer(!showOffer)}
+    className="w-full lg:w-[70%] h-12 mt-3 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+  >
+    Offers
+    <span className="text-xl">{showOffer ? "−" : "+"}</span>
+  </button>
+  {showOffer && (
+    <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
+      {product.offers}
+    </div>
+  )}
+
+  <button
+    onClick={() => setShowPolicy(!showPolicy)}
+    className="w-full lg:w-[70%] h-12 mt-3 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+  >
+    Return & Exchange
+    <span className="text-xl">{showPolicy ? "−" : "+"}</span>
+  </button>
+  {showPolicy && (
+    <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
+      {product.policy}
+    </div>
+  )}
+
+ 
 </div>
-          {/* {product.description && <p className="mt-4 text-gray-600">{product.description}</p>} */}
 
-          <button className="w-full lg:w-[70%] text-xm px-4 py-2 bg-black text-white font-semibold rounded-md hover:bg-gray-800 transition mt-3"
-          onClick={() =>  {handleAddToCart(product.id) }}>
-            ADD TO BAG
-          </button>
-        
-
-          <button onClick={() => setShowDescription(!showDescription)} className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-5">
-            Product Details
-            <span className="text-xl">{showDescription ? "−" : "+"}</span>
-          </button>
-          {showDescription && <div className="w-full lg:w-[70%] bg-gray-100 p-4 rounded-md text-sm">{product.description}</div>}
-
-     {/* Reviews section */}
-<div className="mt-1">
-  <ReviewsSection
-    productId={product.id}
-    onRatingData={(avg, total) => {
-      setAvgRating(avg);
-      setTotalReviews(total);
-    }}
-  />
-</div>
-      
-          <button onClick={() => setShowOffer(!showOffer)} className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-2">
-            Offers
-            <span className="text-xl">{showOffer ? "−" : "+"}</span>
-          </button>
-          {showOffer && <div className="w-full lg:w-[70%] bg-gray-100 p-4 rounded-md text-sm">{product.offers}</div>}
-
-          <button onClick={() => setShowPolicy(!showPolicy)} className="w-full lg:w-[70%] h-12 text-sm flex justify-between items-center text-gray-700 font-bold px-5 py-3 border border-gray-300 rounded-md mt-2">
-            Return & Exchange
-            <span className="text-xl">{showPolicy ? "−" : "+"}</span>
-          </button>
-          {showPolicy && <div className="w-full lg:w-[70%] bg-gray-100 p-4 rounded-md text-sm">{product.policy}</div>}
-
-         
-
-      
-        </div>
 
       </div>
 
