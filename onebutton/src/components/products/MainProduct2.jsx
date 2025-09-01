@@ -323,7 +323,7 @@ const addToWishlist = async (productId) => {
           product.availableSizes[size] ? (
             <button
               key={size}
-              className={`px-4 py-2 border text-sm lg:text-base font-medium transition rounded 
+              className={`px-4 py-2 border text-sm lg:text-base font-medium transition  
                 ${
                   selectedSize === size
                     ? "bg-black text-white"
