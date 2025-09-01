@@ -254,18 +254,18 @@ const addToWishlist = async (productId) => {
         {/* Right: Product Details */}
 <div className="flex flex-col w-full lg:pl-6">
   {/* Product Name */}
-  <h1 className="text-2xl md:text-xl lg:text-3xl font-semibold tracking-wide text-gray-900 mb-2 lg:mb-3">
+  <h1 className="text-2xl md:text-xl lg:text-3xl font-semibold tracking-wide text-gray-900 mb-0 lg:mb-3">
     {product.name}
   </h1>
 
   {/* Price */}
-  <p className="text-xl md:text-xl lg:text-2xl font-medium text-gray-900 mb-3">
+  <p className="text-xl md:text-xl lg:text-2xl font-medium text-gray-900 mb-0">
     ₹{product.price}
   </p>
 
   {/* Show rating */}
   {totalReviews > 0 && (
-    <div className="flex items-center gap-2 mb-4">
+    <div className="flex items-center gap-2 mb-0">
       {Array.from({ length: 5 }).map((_, i) => {
         const starValue = i + 1;
         if (avgRating >= starValue) {
@@ -310,7 +310,7 @@ const addToWishlist = async (productId) => {
     <div className="flex items-center justify-center sm:justify-start space-x-3">
       <h3 className="text-base lg:text-lg font-medium text-gray-800">Size:</h3>
       <button
-        onClick={() => setShowSizeChart(true)}
+        onClick={() => setShowSizeChart(!showSizeChart)}
         className="text-xs sm:text-sm text-gray-700 underline hover:text-black"
       >
         Size Chart
@@ -323,13 +323,16 @@ const addToWishlist = async (productId) => {
           product.availableSizes[size] ? (
             <button
               key={size}
-              className={`px-4 py-2 border text-sm lg:text-base font-medium transition 
+              className={`px-4 py-2 border text-sm lg:text-base font-medium transition rounded 
                 ${
                   selectedSize === size
                     ? "bg-black text-white"
                     : "hover:bg-black hover:text-white border-gray-400"
                 }`}
-              onClick={() => setSelectedSize(size)}
+              onClick={() => {
+                setSelectedSize(size);
+                setShowSizeChart(true); // open card when size selected
+              }}
             >
               {size.toUpperCase()}
             </button>
@@ -341,6 +344,34 @@ const addToWishlist = async (productId) => {
     )}
   </div>
 </div>
+
+{/* Size Chart Card */}
+{showSizeChart && (
+  <div className="mt-4 p-4 border rounded-lg shadow-lg bg-white w-full sm:w-[80%] lg:w-[70%] mx-auto">
+    <h4 className="text-lg font-semibold text-gray-800 mb-3">Size Chart</h4>
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse border border-gray-300 text-sm lg:text-base">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 px-3 py-2">Size</th>
+            <th className="border border-gray-300 px-3 py-2">Chest</th>
+            <th className="border border-gray-300 px-3 py-2">Length</th>
+            <th className="border border-gray-300 px-3 py-2">Shoulder</th>
+            <th className="border border-gray-300 px-3 py-2">Sleeves</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td className="border px-3 py-2">S</td><td className="border px-3 py-2">42</td><td className="border px-3 py-2">27.5</td><td className="border px-3 py-2">21.5</td><td className="border px-3 py-2">8.8</td></tr>
+          <tr><td className="border px-3 py-2">M</td><td className="border px-3 py-2">44</td><td className="border px-3 py-2">28</td><td className="border px-3 py-2">22.5</td><td className="border px-3 py-2">9</td></tr>
+          <tr><td className="border px-3 py-2">L</td><td className="border px-3 py-2">46</td><td className="border px-3 py-2">28.5</td><td className="border px-3 py-2">23.5</td><td className="border px-3 py-2">9.2</td></tr>
+          <tr><td className="border px-3 py-2">XL</td><td className="border px-3 py-2">48</td><td className="border px-3 py-2">29</td><td className="border px-3 py-2">24.5</td><td className="border px-3 py-2">9.4</td></tr>
+          <tr><td className="border px-3 py-2">XXL</td><td className="border px-3 py-2">50</td><td className="border px-3 py-2">29.5</td><td className="border px-3 py-2">25.5</td><td className="border px-3 py-2">9.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
 
 
   {/* Add to Bag */}
@@ -366,7 +397,7 @@ const addToWishlist = async (productId) => {
   )}
 
    {/* Reviews */}
-  <div className="mt-6">
+  <div className="mt-1">
     <ReviewsSection
       productId={product.id}
       onRatingData={(avg, total) => {
