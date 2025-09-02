@@ -259,9 +259,30 @@ const addToWishlist = async (productId) => {
   </h1>
 
   {/* Price */}
-  <p className="text-xl md:text-xl lg:text-2xl font-medium text-gray-900 mb-0">
+  {/* <p className="text-xl md:text-xl lg:text-2xl font-medium text-gray-900 mb-0">
+    ₹{product.price}
+  </p> */}
+
+{/* Price Section */}
+<div className="flex items-center space-x-3 mb-0">
+  {product.old_price && (
+    <span className="text-gray-500 line-through text-lg md:text-xl">
+      ₹{product.old_price}
+    </span>
+  )}
+
+  <p className="text-xl md:text-xl lg:text-2xl font-medium text-gray-900">
     ₹{product.price}
   </p>
+
+  {product.old_price && (
+    <span className="bg-red-100 text-red-600 text-sm font-semibold px-2 py-1 rounded">
+      {Math.round(((product.old_price - product.price) / product.old_price) * 100)}% OFF
+    </span>
+  )}
+</div>
+
+
 
   {/* Show rating */}
   {totalReviews > 0 && (
