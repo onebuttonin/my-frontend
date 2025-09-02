@@ -420,26 +420,73 @@ const addToWishlist = async (productId) => {
 
 
   {/* Add to Bag */}
-  <button
-    onClick={() => handleAddToCart(product.id)}
-    className="w-full lg:w-[70%] mt-5 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
-  >
-    ADD TO BAG
-  </button>
+{/* Add to Cart Button */}
+<button
+  onClick={() => handleAddToCart(product.id)}
+  className="w-full lg:w-[70%] mt-5 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+>
+  ADD TO BAG
+</button>
 
-  {/* Accordion Sections */}
-  <button
-    onClick={() => setShowDescription(!showDescription)}
-    className="w-full lg:w-[70%] h-12 mt-5 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
-  >
-    Product Details
-    <span className="text-xl">{showDescription ? "−" : "+"}</span>
-  </button>
-  {showDescription && (
-    <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
-      {product.description}
-    </div>
-  )}
+{/* Accordion Section: Product Details */}
+<button
+  onClick={() => setShowDescription(!showDescription)}
+  className="w-full lg:w-[70%] h-12 mt-5 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+>
+  Product Details
+  <span className="text-xl">{showDescription ? "−" : "+"}</span>
+</button>
+
+{showDescription && product.description && (
+  <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700 space-y-4">
+    {/* Details */}
+    {product.description.details && (
+      <div>
+        <h3 className="font-semibold text-gray-900 uppercase mb-1">Details</h3>
+        <p>{product.description.details}</p>
+      </div>
+    )}
+
+    {/* Size & Fit */}
+    {product.description.size_fit && (
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-1">Size & Fit</h3>
+        <p>{product.description.size_fit}</p>
+      </div>
+    )}
+
+    {/* Wash Care */}
+    {product.description.wash_care && (
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-1">Wash Care</h3>
+        <p>{product.description.wash_care}</p>
+      </div>
+    )}
+
+    {/* Specification */}
+    {Array.isArray(product.description.specification) &&
+      product.description.specification.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-gray-900 mb-1">Specification</h3>
+          <ul className="list-disc list-inside">
+            {product.description.specification.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+    {/* SKU */}
+    {product.description.sku && (
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-1">SKU</h3>
+        <p>{product.description.sku}</p>
+      </div>
+    )}
+  </div>
+)}
+
+
 
    {/* Reviews */}
   <div className="mt-1">
