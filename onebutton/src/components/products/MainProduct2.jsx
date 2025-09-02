@@ -499,31 +499,39 @@ const addToWishlist = async (productId) => {
     />
   </div>
 
-  <button
-    onClick={() => setShowOffer(!showOffer)}
-    className="w-full lg:w-[70%] h-12 mt-3 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
-  >
-    Offers
-    <span className="text-xl">{showOffer ? "−" : "+"}</span>
-  </button>
-  {showOffer && (
-    <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
-      {product.offers}
-    </div>
-  )}
+ <button
+  onClick={() => setShowOffer(!showOffer)}
+  className="w-full lg:w-[70%] h-12 mt-3 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+>
+  Offers
+  <span className="text-xl">{showOffer ? "−" : "+"}</span>
+</button>
 
-  <button
-    onClick={() => setShowPolicy(!showPolicy)}
-    className="w-full lg:w-[70%] h-12 mt-3 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
-  >
-    Return & Exchange
-    <span className="text-xl">{showPolicy ? "−" : "+"}</span>
-  </button>
-  {showPolicy && (
-    <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
-      {product.policy}
-    </div>
-  )}
+{showOffer && (
+  <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700">
+    <p>Flat 10% off on your first purchase</p>
+    <p className="font-bold">Use Code: FIRST10</p>
+  </div>
+)}
+
+
+<button
+  onClick={() => setShowPolicy(!showPolicy)}
+  className="w-full lg:w-[70%] h-12 mt-3 flex justify-between items-center px-5 py-3 border text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+>
+  Return & Exchange
+  <span className="text-xl">{showPolicy ? "−" : "+"}</span>
+</button>
+
+{showPolicy && (
+  <div className="w-full lg:w-[70%] bg-gray-50 p-4 text-sm text-gray-700 space-y-2">
+    <p>Return or exchange is applicable if the product delivered is of wrong size or incorrect color.</p>
+    <p>The product must be unused, unwashed, and in its original packaging with tags intact.</p>
+    <p>Requests must be initiated within <strong>7 days</strong> from the delivery date.</p>
+    <p>Refunds will be initiated to your original payment method within <strong>7-10 business days</strong> after approval.</p>
+  </div>
+)}
+
 
  
 </div>
