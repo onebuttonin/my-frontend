@@ -61,7 +61,7 @@ export default function Order() {
   const isPageLoading = isLoading || cartLoading;
 
   return (
-    <div className="container mx-auto px-4 py-10 bg-gray-50">
+    <div className="container mx-auto px-4 py-10 ">
       <Toaster position="top-center" reverseOrder={false} />
 
       <h2 className="text-2xl font-semibold mb-8 text-center tracking-wide text-gray-900">
