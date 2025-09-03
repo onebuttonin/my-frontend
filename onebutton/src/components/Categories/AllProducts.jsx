@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
@@ -67,7 +67,7 @@ export default function AllProducts() {
         }
       );
 
-      toast.success(response.data.message);
+      toast.success("Product Added To Wishlist");
 
       setWishlist((prev) =>
         prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
@@ -93,6 +93,7 @@ export default function AllProducts() {
 
  return (
   <div className="container mx-auto px-2 lg:px-10 py-10">
+    <Toaster position="top-center" reverseOrder={false} />
     {/* Preload hover images */}
     <div className="hidden">
       {products.map((product) => (
@@ -120,12 +121,16 @@ export default function AllProducts() {
           className="relative flex flex-col border border-neutral-200"
         >
           {/* Wishlist Button */}
-          <button className="absolute top-3 right-3 text-gray-500 hover:text-red-500">
-            <Heart
-              className="w-6 h-6"
-              fill={wishlist.includes(product.id) ? "red" : "none"}
-            />
-          </button>
+         <button
+  className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+  onClick={() => addToWishlist(product.id)}
+>
+  <Heart
+    className="w-6 h-6"
+    fill={wishlist.includes(product.id) ? "red" : "none"}
+  />
+</button>
+
 
           {/* Product Image */}
           <div className="bg-white flex justify-center items-center">

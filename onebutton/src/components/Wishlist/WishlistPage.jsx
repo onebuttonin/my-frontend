@@ -247,7 +247,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useAuth } from "/src/components/Hooks/useAuth";
-import toast from "react-hot-toast";
+import toast, {Toaster}from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function ProductGrid() {
@@ -349,7 +349,7 @@ export default function ProductGrid() {
 
   const handleAddToCart = async (productId) => {
     if (!selectedSize) {
-      alert("Please select a size!");
+      toast.error("Please select a size!");
       return;
     }
 
@@ -362,9 +362,10 @@ export default function ProductGrid() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      alert("Product added to cart!");
+      toast.success("Product added to cart!");
       setShowSizeSelector(null);
       setSelectedSize(null);
+      navigate("/cart")
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -379,79 +380,103 @@ export default function ProductGrid() {
 
  
   return (
-    <div className="container mx-auto p-4 lg:p-10">
-      <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
-        <h2 className="text-xl font-bold">Wishlist</h2>
-      </div>
-  
-      {isLoading ? (
-        <p className="text-center text-gray-500">Loading...</p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {wishlist.length > 0 ? (
-            wishlist.map((item) => (
-              <div
-                key={item.product_id}
-                className="relative hover:border border-neutral-300 rounded-lg shadow-md p-4 flex flex-col"
-                onClick={() => navigate(`/product/${item.product_id}`, { state: item.product })}
+  <div className="container mx-auto px-4 lg:px-10 py-10">
+      <Toaster position="top-center" reverseOrder={false} />
+    {/* Header */}
+    <div className="text-center mb-10">
+      <h2 className="text-2xl sm:text-3xl font-semibold tracking-wide uppercase text-gray-900">
+        Wishlist
+      </h2>
+    </div>
+
+    {isLoading ? (
+      <p className="text-center text-gray-500">Loading...</p>
+    ) : (
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {wishlist.length > 0 ? (
+          wishlist.map((item) => (
+            <div
+              key={item.product_id}
+              className="relative border border-neutral-200 hover:border-black hover:shadow-lg transition cursor-pointer flex flex-col"
+              onClick={() =>
+                navigate(`/product/${item.product_id}`, {
+                  state: item.product,
+                })
+              }
+            >
+              {/* Delete Button */}
+              <button
+                className="absolute top-3 left-3 text-gray-500 hover:text-red-500"
+                onClick={(e) => handleDelete(e, item.product_id)}
               >
-                <button
-                  className="absolute top-5 left-5 text-gray-500 hover:text-red-500"
-                  onClick={(e) => handleDelete(e, item.product_id)}
-                >
-                  <Trash className="w-6 h-6" />
-                </button>
-  
+                <Trash className="w-5 h-5" />
+              </button>
+
+              {/* Product Image */}
+              <div className="bg-white flex justify-center items-center">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || 'default.jpg'}`}
-                  alt={item.product?.name || 'Product'}
-                  className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`}
+                  alt={item.product?.name || "Product"}
+                  className="w-full h-60 lg:h-[450px] object-contain transition duration-300 ease-in-out"
                   onMouseEnter={(e) => {
                     if (item.product?.hover_image) {
                       e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product.hover_image}`;
                     }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || 'default.jpg'}`;
+                    e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`;
                   }}
                 />
-  
-                <h3 className="text-sm sm:text-base md:text-lg font-semibold mt-2">
+              </div>
+
+              {/* Product Details */}
+              <div className="px-3 py-4">
+                <h3 className="text-sm sm:text-base md:text-lg font-medium leading-tight mb-1">
                   {item.product?.name || "Unnamed Product"}
                 </h3>
-  
-                <p className="text-gray-600">₹{item.product?.price || "N/A"}</p>
-  
-                {showSizeSelector === item.product_id ? (
-                  <div className="flex justify-center mt-2">
-                    {Object.entries(item.product.availableSizes).map(([size]) => (
-                      <button
-                        key={size}
-                        className={`px-3 py-1 mx-1 border rounded-md ${selectedSize === size ? 'bg-black text-white' : 'bg-gray-200'}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedSize(size);
-                        }}
-                      >
-                        {size.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <button
-                    className="mt-2 w-full py-2 bg-black text-white font-bold text-sm rounded-lg hover:bg-gray-800 transition-all"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowSizeSelector(item.product_id);
-                    }}
-                  >
-                    Add To Cart
-                  </button>
-                )}
-  
+                <p className="text-gray-600 text-sm">₹{item.product?.price || "N/A"}</p>
+
+{/* Size Selector */}
+{showSizeSelector === item.product_id ? (
+  <div className="flex flex-wrap justify-center gap-2 mt-3 px-2">
+    {["s", "m", "l", "xl", "xxl"].map((size) =>
+      item.product?.availableSizes && item.product.availableSizes[size] ? (
+        <button
+          key={size}
+          className={`px-3 py-1 border text-sm rounded transition 
+            ${
+              selectedSize === size
+                ? "bg-black text-white"
+                : "hover:bg-black hover:text-white border-gray-400"
+            }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedSize(size);
+          }}
+        >
+          {size.toUpperCase()}
+        </button>
+      ) : null
+    )}
+  </div>
+) : (
+  <button
+    className="mt-3 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+    onClick={(e) => {
+      e.stopPropagation();
+      setShowSizeSelector(item.product_id);
+    }}
+  >
+    Add To Bag
+  </button>
+)}
+
+
+
+                {/* Add Button */}
                 {showSizeSelector === item.product_id && (
                   <button
-                    className="mt-2 w-full py-2 bg-black text-white font-bold text-sm rounded-lg hover:bg-gray-800 transition-all"
+                    className="mt-2 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAddToCart(item.product_id);
@@ -461,22 +486,26 @@ export default function ProductGrid() {
                   </button>
                 )}
               </div>
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center col-span-full py-10">
-              <p className="text-gray-700 text-lg font-semibold mb-4">No items in wishlist</p>
-              <button
-                onClick={() => navigate("/category/AllProducts")}
-                className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-all"
-              >
-                Continue Shopping
-              </button>
             </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center col-span-full py-16">
+            <p className="text-gray-700 text-lg font-medium mb-4">
+              Your wishlist is empty
+            </p>
+            <button
+              onClick={() => navigate("/category/AllProducts")}
+              className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+            >
+              Continue Shopping
+            </button>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
+
   
 
 }

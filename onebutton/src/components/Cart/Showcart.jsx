@@ -627,21 +627,29 @@ export default function Cart() {
   //   </div>
   // );
  
-  return (
+ return (
   <div className="container mx-auto px-4 py-10">
     <Toaster position="top-center" reverseOrder={false} />
+
     {!cartData?.items || cartData.items.length === 0 ? (
-      <div className="flex justify-center items-center h-60">
-        <p className="text-gray-500 text-lg font-medium tracking-wide">
+      <div className="flex flex-col justify-center items-center h-60">
+        <p className="text-gray-500 text-lg font-medium tracking-wide mb-6">
           No Item Found In Cart
         </p>
+        <button
+          onClick={() => navigate("/category/AllProducts")}
+          className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+        >
+          Continue Shopping
+        </button>
       </div>
     ) : (
       <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 items-start">
         {/* Shopping Cart */}
         <div className="bg-white/90 backdrop-blur-md border border-gray-200 p-6">
-          <h2 className="text-2xl font-semibold mb-6 tracking-wide">Shopping Cart</h2>
-
+          <h2 className="text-2xl font-semibold mb-6 tracking-wide">
+            Shopping Cart
+          </h2>
           {cartData.items.map((item) => (
             <div
               key={item.product_id}
@@ -711,7 +719,9 @@ export default function Cart() {
 
         {/* Order Summary */}
         <div className="bg-white/90 backdrop-blur-md border border-gray-200 p-6">
-          <h2 className="text-2xl font-semibold mb-6 tracking-wide">Order Summary</h2>
+          <h2 className="text-2xl font-semibold mb-6 tracking-wide">
+            Order Summary
+          </h2>
 
           {/* Coupon */}
           <div className="flex items-center mb-6">
@@ -775,6 +785,7 @@ export default function Cart() {
     )}
   </div>
 );
+
 
   
 
