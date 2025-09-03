@@ -37,6 +37,7 @@ import ReturnAndExchange from './components/footer/Return&Exchange'
 import ContactUs from './components/footer/Contactus'
 import ShippingInfo from './components/footer/ShippingInfo'
 import AboutUs from './components/footer/Aboutus'
+import Order  from './components/Cart/Order'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -59,9 +60,11 @@ function App() {
 
         <Route path='/cart' element={<ShowCart />}/>
 
-        <Route path="/orders" element={<PlaceOrder />} />
+        {/* <Route path="/orders" element={<PlaceOrder />} /> */}
 
-        <Route path="/OrderDetails" element={<OrderDetails />}/>
+        <Route path='/order' element={<Order/>}/>
+
+        <Route path="/OrderDetails/:id" element={<OrderDetails />}/>
 
         {/* <Route path="/category/:categoryName" element={<CategoryDetail />} />  */}
 

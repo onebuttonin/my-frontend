@@ -628,7 +628,7 @@ export default function PlaceOrder() {
   return (
     <div className="w-[90%] lg:w-[60%] mx-auto mt-10 p-6 bg-white shadow-lg rounded-md">
          <Toaster position="top-center" reverseOrder={false} />
-      <h2 className="text-2xl font-bold text-center mb-4">Place Order</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">PLACE ORDER</h2>
   
       {loading ? (
         <div className="flex justify-center items-center text-blue-500">
