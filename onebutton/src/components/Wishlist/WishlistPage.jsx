@@ -379,12 +379,13 @@ export default function ProductGrid() {
   
 
  
-  return (
-  <div className="container mx-auto px-4 lg:px-10 py-10">
-      <Toaster position="top-center" reverseOrder={false} />
-    {/* Header */}
-    <div className="text-center mb-10">
-      <h2 className="text-2xl sm:text-3xl font-semibold tracking-wide uppercase text-gray-900">
+return (
+  <div className="container mx-auto px-2 lg:px-10 py-10">
+    <Toaster position="top-center" reverseOrder={false} />
+
+    {/* Title Section */}
+    <div className="text-center px-4 py-3 mb-6">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase">
         Wishlist
       </h2>
     </div>
@@ -392,17 +393,12 @@ export default function ProductGrid() {
     {isLoading ? (
       <p className="text-center text-gray-500">Loading...</p>
     ) : (
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {wishlist.length > 0 ? (
           wishlist.map((item) => (
             <div
               key={item.product_id}
-              className="relative border border-neutral-200 hover:border-black hover:shadow-lg transition cursor-pointer flex flex-col"
-              onClick={() =>
-                navigate(`/product/${item.product_id}`, {
-                  state: item.product,
-                })
-              }
+              className="relative flex flex-col border border-neutral-200"
             >
               {/* Delete Button */}
               <button
@@ -417,7 +413,12 @@ export default function ProductGrid() {
                 <img
                   src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`}
                   alt={item.product?.name || "Product"}
-                  className="w-full h-60 lg:h-[450px] object-contain transition duration-300 ease-in-out"
+                  className="w-full h-auto sm:max-h-80 lg:max-h-[450px] object-contain cursor-pointer transition-transform duration-500"
+                  onClick={() =>
+                    navigate(`/product/${item.product_id}`, {
+                      state: item.product,
+                    })
+                  }
                   onMouseEnter={(e) => {
                     if (item.product?.hover_image) {
                       e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product.hover_image}`;
@@ -430,48 +431,47 @@ export default function ProductGrid() {
               </div>
 
               {/* Product Details */}
-              <div className="px-3 py-4">
-                <h3 className="text-sm sm:text-base md:text-lg font-medium leading-tight mb-1">
+              <div className="px-2 py-2 lg:pl-4">
+                <h3 className="text-sm sm:text-base md:text-lg font-semibold leading-tight">
                   {item.product?.name || "Unnamed Product"}
                 </h3>
-                <p className="text-gray-600 text-sm">₹{item.product?.price || "N/A"}</p>
+                <p className="text-gray-600">₹{item.product?.price || "N/A"}</p>
 
-{/* Size Selector */}
-{showSizeSelector === item.product_id ? (
-  <div className="flex flex-wrap justify-center gap-2 mt-3 px-2">
-    {["s", "m", "l", "xl", "xxl"].map((size) =>
-      item.product?.availableSizes && item.product.availableSizes[size] ? (
-        <button
-          key={size}
-          className={`px-3 py-1 border text-sm rounded transition 
-            ${
-              selectedSize === size
-                ? "bg-black text-white"
-                : "hover:bg-black hover:text-white border-gray-400"
-            }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setSelectedSize(size);
-          }}
-        >
-          {size.toUpperCase()}
-        </button>
-      ) : null
-    )}
-  </div>
-) : (
-  <button
-    className="mt-3 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
-    onClick={(e) => {
-      e.stopPropagation();
-      setShowSizeSelector(item.product_id);
-    }}
-  >
-    Add To Bag
-  </button>
-)}
-
-
+                {/* Size Selector */}
+                {showSizeSelector === item.product_id ? (
+                  <div className="flex flex-wrap justify-center gap-2 mt-3 px-2">
+                    {["s", "m", "l", "xl", "xxl"].map((size) =>
+                      item.product?.availableSizes &&
+                      item.product.availableSizes[size] ? (
+                        <button
+                          key={size}
+                          className={`px-3 py-1 border text-sm rounded transition 
+                            ${
+                              selectedSize === size
+                                ? "bg-black text-white"
+                                : "hover:bg-black hover:text-white border-gray-400"
+                            }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedSize(size);
+                          }}
+                        >
+                          {size.toUpperCase()}
+                        </button>
+                      ) : null
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    className="mt-3 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowSizeSelector(item.product_id);
+                    }}
+                  >
+                    Add To Bag
+                  </button>
+                )}
 
                 {/* Add Button */}
                 {showSizeSelector === item.product_id && (

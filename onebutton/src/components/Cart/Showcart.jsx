@@ -627,8 +627,8 @@ export default function Cart() {
   //   </div>
   // );
  
- return (
-  <div className="container mx-auto px-4 py-10">
+return (
+  <div className="container mx-auto py-2">
     <Toaster position="top-center" reverseOrder={false} />
 
     {!cartData?.items || cartData.items.length === 0 ? (
@@ -638,7 +638,7 @@ export default function Cart() {
         </p>
         <button
           onClick={() => navigate("/category/AllProducts")}
-          className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+          className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide transition"
         >
           Continue Shopping
         </button>
@@ -646,15 +646,17 @@ export default function Cart() {
     ) : (
       <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 items-start">
         {/* Shopping Cart */}
-        <div className="bg-white/90 backdrop-blur-md border border-gray-200 p-6">
-          <h2 className="text-2xl font-semibold mb-6 tracking-wide">
-            Shopping Cart
+        <div className="bg-white/90 backdrop-blur-md p-3">
+          <h2 className="text-2xl text-center font-semibold mb-6 tracking-wide">
+            BAG
           </h2>
+
           {cartData.items.map((item) => (
             <div
               key={item.product_id}
-              className="flex items-center border-b border-gray-200 pb-6 mb-6"
+              className="flex items-start justify-between border-b border-gray-200 pb-6 mb-6"
             >
+              {/* Product Image */}
               <img
                 src={
                   item.product?.image
@@ -662,7 +664,7 @@ export default function Cart() {
                     : "/placeholder.png"
                 }
                 alt={item.product?.name || "Product"}
-                className="w-28 h-28 object-cover cursor-pointer"
+                className="w-28 h-40 object-contain cursor-pointer"
                 onClick={() =>
                   item.product &&
                   navigate(`/product/${item.product.id}`, {
@@ -671,56 +673,81 @@ export default function Cart() {
                 }
               />
 
-              <div className="ml-6 flex-1">
-                <h3 className="text-lg font-semibold tracking-tight">
-                  {item.product?.name}
-                </h3>
-                <p className="text-gray-600 mt-1">₹{item.product?.price}</p>
-                <p className="text-gray-800 mt-1">
-                  <span className="font-medium">Size:</span> {item.size}
-                </p>
-
-                <div className="flex items-center mt-3">
+              {/* Product Info */}
+              <div className="flex-1 ml-6 flex flex-col justify-between">
+                {/* Product Name + Delete */}
+                <div className="flex justify-between items-start">
+                  <h3 className="text-base font-medium text-gray-900 truncate">
+                    {item.product?.name}
+                  </h3>
                   <button
-                    onClick={() =>
-                      updateQuantityMutation.mutate({
-                        product_id: item.product_id,
-                        quantity: item.quantity - 1,
-                      })
-                    }
-                    className="px-3 py-1 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+                    onClick={() => removeItemMutation.mutate(item.product_id)}
+                    className="text-gray-600 hover:text-black text-lg ml-4"
                   >
-                    -
-                  </button>
-                  <span className="mx-3">{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      updateQuantityMutation.mutate({
-                        product_id: item.product_id,
-                        quantity: item.quantity + 1,
-                      })
-                    }
-                    className="px-3 py-1 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
-                  >
-                    +
+                    🗑
                   </button>
                 </div>
-              </div>
 
-              <button
-                onClick={() => removeItemMutation.mutate(item.product_id)}
-                className="text-red-500 hover:text-red-700 ml-6 text-xl"
-              >
-                🗑
-              </button>
+                {/* Size */}
+                <p className="text-gray-600 text-sm mt-2">
+                  SIZE: <span className="font-semibold">{item.size?.toUpperCase()}</span>
+                </p>
+
+                {/* Quantity Selector (below size) */}
+                <div className="flex items-center gap-2 mt-3">
+                  <span className="text-sm text-gray-600">QTY</span>
+                  <div className="flex items-center border border-gray-300 rounded-lg shadow-sm">
+                    <button
+                      onClick={() =>
+                        item.quantity > 1 &&
+                        updateQuantityMutation.mutate({
+                          product_id: item.product_id,
+                          quantity: item.quantity - 1,
+                        })
+                      }
+                      className="px-3 py-1 text-gray-700 hover:bg-gray-100 transition rounded-l-lg"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-1 text-sm">{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        updateQuantityMutation.mutate({
+                          product_id: item.product_id,
+                          quantity: item.quantity + 1,
+                        })
+                      }
+                      className="px-3 py-1 text-gray-700 hover:bg-gray-100 transition rounded-r-lg"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Wishlist + Price at Bottom */}
+                <div className="flex items-center justify-between mt-8">
+                  <button
+                    onClick={() => {
+                      // move item to wishlist logic
+                    }}
+                    className="text-sm font-semibold text-gray-900 hover:underline"
+                  >
+                    MOVE TO WISHLIST
+                  </button>
+
+                  <p className="text-lg font-semibold text-gray-900">
+                    ₹{item.product?.price}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
         {/* Order Summary */}
-        <div className="bg-white/90 backdrop-blur-md border border-gray-200 p-6">
-          <h2 className="text-2xl font-semibold mb-6 tracking-wide">
-            Order Summary
+        <div className="bg-white/90 backdrop-blur-md  p-3">
+          <h2 className="text-2xl text-center font-semibold mb-6 tracking-wide">
+            PRICE DETAILS
           </h2>
 
           {/* Coupon */}
@@ -785,6 +812,8 @@ export default function Cart() {
     )}
   </div>
 );
+
+
 
 
   
