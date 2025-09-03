@@ -644,7 +644,7 @@ return (
         </button>
       </div>
     ) : (
-      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[60%_auto] gap-8 items-start">
         {/* Shopping Cart */}
         <div className="bg-white/90 backdrop-blur-md p-3">
           <h2 className="text-2xl text-center font-semibold mb-6 tracking-wide">
