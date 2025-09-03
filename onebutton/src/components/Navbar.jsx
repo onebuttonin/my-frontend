@@ -482,7 +482,7 @@ export default function Navbar() {
           Category
         </Link>
         <Link
-          to="/OrderDetails"
+          to="/Orders"
           className="text-sm uppercase tracking-wider hover:opacity-70"
         >
           Orders
@@ -526,7 +526,7 @@ export default function Navbar() {
               Category
             </Link>
             <Link
-              to="/OrderDetails"
+              to="/Orders"
               className="text-gray-700 uppercase tracking-wide"
               onClick={() => setIsOpen(false)}
             >

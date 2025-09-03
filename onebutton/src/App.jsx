@@ -60,9 +60,9 @@ function App() {
 
         <Route path='/cart' element={<ShowCart />}/>
 
-        {/* <Route path="/orders" element={<PlaceOrder />} /> */}
+        <Route path="/PlaceOrder" element={<PlaceOrder />} />
 
-        <Route path='/order' element={<Order/>}/>
+        <Route path='/Orders' element={<Order/>}/>
 
         <Route path="/OrderDetails/:id" element={<OrderDetails />}/>
 

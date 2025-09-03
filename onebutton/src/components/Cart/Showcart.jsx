@@ -803,7 +803,7 @@ return (
 
           <button
             className="mt-6 w-full bg-black text-white py-3 tracking-wide hover:bg-gray-800 transition"
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate("/PlaceOrder")}
           >
             Proceed to Checkout
           </button>
