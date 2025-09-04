@@ -229,72 +229,68 @@ export default function Order() {
         </div>
       )}
 
-      {/* Orders List */}
-      {!isPageLoading &&
-        allOrders.map((order, index) => (
-          <div
-            key={order.id}
-            className="bg-white py-4 mb-8 cursor-pointer hover:bg-gray-50 transition"
-            onClick={() => navigate(`/OrderDetails/${order.id}`)}
-          >
-            {/* Order Info Top */}
-            <div className="pl-4 mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 uppercase">
-                Order Number: {order.id}
-              </h3>
-              <p className="text-gray-600 uppercase">
-                Order Date:{" "}
-                {new Date(order.created_at).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
+     {/* Orders List */}
+{!isPageLoading &&
+  [...allOrders] // clone so we don't mutate react-query cache
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // 👈 newest first
+    .map((order, index) => (
+      <div
+        key={order.id}
+        className="bg-white py-4 mb-8 cursor-pointer hover:bg-gray-50 transition"
+        onClick={() => navigate(`/OrderDetails/${order.id}`)}
+      >
+        {/* Order Info Top */}
+        <div className="pl-4 mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 uppercase">
+            Order Number: {order.id}
+          </h3>
+          <p className="text-gray-600 uppercase">
+            Order Date:{" "}
+            {new Date(order.created_at).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+        </div>
 
-            {/* Products */}
-            <div>
-              {cartQueries[index]?.data?.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="flex items-start py-3 pl-0 pr-4"
-                >
-                  {/* Left - Product Image */}
-                  <img
-                    src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
-                    alt={item.product.name}
-                    className="w-24 h-24 object-contain"
-                  />
+        {/* Products */}
+        <div>
+          {cartQueries[index]?.data?.map((item) => (
+            <div
+              key={item.product.id}
+              className="flex items-start py-3 pl-0 pr-4"
+            >
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product.image}`}
+                alt={item.product.name}
+                className="w-24 h-24 object-contain"
+              />
+              <div className="ml-4 flex-1">
+                <p className="font-medium text-gray-900">{item.product.name}</p>
+                <p className="text-sm text-gray-700 mt-1 uppercase">
+                  Status:{" "}
+                  <span className="font-semibold">{order.order_status}</span>
+                </p>
 
-                  {/* Right - Product Info */}
-                  <div className="ml-4 flex-1">
-                    <p className="font-medium text-gray-900">
-                      {item.product.name}
-                    </p>
-                    <p className="text-sm text-gray-700 mt-1 uppercase">
-                      Status:{" "}
-                      <span className="font-semibold">{order.order_status}</span>
-                    </p>
-
-                    {/* Review Form (only for delivered orders) */}
-                    {order.order_status === "Delivered" && (
-                      <div
-                        className="mt-3"
-                        onClick={(e) => e.stopPropagation()} // 👈 prevent card navigation while interacting with the form
-                      >
-                        <ReviewForm
-                          productId={item.product.id}
-                          accessToken={token}
-                          
-                        />
-                      </div>
-                    )}
+                {order.order_status === "Delivered" && (
+                  <div
+                    className="mt-3"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ReviewForm
+                      productId={item.product.id}
+                      accessToken={token}
+                    />
                   </div>
-                </div>
-              ))}
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      </div>
+    ))}
+
     </div>
   );
 }

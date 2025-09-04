@@ -620,7 +620,7 @@ export default function PlaceOrder() {
 
     localStorage.removeItem("cart_id");
     localStorage.removeItem("applied_coupon");
-    navigate("/OrderDetails");
+    navigate("/Orders");
   };
 
 
