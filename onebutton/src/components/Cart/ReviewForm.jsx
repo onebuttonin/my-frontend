@@ -90,7 +90,7 @@ const ReviewForm = ({ productId, accessToken }) => {
         !alreadyRated && (
           <button
             onClick={() => setShowPopup(true)}
-            className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800"
+            className="bg-black text-white px-3 py-1 hover:bg-gray-800"
           >
             Rate Us
           </button>

@@ -371,9 +371,10 @@ export default function AdminOrders() {
                 >
                     <option value="">Filter by Status</option>
                     {/* <option value="Delivered">Cancelled</option> */}
-                    <option value="Pending">Pending</option>
+                    <option value="In Transit">In Transit</option>
                     {/* <option value="Delivered">Order Placed</option> */}
                     <option value="Shipped">Shipped</option>
+                      <option value="Out For Delivery">Out For Delivery</option>
                     <option value="Delivered">Delivered</option>
                 </select>
             </div>
@@ -467,8 +468,10 @@ export default function AdminOrders() {
                                             value={order.order_status}
                                             onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                                         >
-                                            <option value="Pending">Pending</option>
+                                                                                
                                             <option value="Shipped">Shipped</option>
+                                            <option value="In Transit">In Transit</option>
+                                            <option value="Out For Delivery">Out For Delivery</option>
                                             <option value="Delivered">Delivered</option>
                                         </select>
                                     </td>
