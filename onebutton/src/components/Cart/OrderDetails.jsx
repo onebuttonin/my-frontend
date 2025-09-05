@@ -1024,7 +1024,7 @@ export default function OrderDetails() {
       setCanceling(true);
       await axios.post(
         `${import.meta.env.VITE_API_URL}/update-order-status`,
-        { id: order.id, order_status: "cancelled" },
+        { id: order.id, order_status: "Cancelled" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Order cancelled successfully.");
@@ -1070,7 +1070,7 @@ export default function OrderDetails() {
           })}
         </p>
         <p className="text-black mt-1">
-          STATUS: <span className="font-semibold uppercase">{order.order_status}</span>
+          STATUS: <span className="font-semibold uppercase text-orange-400">{order.order_status}</span>
         </p>
       </div>
 
@@ -1121,7 +1121,7 @@ export default function OrderDetails() {
 
 
       {/* Cancel Button */}
-      {order.order_status === "Order Placed" && (
+      {order.order_status === "Order Confirmed" && (
         <div className="mt-8">
           <button
             onClick={handleCancelOrder}

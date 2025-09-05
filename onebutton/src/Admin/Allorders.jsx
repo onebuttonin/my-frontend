@@ -242,25 +242,119 @@ export default function AdminOrders() {
         });
     };
 
-    const updateOrderStatus = (orderId, newStatus) => {
-        axios
-            .post(`${import.meta.env.VITE_API_URL}/update-status`, {
-                id: orderId,
-                order_status: newStatus
-            })
-            .then(() => {
-                setOrders(prevOrders => prevOrders.map(order =>
-                    order.id === orderId ? { ...order, order_status: newStatus } : order
-                ));
-                setFilteredOrders(prevOrders => prevOrders.map(order =>
-                    order.id === orderId ? { ...order, order_status: newStatus } : order
-                ));
-            })
-            .catch(error => {
-                console.error("Error updating order status:", error);
-                setError("Failed to update order status.");
-            });
-    };
+    // const updateOrderStatus = (orderId, newStatus) => {
+    //     axios
+    //         .post(`${import.meta.env.VITE_API_URL}/update-status`, {
+    //             id: orderId,
+    //             order_status: newStatus
+    //         })
+    //         .then(() => {
+    //             setOrders(prevOrders => prevOrders.map(order =>
+    //                 order.id === orderId ? { ...order, order_status: newStatus } : order
+    //             ));
+    //             setFilteredOrders(prevOrders => prevOrders.map(order =>
+    //                 order.id === orderId ? { ...order, order_status: newStatus } : order
+    //             ));
+    //         })
+    //         .catch(error => {
+    //             console.error("Error updating order status:", error);
+    //             setError("Failed to update order status.");
+    //         });
+    // };
+
+
+// make sure templateMap is defined somewhere accessible
+
+
+
+const templateMap = {
+  "Order Confirmed": 1,
+  "Shipped": 2,
+  "In Transit": 3,
+  "Out For Delivery": 4,
+  "Delivered": 5,
+  "Cancelled": 6
+};
+
+const updateOrderStatus = (orderId, newStatus) => {
+  // find order BEFORE mutating state so we have the correct data to use for email
+  const order = orders.find(o => o.id === orderId);
+
+  // We'll still attempt to update order status on server even if `order` is not found locally.
+  axios
+    .post(
+      `${import.meta.env.VITE_API_URL}/update-status`,
+      { id: orderId, order_status: newStatus },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    .then(() => {
+      // update local UI state
+      setOrders(prevOrders =>
+        prevOrders.map(o => (o.id === orderId ? { ...o, order_status: newStatus } : o))
+      );
+      setFilteredOrders(prevOrders =>
+        prevOrders.map(o => (o.id === orderId ? { ...o, order_status: newStatus } : o))
+      );
+
+      // If we don't have the order locally, skip sending email (or you could fetch it)
+      if (!order) {
+        console.warn("Order not found locally, skipping email send. orderId:", orderId);
+        return;
+      }
+
+      // Prepare email payload using nested user object (or fallbacks)
+      const email = order.user?.email || order.user_email || order.email || order.customer_email || "";
+      const name =
+        order.user?.name ||
+        order.user_name ||
+        order.name ||
+        order.customer_name ||
+        `${order.first_name || ""} ${order.last_name || ""}`.trim() ||
+        "Customer";
+
+      if (!email) {
+        console.warn("No recipient email available for order, skipping email send:", { orderId, name });
+        return;
+      }
+
+      const templateId = templateMap[newStatus]; // undefined if not found
+      const payload = {
+        email,
+        name,
+        orderId: orderId,
+        trackingId: order.tracking_id || order.trackingId || "",
+        orderStatus: newStatus
+      };
+
+      if (typeof templateId !== "undefined") {
+        payload.templateId = templateId;
+      }
+
+      // Log payload for debugging (remove in production)
+      console.log("Sending order email payload:", payload);
+
+      // call send-order-mail endpoint
+      axios.post(`${import.meta.env.VITE_API_URL}/send-order-mail`, payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => {
+        console.log('Email queued', res.data);
+      })
+      .catch(err => {
+        console.error('Failed to send order email', {
+          status: err.response?.status,
+          data: err.response?.data,
+          payload
+        });
+      });
+
+    })
+    .catch(error => {
+      console.error("Error updating order status:", error);
+      setError("Failed to update order status.");
+    });
+};
+
 
     useEffect(() => {
         applyFilters();
@@ -468,7 +562,7 @@ export default function AdminOrders() {
                                             value={order.order_status}
                                             onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                                         >
-                                                                                
+                                             <option value="Order Confirmed">Order Confirmed</option>                                   
                                             <option value="Shipped">Shipped</option>
                                             <option value="In Transit">In Transit</option>
                                             <option value="Out For Delivery">Out For Delivery</option>

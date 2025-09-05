@@ -206,10 +206,10 @@ export default function Order() {
   const isPageLoading = isLoading || cartLoading;
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto px-4 py-3">
       <Toaster position="top-center" reverseOrder={false} />
 
-      <h2 className="text-2xl font-semibold mb-8 text-center tracking-wide text-gray-900">
+      <h2 className="text-xl font-semibold mb-8 text-center tracking-wide text-gray-900">
         ORDERS
       </h2>
 
@@ -241,7 +241,7 @@ export default function Order() {
       >
         {/* Order Info Top */}
         <div className="pl-4 mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 uppercase">
+          <h3 className=" text-gray-600 uppercase">
             Order Number: {order.id}
           </h3>
           <p className="text-gray-600 uppercase">
@@ -270,7 +270,7 @@ export default function Order() {
                 <p className="font-medium text-gray-900">{item.product.name}</p>
                 <p className="text-sm text-gray-700 mt-1 uppercase">
                   Status:{" "}
-                  <span className="font-semibold">{order.order_status}</span>
+                  <span className="font-semibold text-orange-400">{order.order_status}</span>
                 </p>
 
                 {order.order_status === "Delivered" && (
