@@ -364,7 +364,7 @@ export default function Cart() {
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [cartId, setCartId] = useState(localStorage.getItem("cart_id"));
-  const deliveryCharge = 50;
+  const deliveryCharge = 100;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 

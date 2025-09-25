@@ -5,7 +5,7 @@ import Navbar from './components/Navbar'
 import Ticker1 from './components/Ticker1'
 import Footer from './components/Footer'
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Category from "./components/Categories/Category";
 import Home  from './components/HomePage/Home'
 
@@ -38,6 +38,9 @@ import ContactUs from './components/footer/Contactus'
 import ShippingInfo from './components/footer/ShippingInfo'
 import AboutUs from './components/footer/Aboutus'
 import Order  from './components/Cart/Order'
+import AdminLayout from './Admin/AdminLayout'
+import PublicLayout from './components/Layouts/PublicRoute'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -45,52 +48,41 @@ function App() {
   return (
     <>
 <div>
-        {/* Always Visible  */}
-        <Ticker1 /> 
-        <Navbar />
-        <ScrollToTop />
+    
         <Routes>
-        <Route path="/" element={<Home />} />
 
-        {/* <Route path="/category" element={<Category />} /> */}
+           {/* PUBLIC ROUTES (wrapped in PublicLayout) */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          {/* Authentication / public pages */}
+          <Route path="/login" element={<Login />} />
 
-        <Route path='/login' element={<Login />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/cart" element={<ShowCart />} />
+          <Route path="/PlaceOrder" element={<PlaceOrder />} />
+          <Route path="/Orders" element={<Order />} />
+          <Route path="/OrderDetails/:id" element={<OrderDetails />} />
 
-        <Route path="/wishlist" element={<WishlistPage />}/>
+          {/* Categories and products */}
+          <Route path="/category/not-so-basic" element={<NotBasic />} />
+          <Route path="/category/basics" element={<Basic />} />
+          <Route path="/category/minimals" element={<Minimals />} />
+          <Route path="/category/AllProducts" element={<AllProducts />} />
+          <Route path="/product/:id" element={<MainProduct2 />} />
 
-        <Route path='/cart' element={<ShowCart />}/>
-
-        <Route path="/PlaceOrder" element={<PlaceOrder />} />
-
-        <Route path='/Orders' element={<Order/>}/>
-
-        <Route path="/OrderDetails/:id" element={<OrderDetails />}/>
-
-        {/* <Route path="/category/:categoryName" element={<CategoryDetail />} />  */}
-
-        <Route path="/category/not-so-basic" element={<NotBasic />} /> 
-        <Route path="/category/basics" element={<Basic />} /> 
-        <Route path="/category/minimals" element={<Minimals />} /> 
-        <Route path="/category/AllProducts" element={<AllProducts />}/>
-
-        {/* <Route path="/collection/basics" element={<Basic />} /> */}
-
-        {/* <Route path="/productgrid" element={<ProductGrid />} /> */}
-        <Route path="/product/:id" element={<MainProduct2 />} />
-
-        
-
-        <Route path="/wishlist" element={<WishlistPage />} />
-
-
-
-
+          {/* Footer pages */}
+          <Route path="/Return&Exchange" element={<ReturnAndExchange />} />
+          <Route path="/Contactus" element={<ContactUs />} />
+          <Route path="/ShippingInformation" element={<ShippingInfo />} />
+          <Route path="/AboutUs" element={<AboutUs />} />
+        </Route>
+     
 
         {/* Admin Routes */}
 
         <Route path='/Admin/Login' element={<AdminLogin />}/>
          
-        <Route element={<PrivateRoute />}>
+        {/* <Route element={<PrivateRoute />}>
         <Route path='/Admin/Dashboard' element={<Dashboard />}/>
         <Route path='/Admin/manageproducts' element={<ManageProducts />}/>
         <Route path='/Admin/add-product' element={<AddProduct />} />
@@ -102,17 +94,35 @@ function App() {
         <Route path='/Admin/update-coupon/:id' element={<UpdateCoupon/>}/>
         <Route path='/Admin/Add-Coupon' element={<AddCoupon />} />
         <Route path='/Admin/ProductInvoice/:orderId' element={<Invoice />} />
+        </Route> */}
+
+
+<Route element={<PrivateRoute />}>
+          <Route path="/Admin" element={<AdminLayout />}>
+            {/* keep same paths as before but now as children (relative to /Admin) */}
+            <Route path="Dashboard" element={<Dashboard />} />
+            <Route path="manageproducts" element={<ManageProducts />} />
+            <Route path="add-product" element={<AddProduct />} />
+            <Route path="edit-product/:id" element={<UpdateProduct />} />
+            <Route path="sizecolorvariants/:id" element={<SizeColorVariants />} />
+            <Route path="AllOrders" element={<AllOrders />} />
+            <Route path="AllUsers" element={<AllUsers />} />
+            <Route path="Coupons" element={<Coupons />} />
+            <Route path="update-coupon/:id" element={<UpdateCoupon />} />
+            <Route path="Add-Coupon" element={<AddCoupon />} />
+            <Route path="ProductInvoice/:orderId" element={<Invoice />} />
+
+            {/* optional: redirect /Admin => /Admin/Dashboard */}
+            <Route index element={<Navigate to="/Admin/Dashboard" replace />} />
+            {/* catch-all under /Admin redirect to dashboard */}
+            <Route path="*" element={<Navigate to="/Admin/Dashboard" replace />} />
+          </Route>
         </Route>
 
-
-         <Route path = "/Return&Exchange"  element={<ReturnAndExchange/>}/>
-         <Route path = "/Contactus"  element={<ContactUs/>}/>
-         <Route path = "/ShippingInformation"  element={<ShippingInfo/>}/>
-         <Route path="/AboutUs" element={<AboutUs/>}/>
            
        </Routes>
       
-       <Footer /> 
+     
        
        <div>
       {/* Your routes / layouts */}
