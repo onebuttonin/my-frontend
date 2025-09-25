@@ -61,95 +61,97 @@
 
 
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function AllUsers() {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [admin, setAdmin] = useState(null);
-    const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    // ✅ Check if admin is logged in
-    useEffect(() => {
-        const fetchAdmin = async () => {
-            const token = localStorage.getItem("admin_token");
-            if (!token) {
-                navigate("/admin/login"); // redirect if no token
-                return;
-            }
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const token =
+        localStorage.getItem("admin_token") || localStorage.getItem("token");
 
-            try {
-                const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/admin/profile`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                setAdmin(response.data);
-            } catch (err) {
-                setAdmin(null);
-                navigate("/admin/login"); // redirect if token invalid
-            }
-        };
+      if (!token) {
+        navigate("/admin/login"); // No token, redirect
+        return;
+      }
 
-        fetchAdmin();
-    }, [navigate]);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/Allusers`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    // ✅ Fetch users only if admin is valid
-    useEffect(() => {
-        if (!admin) return; // don’t fetch until admin is verified
+        // Ensure correct data extraction
+        const userData =
+          Array.isArray(response.data) && Array.isArray(response.data[0])
+            ? response.data[0]
+            : response.data;
 
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/Allusers`);
-                const userData =
-                    Array.isArray(response.data) && Array.isArray(response.data[0])
-                        ? response.data[0]
-                        : response.data;
+        setUsers(userData);
+      } catch (err) {
+        console.error("Error fetching users:", err);
 
-                setUsers(userData);
-            } catch (err) {
-                setError("Failed to fetch users.");
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          localStorage.removeItem("admin_token");
+          navigate("/admin/login"); // Unauthorized, redirect
+          return;
+        }
 
-        fetchUsers();
-    }, [admin]);
+        setError("Failed to fetch users.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (loading) return <p>Loading users...</p>;
-    if (error) return <p className="text-red-500">{error}</p>;
+    fetchUsers();
+  }, [navigate]);
 
-    return (
-        <div className="container mx-auto px-4 py-6">
-            <h2 className="text-2xl font-bold mb-4">All Users</h2>
-            <div className="overflow-x-auto">
-                <table className="table-auto w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border border-gray-300 px-4 py-2">User ID</th>
-                            <th className="border border-gray-300 px-4 py-2">Name</th>
-                            <th className="border border-gray-300 px-4 py-2">Phone</th>
-                            <th className="border border-gray-300 px-4 py-2">Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => (
-                            <tr key={user.id}>
-                                <td className="border border-gray-300 px-4 py-2">{user.id || "N/A"}</td>
-                                <td className="border border-gray-300 px-4 py-2">{user.name || "N/A"}</td>
-                                <td className="border border-gray-300 px-4 py-2">{user.phone || "N/A"}</td>
-                                <td className="border border-gray-300 px-4 py-2">{user.email || "N/A"}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  if (loading) return <p>Loading users...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+
+  return (
+    <div className="container mx-auto px-4 py-6">
+      <h2 className="text-2xl font-bold mb-4">All Users</h2>
+      <div className="overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border border-gray-300 px-4 py-2">User ID</th>
+              <th className="border border-gray-300 px-4 py-2">Name</th>
+              <th className="border border-gray-300 px-4 py-2">Phone</th>
+              <th className="border border-gray-300 px-4 py-2">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id || user._id}>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.id || user._id || "N/A"}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.name || "N/A"}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.phone || "N/A"}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.email || "N/A"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
