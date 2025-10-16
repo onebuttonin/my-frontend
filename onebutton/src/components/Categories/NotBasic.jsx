@@ -79,7 +79,7 @@ export default function ProductGrid() {
   };
 
   const minimalProducts = products.filter(
-    (product) => product.category?.toLowerCase() === "notsobasic"
+    (product) => product.category?.toLowerCase() === "tshirt"
   );
 
   if (loading) {
@@ -107,7 +107,7 @@ export default function ProductGrid() {
     {/* Title Section */}
     <div className="text-center px-4 py-3 mb-6">
       <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase">
-        Not So Basic
+        Tshirts
       </h2>
     </div>
 
@@ -154,8 +154,8 @@ export default function ProductGrid() {
           </div>
         ))
       ) : (
-        <p className="text-gray-500 text-center col-span-full">
-          No minimal products available.
+        <p className="text-gray-500 text-center col-span-full text-xl">
+          Collection Awaits
         </p>
       )}
     </div>

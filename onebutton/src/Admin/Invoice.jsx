@@ -97,45 +97,68 @@ const handleDownload = () => {
 
     return (
     <div className="p-4">
-        <div id="invoiceContent" className="bg-white p-6 shadow-md rounded max-w-3xl mx-auto" style={{ color: '#000' }}>
-            <h2 className="text-2xl font-bold mb-4">Order-Id #{order.id}</h2>
-            <p><strong>Customer:</strong> {order.name}</p>
-            <p><strong>Mobile:</strong> {order.mobile}</p>
-            <p><strong>Address:</strong> {order.street1} {order.street2}, {order.city}, {order.state} - {order.pincode}</p>
+        <div
+  id="invoiceContent"
+  className="bg-white p-6 shadow-md rounded max-w-3xl mx-auto"
+  style={{ color: "#000" }}
+>
+  <h2 className="text-2xl font-bold mb-4">Order-Id #{order.id}</h2>
 
-            <div className="mt-6">
-                <h3 className="text-xl font-semibold mb-2">Order Items</h3>
-                <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-300 text-sm">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">Product</th>
-                                <th className="border p-2">Qty</th>
-                                <th className="border p-2">Size</th>
-                                <th className="border p-2">Price</th>
-                                <th className="border p-2">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {cart.items.map(item => (
-                                <tr key={item.id}>
-                                    <td className="border p-2">{item.product.name}</td>
-                                    <td className="border p-2">{item.quantity}</td>
-                                    <td className="border p-2">{item.size}</td>
-                                    <td className="border p-2">₹{item.product.price}</td>
-                                    <td className="border p-2">₹{item.quantity * item.product.price}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  {/* Brand & Customer Info Section */}
+  <div className="flex justify-between items-start mb-6">
+    {/* Left Side - Brand Details */}
+    <div className="w-1/2">
+      <p className="font-semibold text-xl">ONEBUTTON</p>
+      <p><strong>GSTIN:</strong> 08KNJPS6320F1ZM</p>
+      <p><strong>Order Date:</strong> {new Date(order.created_at).toLocaleDateString()}</p>
+    </div>
 
-            <div className="mt-4 text-right">
-                <p><strong>Total:</strong> ₹{order.cart_total}</p>
-                <p><strong>Payment Method:</strong> {order.payment_method}</p>
-            </div>
-        </div>
+    {/* Right Side - Customer Details */}
+    <div className="w-1/2 text-right">
+      <p><strong>Customer:</strong> {order.name}</p>
+      <p><strong>Mobile:</strong> {order.mobile}</p>
+      <p>
+        <strong>Address:</strong> {order.street1} {order.street2}, {order.city},{" "}
+        {order.state} - {order.pincode}
+      </p>
+    </div>
+  </div>
+
+  {/* Order Items Table */}
+  <div className="mt-6">
+    <h3 className="text-xl font-semibold mb-2">Order Items</h3>
+    <div className="overflow-x-auto">
+      <table className="w-full border border-gray-300 text-sm">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border p-2">Product</th>
+            <th className="border p-2">Qty</th>
+            <th className="border p-2">Size</th>
+            <th className="border p-2">Price</th>
+            <th className="border p-2">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cart.items.map((item) => (
+            <tr key={item.id}>
+              <td className="border p-2">{item.product.name}</td>
+              <td className="border p-2">{item.quantity}</td>
+              <td className="border p-2">{item.size}</td>
+              <td className="border p-2">₹{item.product.price}</td>
+              <td className="border p-2">₹{item.quantity * item.product.price}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {/* Total and Payment Section */}
+  <div className="mt-4 text-right">
+    <p><strong>Total:</strong> ₹{order.cart_total}</p>
+    <p><strong>Payment Method:</strong> {order.payment_method}</p>
+  </div>
+</div>
 
         <div className="max-w-3xl mx-auto mt-4 text-center">
             <button onClick={handleDownload} className="bg-blue-600 text-white px-4 py-2 rounded">

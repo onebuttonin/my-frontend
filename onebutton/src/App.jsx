@@ -64,9 +64,10 @@ function App() {
           <Route path="/OrderDetails/:id" element={<OrderDetails />} />
 
           {/* Categories and products */}
-          <Route path="/category/not-so-basic" element={<NotBasic />} />
-          <Route path="/category/basics" element={<Basic />} />
-          <Route path="/category/minimals" element={<Minimals />} />
+          <Route path="/category" element={<Category/>} />
+          <Route path="/category/Tshirts" element={<NotBasic />} />
+          <Route path="/category/Oversize-Tshirts" element={<Basic />} />
+          <Route path="/category/Shirts" element={<Minimals />} />
           <Route path="/category/AllProducts" element={<AllProducts />} />
           <Route path="/product/:id" element={<MainProduct2 />} />
 

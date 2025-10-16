@@ -129,21 +129,21 @@ const collections = [
   },
   {
     id: 2,
-    title: "Basic Range",
+    title: "Oversize Tshirts",
     image: "/images/Реклама.jpeg",
-    path: "basics",
+    path: "Oversize-Tshirts",
   },
   {
     id: 3,
-    title: "Minimal Range",
+    title: "Shirts",
     image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80",
-    path: "minimals",
+    path: "Shirts",
   },
   {
     id: 4,
-    title: "Not So Basic Range",
+    title: "Tshirts",
     image: "/images/download (8).jpeg",
-    path: "not-so-basic",
+    path: "Tshirts",
   },
 ];
 

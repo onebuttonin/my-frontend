@@ -56,9 +56,9 @@ export default memo (function HomePages() {
       <MemoizedNbottom />
       <Ticker3/>
       <Sale></Sale>
-      {/* <Homep /> */}
+      <Homep />
       {/* <MemoizedMinimal /> */}
-      {/* <MemoizedCollections /> */}
+      <MemoizedCollections />
     </div>
   );
 });

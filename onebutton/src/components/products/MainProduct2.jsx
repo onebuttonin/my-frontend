@@ -79,36 +79,83 @@ const [totalReviews, setTotalReviews] = useState(0);
 
   
   
-  const handleAddToCart = async (productId) => {
-    if (!selectedSize) {
-      toast.error("Please select a size first!");
-      return;
-    }
+  // const handleAddToCart = async (productId) => {
+  //   if (!selectedSize) {
+  //     toast.error("Please select a size first!");
+  //     return;
+  //   }
     
   
-    try {
-      const token = localStorage.getItem("token");
+  //   try {
+  //     const token = localStorage.getItem("token");
   
-      if (!token) {
-        if (!localStorage.getItem("redirectAfterLogin")) {
-          localStorage.setItem("redirectAfterLogin", location.pathname);
-        }
-        toast.error("Please log in first!");
-        navigate("/login");
-      }
+  //     if (!token) {
+  //       if (!localStorage.getItem("redirectAfterLogin")) {
+  //         localStorage.setItem("redirectAfterLogin", location.pathname);
+  //       }
+  //       toast.error("Please log in first!");
+  //       navigate("/login");
+  //     }
   
-      await axios.post(
-         `${import.meta.env.VITE_API_URL}/add-cart`,
-        { product_id: productId, size: selectedSize, quantity: 1 },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  //     await axios.post(
+  //        `${import.meta.env.VITE_API_URL}/add-cart`,
+  //       { product_id: productId, size: selectedSize, quantity: 1 },
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
   
-      toast.success("Product added to cart!"); // Later you can replace this too with a toast
-      navigate('/cart')
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
-  };
+  //     toast.success("Product added to cart!"); // Later you can replace this too with a toast
+  //     navigate('/cart')
+  //   } catch (error) {
+  //     console.error("Error adding to cart:", error);
+  //   }
+  // };
+
+  const handleAddToCart = async (productId) => {
+  // require size
+  if (!selectedSize) {
+    toast.error("Please select a size first!");
+    return;
+  }
+
+  // check stock client-side (extra safety)
+  const remaining = Number(product?.availableSizes?.[selectedSize] ?? 0);
+  if (remaining <= 0) {
+    toast.error("Selected size is out of stock.");
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  // if not logged in -> save redirect and go to login, then STOP
+  if (!token) {
+    // save exact url (with query) so user returns to same page
+    const returnTo = window.location.pathname + window.location.search;
+    localStorage.setItem("redirectAfterLogin", returnTo);
+    toast((t) => (
+      <span>
+        Please log in first. <button onClick={() => toast.dismiss(t.id)} className="underline ml-2">OK</button>
+      </span>
+    ));
+    navigate("/login");
+    return; // <-- critical: stop here so axios.post is NOT executed
+  }
+
+  try {
+    // now safe to call API with token
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/add-cart`,
+      { product_id: productId, size: selectedSize, quantity: 1 },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    toast.success("Product added to cart!");
+    navigate("/cart");
+  } catch (error) {
+    console.error("Error adding to cart:", error?.response?.data || error.message || error);
+    toast.error("Could not add to cart. Try again.");
+  }
+};
+
 
 
   
@@ -326,7 +373,7 @@ const addToWishlist = async (productId) => {
 )}
 
 {/* Size Selector */}
-<div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-4 sm:justify-start justify-center">
+{/* <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-4 sm:justify-start justify-center">
   <div className="text-center sm:text-left">
     <div className="flex items-center justify-center sm:justify-start space-x-3">
       <h3 className="text-base lg:text-lg font-medium text-gray-800">Size:</h3>
@@ -364,7 +411,56 @@ const addToWishlist = async (productId) => {
       <p className="text-gray-500 text-sm mt-1 text-center sm:text-left">No sizes available</p>
     )}
   </div>
+</div> */}
+
+{/* Size Selector */}
+<div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-4 sm:justify-start justify-center">
+  <div className="text-center sm:text-left">
+    <div className="flex items-center justify-center sm:justify-start space-x-3">
+      <h3 className="text-base lg:text-lg font-medium text-gray-800">Size:</h3>
+      <button
+        onClick={() => setShowSizeChart(true)}
+        className="text-xs sm:text-sm text-gray-700 underline hover:text-black"
+      >
+        Size Chart
+      </button>
+    </div>
+
+    {product?.availableSizes && Object.keys(product.availableSizes).length > 0 ? (
+      <div className="flex space-x-3 mt-2 justify-center sm:justify-start">
+        {["s", "m", "l", "xl", "xxl"].map((size) => {
+          const stock = Number(product?.availableSizes?.[size] ?? 0);
+          const inStock = stock > 0;
+
+          return (
+            <button
+              key={size}
+              onClick={() => {
+                if (!inStock) return; // prevent selecting OOS size
+                setSelectedSize(size);
+                setShowSizeChart(true); // keep original behaviour
+              }}
+              aria-disabled={!inStock}
+              // title={!inStock ? "Out of stock" : `${stock} left`}
+              className={`px-4 py-2 border text-sm lg:text-base font-medium transition rounded
+                ${
+                  selectedSize === size
+                    ? "bg-black text-white"
+                    : "hover:bg-black hover:text-white border-gray-400"
+                }
+                ${!inStock ? "line-through opacity-50 cursor-not-allowed hover:bg-transparent hover:text-current" : ""}`}
+            >
+              {size.toUpperCase()}
+            </button>
+          );
+        })}
+      </div>
+    ) : (
+      <p className="text-gray-500 text-sm mt-1 text-center sm:text-left">No sizes available</p>
+    )}
+  </div>
 </div>
+
 
 {/* Size Chart Modal */}
 {showSizeChart && (

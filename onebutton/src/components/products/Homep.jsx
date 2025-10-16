@@ -125,12 +125,12 @@ const fetchProducts = async () => {
   const allProducts = response.data;
 
   const notSoBasicProducts = allProducts
-    .filter((product) => product.category?.toLowerCase() === "notsobasic")
+    .filter((product) => product.category?.toLowerCase() === "oversize tshirt")
     .sort((a, b) => b.popularity - a.popularity)
     .slice(0, 4);
 
   const minimalProducts = allProducts
-    .filter((product) => product.category?.toLowerCase() === "minimals")
+    .filter((product) => product.category?.toLowerCase() === "tshirt")
     .sort((a, b) => b.popularity - a.popularity)
     .slice(0, 4);
 

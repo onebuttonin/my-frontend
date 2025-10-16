@@ -73,10 +73,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
+  
   { id: 1, name: "All", image: "https://images.unsplash.com/photo-1521336575822-6da63fb45455?w=800&q=80", path: "AllProducts" },
-  { id: 2, name: "Not So Basic", image: "/images/Реклама.jpeg", path: "not-so-basic" },
-  { id: 3, name: "Minimal", image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80", path: "minimals" },
-  { id: 4, name: "Basic", image: "/images/download (8).jpeg", path: "basics" },
+  { id: 2, name: "Oversize Tshirts", image: "/images/download (8).jpeg", path: "Oversize-Tshirts" },
+  { id: 3, name: "Tshirts", image: "/images/Реклама.jpeg", path: "Tshirts" },
+  { id: 4, name: "Shirts", image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80", path: "Shirts" },
+  
 ];
 
 export default function CategoryPage() {

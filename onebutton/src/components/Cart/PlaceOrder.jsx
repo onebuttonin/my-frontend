@@ -360,20 +360,24 @@ export default function PlaceOrder() {
             </div>
           )}
   
-          {(selectedOption || address) && (
-            <div className="mb-4">
-              <label className="block font-bold mb-1">Select Payment Method:</label>
-              <select
-                name="payment_method"
-                value={order.payment_method}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              >
-                <option value="COD">Cash On Delivery</option>
-                <option value="Online Payment">Online Payment</option>
-              </select>
-            </div>
-          )}
+       {(selectedOption || address) && (
+  <div className="mb-4">
+    <label className="block font-bold mb-1">Select Payment Method:</label>
+    <select
+      name="payment_method"
+      value={order.payment_method}
+      onChange={handleChange}
+      className="w-full border p-2 rounded"
+    >
+      <option value="COD">Cash On Delivery</option>
+      {/* <option value="Online Payment">Online Payment</option> */}
+    </select>
+    <p className="text-sm text-gray-600 mt-2 italic">
+      💳 Prepaid payment option will be available soon.
+    </p>
+  </div>
+)}
+
   
           <button
             onClick={placeOrder}

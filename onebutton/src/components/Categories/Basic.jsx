@@ -79,7 +79,7 @@ export default function ProductGrid() {
   };
 
   const minimalProducts = products.filter(
-    (product) => product.category?.toLowerCase() === "basic"
+    (product) => product.category?.toLowerCase() === "oversize tshirt"
   );
 
   if (loading) {
@@ -107,7 +107,7 @@ export default function ProductGrid() {
     {/* Title Section */}
     <div className="text-center px-4 py-3 mb-6">
       <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase">
-        Not So Basic
+        Oversize Tshirts
       </h2>
     </div>
 
