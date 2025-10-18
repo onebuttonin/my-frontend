@@ -423,7 +423,7 @@ return (
               <span>-₹{discount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Delivery Charge:</span>
+              <span>COD Charge:</span>
               <span>₹{deliveryCharge.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-lg font-semibold border-t border-gray-300 pt-3">

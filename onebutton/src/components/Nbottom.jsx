@@ -147,7 +147,7 @@ export default function Nbottom() {
   const largeScreenImages = [
     "images/Coming-soon-1.1.jpg",
     // "/images/WEB1.1.jpg",
-    "/images/WEB2.1.jpg",
+    // "/images/WEB2.1.jpg",
   ];
   const smallScreenImages = [
     // "/images/main image-1.1.jpg",

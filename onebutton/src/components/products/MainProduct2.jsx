@@ -77,47 +77,59 @@ const [totalReviews, setTotalReviews] = useState(0);
     }
   }, [product, token, navigate, location]);
 
-  
-  
-  // const handleAddToCart = async (productId) => {
-  //   if (!selectedSize) {
-  //     toast.error("Please select a size first!");
-  //     return;
-  //   }
-    
-  
-  //   try {
-  //     const token = localStorage.getItem("token");
-  
-  //     if (!token) {
-  //       if (!localStorage.getItem("redirectAfterLogin")) {
-  //         localStorage.setItem("redirectAfterLogin", location.pathname);
-  //       }
-  //       toast.error("Please log in first!");
-  //       navigate("/login");
-  //     }
-  
-  //     await axios.post(
-  //        `${import.meta.env.VITE_API_URL}/add-cart`,
-  //       { product_id: productId, size: selectedSize, quantity: 1 },
-  //       { headers: { Authorization: `Bearer ${token}` } }
-  //     );
-  
-  //     toast.success("Product added to cart!"); // Later you can replace this too with a toast
-  //     navigate('/cart')
-  //   } catch (error) {
-  //     console.error("Error adding to cart:", error);
-  //   }
-  // };
 
-  const handleAddToCart = async (productId) => {
-  // require size
+//   const handleAddToCart = async (productId) => {
+//   // require size
+//   if (!selectedSize) {
+//     toast.error("Please select a size first!");
+//     return;
+//   }
+
+//   // check stock client-side (extra safety)
+//   const remaining = Number(product?.availableSizes?.[selectedSize] ?? 0);
+//   if (remaining <= 0) {
+//     toast.error("Selected size is out of stock.");
+//     return;
+//   }
+
+//   const token = localStorage.getItem("token");
+
+//   // if not logged in -> save redirect and go to login, then STOP
+//   if (!token) {
+//     // save exact url (with query) so user returns to same page
+//     const returnTo = window.location.pathname + window.location.search;
+//     localStorage.setItem("redirectAfterLogin", returnTo);
+//     toast((t) => (
+//       <span>
+//         Please log in first. <button onClick={() => toast.dismiss(t.id)} className="underline ml-2">OK</button>
+//       </span>
+//     ));
+//     navigate("/login");
+//     return; // <-- critical: stop here so axios.post is NOT executed
+//   }
+
+//   try {
+//     // now safe to call API with token
+//     await axios.post(
+//       `${import.meta.env.VITE_API_URL}/add-cart`,
+//       { product_id: productId, size: selectedSize, quantity: 1 },
+//       { headers: { Authorization: `Bearer ${token}` } }
+//     );
+
+//     toast.success("Product added to cart!");
+//     navigate("/cart");
+//   } catch (error) {
+//     console.error("Error adding to cart:", error?.response?.data || error.message || error);
+//     toast.error("Could not add to cart. Try again.");
+//   }
+// };
+
+const handleAddToCart = async (productId) => {
   if (!selectedSize) {
     toast.error("Please select a size first!");
     return;
   }
 
-  // check stock client-side (extra safety)
   const remaining = Number(product?.availableSizes?.[selectedSize] ?? 0);
   if (remaining <= 0) {
     toast.error("Selected size is out of stock.");
@@ -126,33 +138,44 @@ const [totalReviews, setTotalReviews] = useState(0);
 
   const token = localStorage.getItem("token");
 
-  // if not logged in -> save redirect and go to login, then STOP
+  // 🛑 Check for login before anything else
   if (!token) {
-    // save exact url (with query) so user returns to same page
     const returnTo = window.location.pathname + window.location.search;
     localStorage.setItem("redirectAfterLogin", returnTo);
-    toast((t) => (
-      <span>
-        Please log in first. <button onClick={() => toast.dismiss(t.id)} className="underline ml-2">OK</button>
-      </span>
-    ));
-    navigate("/login");
-    return; // <-- critical: stop here so axios.post is NOT executed
+
+    toast.dismiss(); // close previous toasts if any
+    toast.error("Please log in first!");
+    navigate("/login", { replace: true });
+    return; // ✅ stop execution completely
   }
 
   try {
-    // now safe to call API with token
+    // Only runs if user is logged in
     await axios.post(
       `${import.meta.env.VITE_API_URL}/add-cart`,
-      { product_id: productId, size: selectedSize, quantity: 1 },
-      { headers: { Authorization: `Bearer ${token}` } }
+      {
+        product_id: productId,
+        size: selectedSize,
+        quantity: 1,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
     );
 
     toast.success("Product added to cart!");
     navigate("/cart");
   } catch (error) {
-    console.error("Error adding to cart:", error?.response?.data || error.message || error);
-    toast.error("Could not add to cart. Try again.");
+    console.error("Error adding to cart:", error?.response?.data || error.message);
+
+    // ✅ Specific check for 401 Unauthorized
+    if (error.response && error.response.status === 401) {
+      toast.error("Your session has expired. Please log in again.");
+      localStorage.removeItem("token");
+      navigate("/login");
+    } else {
+      toast.error("Could not add to cart. Try again.");
+    }
   }
 };
 
@@ -635,7 +658,7 @@ const addToWishlist = async (productId) => {
 
       </div>
 
-      {similarProducts.length > 0 && (
+      {/* {similarProducts.length > 0 && (
   <div className="container mx-auto p-4 lg:p-10">
     <div className="text-center px-4 py-3 mb-4">
       <h2 className="text-xl font-bold">Similar Products</h2>
@@ -679,7 +702,7 @@ const addToWishlist = async (productId) => {
       ))}
     </div>
   </div>
-)}
+)} */}
     </div>
   );
 }
