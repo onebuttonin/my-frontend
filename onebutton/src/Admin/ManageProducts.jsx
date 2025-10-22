@@ -395,6 +395,8 @@ export default function ProductList() {
                                         </td>
                                         <td className="p-3 text-center flex justify-center space-x-2">
                                             <Link to={`/Admin/edit-product/${product.id}`} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</Link>
+                                            <Link to={`/Admin/UpdateImages/${product.id}`} className="bg-yellow-500 text-white px-3 py-1 rounded">image</Link>
+
                                             <Link to={`/Admin/sizecolorvariants/${product.id}`} className="bg-zinc-500 text-white px-3 py-1 rounded">Variants</Link>
                                             <button onClick={() => handleDelete(product.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
                                         </td>

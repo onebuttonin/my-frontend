@@ -40,6 +40,8 @@ import AboutUs from './components/footer/Aboutus'
 import Order  from './components/Cart/Order'
 import AdminLayout from './Admin/AdminLayout'
 import PublicLayout from './components/Layouts/PublicRoute'
+import UpdateProductImages from './Admin/UpdateProductImages'
+import ProductImages from './Admin/ProductImages'
 
 
 function App() {
@@ -112,6 +114,8 @@ function App() {
             <Route path="update-coupon/:id" element={<UpdateCoupon />} />
             <Route path="Add-Coupon" element={<AddCoupon />} />
             <Route path="ProductInvoice/:orderId" element={<Invoice />} />
+            <Route path="UpdateImages/:id" element={<UpdateProductImages/>}/>
+            <Route path="ProductImages/:id" element={<ProductImages/>} />
 
             {/* optional: redirect /Admin => /Admin/Dashboard */}
             <Route index element={<Navigate to="/Admin/Dashboard" replace />} />

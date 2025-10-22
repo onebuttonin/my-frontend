@@ -1112,13 +1112,11 @@ export default function OrderDetails() {
   <h3 className="text-xl  font-semibold uppercase mb-3">
     Bag Total
   </h3>
-
   <div className="flex justify-between items-center">
     <span className="text-gray-700 font-medium">Total</span>
     <span className="text-gray-900 font-semibold">₹{order.cart_total}</span>
   </div>
 </div>
-
 
       {/* Cancel Button */}
       {order.order_status === "Order Confirmed" && (
