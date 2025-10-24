@@ -160,7 +160,7 @@ export default function Nbottom() {
     //  "/images/Sale-Poster-5.jpg",
      "/images/pos.png",
     //  "/images/pos-1.png",
-     "/images/simran-1.3.jpg"
+     "/images/simran-1.1.jpg"
     //  "/images/Bharat-poster-1 - Copy.png",
     //  "/images/bharat-reel-1.png",
   ];
