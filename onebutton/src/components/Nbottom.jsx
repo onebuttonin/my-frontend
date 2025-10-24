@@ -159,6 +159,8 @@ export default function Nbottom() {
     // "/images/men-women-p1.png",
     //  "/images/Sale-Poster-5.jpg",
      "/images/pos.png",
+    //  "/images/pos-1.png",
+     "/images/simran-1.3.jpg"
     //  "/images/Bharat-poster-1 - Copy.png",
     //  "/images/bharat-reel-1.png",
   ];
