@@ -112,7 +112,7 @@ export default function Nbottom() {
           img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`
         );
         const smallImages = (data.small || []).map((img) =>
-          img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`
+          img.path.startsWith("https") ? img.path : `${BASE_URL}${img.path}`
         );
 
         setLargeScreenImages(largeImages);

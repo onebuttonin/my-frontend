@@ -48,6 +48,8 @@ export default function AdminHeroImages() {
       const res = await api.get(`/hero-images`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(res.data); // check what 'path' actually looks like
+setHeroImages(res.data);
       setHeroImages(res.data);
     } catch (err) {
       console.error("Error fetching hero images:", err);
@@ -142,16 +144,18 @@ export default function AdminHeroImages() {
 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
   {heroImages.large.map((img) => (
     <div key={img.id} className="relative group">
-      <img
-        src={
-  img.path.startsWith("http")
-    ? img.path.replace("http://", "https://") // 🔒 Enforce HTTPS
-    : `${import.meta.env.VITE_BASE_URL}${img.path}`
-}
+     <img
+  src={
+    img?.path
+      ? img.path.startsWith("http")
+          ? img.path.replace("http://", "https://")
+          : `${import.meta.env.VITE_BASE_URL}${img.path}`
+      : "/placeholder.jpg" // fallback image if path is missing
+  }
+  alt="Hero"
+  className="w-full h-40 object-cover rounded shadow"
+/>
 
-        alt="Large Hero"
-        className="w-full h-40 object-cover rounded shadow"
-      />
       <button
         onClick={() => handleDelete(img.id)}
         className="absolute top-2 right-2 bg-black/70 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition"
@@ -169,15 +173,17 @@ export default function AdminHeroImages() {
   {heroImages.small.map((img) => (
     <div key={img.id} className="relative group">
       <img
-        src={
-  img.path.startsWith("http")
-    ? img.path.replace("http://", "https://") // 🔒 Enforce HTTPS
-    : `${import.meta.env.VITE_BASE_URL}${img.path}`
-}
+  src={
+    img?.path
+      ? img.path.startsWith("http")
+          ? img.path.replace("http://", "https://")
+          : `${import.meta.env.VITE_BASE_URL}${img.path}`
+      : "/placeholder.jpg" // fallback image if path is missing
+  }
+  alt="Hero"
+  className="w-full h-40 object-cover rounded shadow"
+/>
 
-        alt="Small Hero"
-        className="w-full h-60 object-cover rounded shadow"
-      />
       <button
         onClick={() => handleDelete(img.id)}
         className="absolute top-2 right-2 bg-black/70 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition"
