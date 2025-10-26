@@ -329,6 +329,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../Admin/api";
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -364,7 +365,7 @@ export default function AddProduct() {
       }
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/profile`, {
+        const response = await api.get(`/admin/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAdmin(response.data);
@@ -445,8 +446,8 @@ export default function AddProduct() {
       const headers = { "Content-Type": "multipart/form-data" };
       if (adminToken) headers["Authorization"] = `Bearer ${adminToken}`;
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/add-products`,
+      const response = await api.post(
+        `/add-products`,
         formDataToSend,
         { headers }
       );

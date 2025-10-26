@@ -42,6 +42,7 @@ import AdminLayout from './Admin/AdminLayout'
 import PublicLayout from './components/Layouts/PublicRoute'
 import UpdateProductImages from './Admin/UpdateProductImages'
 import ProductImages from './Admin/ProductImages'
+import AdminHeroImages from './Admin/AdminHeroImages'
 
 
 function App() {
@@ -116,6 +117,7 @@ function App() {
             <Route path="ProductInvoice/:orderId" element={<Invoice />} />
             <Route path="UpdateImages/:id" element={<UpdateProductImages/>}/>
             <Route path="ProductImages/:id" element={<ProductImages/>} />
+            <Route path="HeroImage" element={<AdminHeroImages/>}/>
 
             {/* optional: redirect /Admin => /Admin/Dashboard */}
             <Route index element={<Navigate to="/Admin/Dashboard" replace />} />

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "./api";
 import { useNavigate } from "react-router-dom";
 
 export default function AddCoupon() {
@@ -33,7 +34,7 @@ export default function AddCoupon() {
         setSuccess("");
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-coupon`, {
+            const response = await api.post(`/add-coupon`, {
                 ...formData,
                 is_active: formData.is_active ? 1 : 0, // Convert boolean to int
             });

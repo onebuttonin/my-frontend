@@ -8,7 +8,8 @@ const menuItems = [
   { name: "Orders", path: "/Admin/AllOrders" },
   { name: "Customers", path: "/Admin/AllUsers" },
   { name: "Coupons", path: "/Admin/Coupons" },
-  { name: "Update Stock", path: "/Admin/UpdateStock" },
+  { name: "HeroImage", path: "/Admin/HeroImage" },
+
 ];
 
 export default function AdminLayout() {

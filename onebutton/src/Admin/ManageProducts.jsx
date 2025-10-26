@@ -1,5 +1,4 @@
 
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import { Link, useNavigate } from "react-router-dom";
@@ -42,7 +41,6 @@
 //     // Fetch products only after admin is verified
 //     useEffect(() => {
 //         if (!admin) return;
-
 //         fetchProducts();
 //     }, [admin]);
 
@@ -55,7 +53,6 @@
 //                 headers: token ? { Authorization: `Bearer ${token}` } : {},
 //             });
 
-//             // handle possibly nested response arrays like earlier example
 //             const data = Array.isArray(response.data) && Array.isArray(response.data[0])
 //                 ? response.data[0]
 //                 : response.data;
@@ -81,7 +78,6 @@
 //             await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`, {
 //                 headers: token ? { Authorization: `Bearer ${token}` } : {},
 //             });
-//             // remove locally for instant UI feedback rather than full refetch
 //             setProducts(prev => prev.filter(p => p.id !== id));
 //             setFilteredProducts(prev => prev.filter(p => p.id !== id));
 //         } catch (error) {
@@ -112,14 +108,13 @@
 //     };
 
 //     const productInStock = (p) => {
-//         // handle availableSizes possibly being object or array
 //         if (!p || !p.availableSizes) return false;
 //         const vals = typeof p.availableSizes === "object" ? Object.values(p.availableSizes) : [];
 //         return vals.reduce((total, stock) => total + (Number(stock) || 0), 0) > 0;
 //     };
 
 //     if (loadingAdmin) return <p>Checking admin session...</p>;
-//     if (!admin) return null; // redirect will happen; this avoids rendering before navigation
+//     if (!admin) return null;
 
 //     return (
 //         <div className="container mx-auto px-4 py-6">
@@ -162,6 +157,7 @@
 //                             <tr>
 //                                 <th className="border p-3 text-center">Image</th>
 //                                 <th className="border p-3 text-center">Name</th>
+//                                 <th className="border p-3 text-center">SKU</th> {/* ✅ Added SKU column */}
 //                                 <th className="border p-3 text-center">Category</th>
 //                                 <th className="border p-3 text-center">Price</th>
 //                                 <th className="border p-3 text-center">Stock</th>
@@ -180,6 +176,7 @@
 //                                             />
 //                                         </td>
 //                                         <td className="p-3 text-center">{product.name}</td>
+//                                         <td className="p-3 text-center">{product.sku || "—"}</td> {/* ✅ Show SKU */}
 //                                         <td className="p-3 text-center">{product.category}</td>
 //                                         <td className="p-3 text-center">₹{product.price}</td>
 //                                         <td className="p-3 text-center">
@@ -189,6 +186,8 @@
 //                                         </td>
 //                                         <td className="p-3 text-center flex justify-center space-x-2">
 //                                             <Link to={`/Admin/edit-product/${product.id}`} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</Link>
+//                                             <Link to={`/Admin/UpdateImages/${product.id}`} className="bg-yellow-500 text-white px-3 py-1 rounded">image</Link>
+
 //                                             <Link to={`/Admin/sizecolorvariants/${product.id}`} className="bg-zinc-500 text-white px-3 py-1 rounded">Variants</Link>
 //                                             <button onClick={() => handleDelete(product.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
 //                                         </td>
@@ -196,7 +195,7 @@
 //                                 ))
 //                             ) : (
 //                                 <tr>
-//                                     <td colSpan="6" className="text-center p-3 text-gray-500">No products found.</td>
+//                                     <td colSpan="7" className="text-center p-3 text-gray-500">No products found.</td>
 //                                 </tr>
 //                             )}
 //                         </tbody>
@@ -209,8 +208,9 @@
 
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import api from "../Admin/api"
 
 export default function ProductList() {
     const [products, setProducts] = useState([]);
@@ -222,7 +222,8 @@ export default function ProductList() {
     const [loadingProducts, setLoadingProducts] = useState(false);
     const navigate = useNavigate();
 
-    // Verify admin token / profile
+  
+    // ✅ Verify admin token / profile
     useEffect(() => {
         const fetchAdmin = async () => {
             const token = localStorage.getItem("admin_token");
@@ -232,7 +233,7 @@ export default function ProductList() {
             }
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/profile`, {
+                const response = await api.get("/admin/profile", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setAdmin(response.data);
@@ -253,15 +254,11 @@ export default function ProductList() {
         fetchProducts();
     }, [admin]);
 
-    // Fetch products from backend
+    // ✅ Fetch products using api instance
     const fetchProducts = async () => {
         setLoadingProducts(true);
-        const token = localStorage.getItem("admin_token");
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
-            });
-
+            const response = await api.get("/products");
             const data = Array.isArray(response.data) && Array.isArray(response.data[0])
                 ? response.data[0]
                 : response.data;
@@ -278,15 +275,12 @@ export default function ProductList() {
         }
     };
 
-    // Handle Delete Product
+    // Handle Delete Product using api instance
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
 
-        const token = localStorage.getItem("admin_token");
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
-            });
+            await api.delete(`/products/${id}`);
             setProducts(prev => prev.filter(p => p.id !== id));
             setFilteredProducts(prev => prev.filter(p => p.id !== id));
         } catch (error) {
@@ -320,6 +314,13 @@ export default function ProductList() {
         if (!p || !p.availableSizes) return false;
         const vals = typeof p.availableSizes === "object" ? Object.values(p.availableSizes) : [];
         return vals.reduce((total, stock) => total + (Number(stock) || 0), 0) > 0;
+    };
+
+    // ✅ Logout function
+    const logout = () => {
+        localStorage.removeItem("admin_token");
+        setAdmin(null);
+        navigate("/admin/login");
     };
 
     if (loadingAdmin) return <p>Checking admin session...</p>;
@@ -366,7 +367,7 @@ export default function ProductList() {
                             <tr>
                                 <th className="border p-3 text-center">Image</th>
                                 <th className="border p-3 text-center">Name</th>
-                                <th className="border p-3 text-center">SKU</th> {/* ✅ Added SKU column */}
+                                <th className="border p-3 text-center">SKU</th>
                                 <th className="border p-3 text-center">Category</th>
                                 <th className="border p-3 text-center">Price</th>
                                 <th className="border p-3 text-center">Stock</th>
@@ -385,7 +386,7 @@ export default function ProductList() {
                                             />
                                         </td>
                                         <td className="p-3 text-center">{product.name}</td>
-                                        <td className="p-3 text-center">{product.sku || "—"}</td> {/* ✅ Show SKU */}
+                                        <td className="p-3 text-center">{product.sku || "—"}</td>
                                         <td className="p-3 text-center">{product.category}</td>
                                         <td className="p-3 text-center">₹{product.price}</td>
                                         <td className="p-3 text-center">
@@ -396,7 +397,6 @@ export default function ProductList() {
                                         <td className="p-3 text-center flex justify-center space-x-2">
                                             <Link to={`/Admin/edit-product/${product.id}`} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</Link>
                                             <Link to={`/Admin/UpdateImages/${product.id}`} className="bg-yellow-500 text-white px-3 py-1 rounded">image</Link>
-
                                             <Link to={`/Admin/sizecolorvariants/${product.id}`} className="bg-zinc-500 text-white px-3 py-1 rounded">Variants</Link>
                                             <button onClick={() => handleDelete(product.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
                                         </td>

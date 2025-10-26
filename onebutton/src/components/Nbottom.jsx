@@ -1,102 +1,56 @@
-// import React from "react";
-
-// export default function Nbottom () {
-//   return(
-           
-//     <div className="container mx-auto flex border-1 min-h-50 max-h-[450px] bg-neutral-100">
-//           <img src="/images/WEB.jpg" className="block mx-auto w-full max-w-[1200px] h-auto bg-cover bg-center bg-no-repeat" />
-//     </div> 
-//   )
-
-// }
 
 // import React from "react";
 // import { Swiper, SwiperSlide } from "swiper/react";
-// import { Autoplay } from "swiper/modules";
+// import { Autoplay, Pagination } from "swiper/modules";
 // import "swiper/css";
-
-// export default function Nbottom() {
-//   const images = [
-//     "/images/WEB.jpg",
-//     "/images/WEB2.jpg",
-//   ];
-
-//   return (
-//     <div className="container mx-auto flex justify-center items-center bg-neutral-100 max-h-[450px]">
-//       <Swiper
-//         modules={[Autoplay]}
-//         loop={true}
-//         autoplay={{
-//           delay: 3000,
-//           disableOnInteraction: false,
-//         }}
-//         speed={800}
-//         slidesPerView={1}
-//         centeredSlides={true}
-//       >
-//         {images.map((src, idx) => (
-//           <SwiperSlide key={idx} className="flex justify-center items-center">
-//             <img
-//               src={src}
-//               alt={`Slide ${idx}`}
-//               className="h-full max-h-[450px] w-auto object-contain"
-//               style={{
-//                 display: "block",
-//                 margin: "0 auto", // keep horizontal center
-//               }}
-//             />
-//           </SwiperSlide>
-//         ))}
-//       </Swiper>
-//     </div>
-//   );
-// }
-
-
-
-// last
-
-// import React from "react";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Autoplay } from "swiper/modules";
-// import "swiper/css";
+// import "swiper/css/pagination";
 
 // export default function Nbottom() {
 //   // Images for large and small screens
 //   const largeScreenImages = [
-//     "/images/WEB1.1.jpg",
-//     "/images/WEB2.1.jpg",
+//     "images/Coming-soon-1.1.jpg",
 //   ];
 //   const smallScreenImages = [
-//     "/images/main image-1.1.jpg",
-//     "/images/main image-2.2.jpg",
+//      "/images/pos.png",
+//      "/images/simran-1.1.jpg"
 //   ];
 
 //   return (
-//     <div className="container mx-auto flex justify-center items-center bg-neutral-100">
+//     <div className="relative w-full bg:adaptive">
+//       {/* Overlay Text */}
+//      <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
+//   <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
+//     ONE BUTTON
+//   </h1>
+//   <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
+//     Luxury Redefined
+//   </p>
+//   <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase  shadow-lg hover:bg-neutral-200 transition">
+//     Explore Collection
+//   </button>
+// </div>
+
+
+//       {/* Dark Gradient Overlay */}
+//       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
+
 //       {/* Large Screen Slider */}
 //       <div className="hidden lg:block w-full">
 //         <Swiper
-//           modules={[Autoplay]}
+//           modules={[Autoplay, Pagination]}
 //           loop={true}
-//           autoplay={{
-//             delay: 3000,
-//             disableOnInteraction: false,
-//           }}
-//           speed={800}
+//           autoplay={{ delay: 3500, disableOnInteraction: false }}
+//           speed={1000}
 //           slidesPerView={1}
-//           centeredSlides={true}
+//           centeredSlides
+//           pagination={{ clickable: true }}
 //         >
 //           {largeScreenImages.map((src, idx) => (
-//             <SwiperSlide key={idx} className="flex justify-center items-center">
+//             <SwiperSlide key={idx}>
 //               <img
 //                 src={src}
 //                 alt={`Large Slide ${idx}`}
-//                 className="h-full max-h-[450px] w-auto object-contain"
-//                 style={{
-//                   display: "block",
-//                   margin: "0 auto",
-//                 }}
+//                 className="w-full h-[90vh] object-cover"
 //               />
 //             </SwiperSlide>
 //           ))}
@@ -106,26 +60,20 @@
 //       {/* Small Screen Slider */}
 //       <div className="block lg:hidden w-full">
 //         <Swiper
-//           modules={[Autoplay]}
+//           modules={[Autoplay, Pagination]}
 //           loop={true}
-//           autoplay={{
-//             delay: 3000,
-//             disableOnInteraction: false,
-//           }}
-//           speed={800}
+//           autoplay={{ delay: 3500, disableOnInteraction: false }}
+//           speed={1000}
 //           slidesPerView={1}
-//           centeredSlides={true}
+//           centeredSlides
+//           pagination={{ clickable: true }}
 //         >
 //           {smallScreenImages.map((src, idx) => (
-//             <SwiperSlide key={idx} className="flex justify-center items-center">
+//             <SwiperSlide key={idx}>
 //               <img
 //                 src={src}
 //                 alt={`Small Slide ${idx}`}
-//                 className="h-full max-h-[600px] w-auto object-contain" // taller for small screens
-//                 style={{
-//                   display: "block",
-//                   margin: "0 auto",
-//                 }}
+//                 className="w-full h-[70vh] object-cover"
 //               />
 //             </SwiperSlide>
 //           ))}
@@ -136,124 +84,133 @@
 // }
 
 
-import React from "react";
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
 export default function Nbottom() {
-  // Images for large and small screens
-  const largeScreenImages = [
-    "images/Coming-soon-1.1.jpg",
-    // "/images/WEB1.1.jpg",
-    // "/images/WEB2.1.jpg",
-  ];
-  const smallScreenImages = [
-    // "/images/main image-1.1.jpg",
-    // "/images/Poster-1.jpg",
-    // "/images/main image-2.4.jpg",
-    // "/images/Sale-image-3.jpg",
-    //  "/images/Poster-2.jpg",
-    //  "/images/Coming-soon-3.jpg",
-    // "/images/men-women-p1.png",
-    //  "/images/Sale-Poster-5.jpg",
-     "/images/pos.png",
-    //  "/images/pos-1.png",
-     "/images/simran-1.1.jpg"
-    //  "/images/Bharat-poster-1 - Copy.png",
-    //  "/images/bharat-reel-1.png",
-  ];
+  const [largeScreenImages, setLargeScreenImages] = useState([]);
+  const [smallScreenImages, setSmallScreenImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const API_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  // ✅ Fetch Hero Images from Backend
+  useEffect(() => {
+    const fetchHeroImages = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/hero-images`);
+        const data = response.data;
+
+        // Map backend objects to full URLs
+        const largeImages = (data.large || []).map((img) =>
+          img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`
+        );
+        const smallImages = (data.small || []).map((img) =>
+          img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`
+        );
+
+        setLargeScreenImages(largeImages);
+        setSmallScreenImages(smallImages);
+      } catch (error) {
+        console.error("Error fetching hero images:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroImages();
+  }, [API_URL, BASE_URL]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-[70vh] flex items-center justify-center text-gray-500">
+        Loading hero images...
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full bg:adaptive">
       {/* Overlay Text */}
-     <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
-  <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
-    ONE BUTTON
-  </h1>
-  <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
-    Luxury Redefined
-  </p>
-  <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase  shadow-lg hover:bg-neutral-200 transition">
-    Explore Collection
-  </button>
-</div>
-
+      <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
+        <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
+          ONE BUTTON
+        </h1>
+        <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
+          Luxury Redefined
+        </p>
+        <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase shadow-lg hover:bg-neutral-200 transition">
+          Explore Collection
+        </button>
+      </div>
 
       {/* Dark Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
 
       {/* Large Screen Slider */}
       <div className="hidden lg:block w-full">
-        <Swiper
-          modules={[Autoplay, Pagination]}
-          loop={true}
-          autoplay={{ delay: 3500, disableOnInteraction: false }}
-          speed={1000}
-          slidesPerView={1}
-          centeredSlides
-          pagination={{ clickable: true }}
-        >
-          {largeScreenImages.map((src, idx) => (
-            <SwiperSlide key={idx}>
-              <img
-                src={src}
-                alt={`Large Slide ${idx}`}
-                className="w-full h-[90vh] object-cover"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {largeScreenImages.length > 0 ? (
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            loop
+            autoplay={{ delay: 3500, disableOnInteraction: false }}
+            speed={1000}
+            slidesPerView={1}
+            centeredSlides
+            pagination={{ clickable: true }}
+          >
+            {largeScreenImages.map((src, idx) => (
+              <SwiperSlide key={idx}>
+                <img
+                  src={src}
+                  alt={`Large Slide ${idx}`}
+                  className="w-full h-[90vh] object-cover"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="w-full h-[90vh] flex items-center justify-center text-gray-400">
+            No large screen images found.
+          </div>
+        )}
       </div>
 
       {/* Small Screen Slider */}
       <div className="block lg:hidden w-full">
-        <Swiper
-          modules={[Autoplay, Pagination]}
-          loop={true}
-          autoplay={{ delay: 3500, disableOnInteraction: false }}
-          speed={1000}
-          slidesPerView={1}
-          centeredSlides
-          pagination={{ clickable: true }}
-        >
-          {smallScreenImages.map((src, idx) => (
-            <SwiperSlide key={idx}>
-              <img
-                src={src}
-                alt={`Small Slide ${idx}`}
-                className="w-full h-[70vh] object-cover"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {smallScreenImages.length > 0 ? (
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            loop
+            autoplay={{ delay: 3500, disableOnInteraction: false }}
+            speed={1000}
+            slidesPerView={1}
+            centeredSlides
+            pagination={{ clickable: true }}
+          >
+            {smallScreenImages.map((src, idx) => (
+              <SwiperSlide key={idx}>
+                <img
+                  src={src}
+                  alt={`Small Slide ${idx}`}
+                  className="w-full h-[70vh] object-cover"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="w-full h-[70vh] flex items-center justify-center text-gray-400">
+            No small screen images found.
+          </div>
+        )}
       </div>
-      {/* <div className="block lg:hidden w-full">
-  <Swiper
-    modules={[Autoplay, Pagination]}
-    loop={true}
-    autoplay={{ delay: 3500, disableOnInteraction: false }}
-    speed={600} // reduced speed for smoother swipe
-    slidesPerView={1}
-    centeredSlides
-    pagination={{ clickable: true }}
-    className="w-full"
-  >
-    {smallScreenImages.map((src, idx) => (
-      <SwiperSlide key={idx} className="relative">
-        <img
-          src={src}
-          alt={`Small Slide ${idx}`}
-          loading="lazy" // ✅ prevents lag by lazy loading
-          className="w-full h-[70vh] object-center object-cover select-none pointer-events-none"
-          draggable="false" // ✅ prevents drag lag
-        />
-      </SwiperSlide>
-    ))}
-  </Swiper>
-</div> */}
-
     </div>
   );
 }
+

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "./api";
 import { useParams } from "react-router-dom"; // get product ID from URL
 
 const ProductImageManager = () => {
@@ -15,8 +16,8 @@ const ProductImageManager = () => {
 
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/products/${productId}`,
+        const res = await api.get(
+          `/products/${productId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`, // ✅ send token
@@ -42,8 +43,8 @@ const ProductImageManager = () => {
       const payload = { type };
       if (path) payload.path = path;
 
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/products/${productId}/delete-image`,
+      const response = await api.delete(
+        `/products/${productId}/delete-image`,
         {
           data: payload,
           headers: {

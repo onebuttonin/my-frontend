@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import api from "./api";
 
 const ProductImageManager = () => {
   const { id: productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Get token from localStorage
   const token = localStorage.getItem("admin_token");
 
-  // ✅ Axios config with token
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -19,18 +18,16 @@ const ProductImageManager = () => {
     withCredentials: true,
   };
 
+  // ✅ Fetch Product Details
   useEffect(() => {
     if (!productId) return;
 
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/products/${productId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            withCredentials: true,
-          }
-        );
+        const res = await api.get(`/products/${productId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        });
         setProduct(res.data);
       } catch (error) {
         console.error("❌ Error fetching product:", error);
@@ -45,6 +42,7 @@ const ProductImageManager = () => {
     fetchProduct();
   }, [productId, token]);
 
+  // ✅ Replace existing images
   const handleReplace = async (type, oldPath = null) => {
     if (!token) {
       alert("Please login as admin to replace images.");
@@ -65,8 +63,8 @@ const ProductImageManager = () => {
       if (oldPath) formData.append("old_path", oldPath);
 
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/products/${productId}/replace-image`,
+        const response = await api.post(
+          `/products/${productId}/replace-image`,
           formData,
           axiosConfig
         );
@@ -78,6 +76,48 @@ const ProductImageManager = () => {
           alert("Session expired. Please login again as admin.");
         } else {
           alert("Failed to replace image. Check console for details.");
+        }
+      }
+    };
+
+    fileInput.click();
+  };
+
+  // ✅ Add new thumbnail images
+  const handleAddThumbnails = async () => {
+    if (!token) {
+      alert("Please login as admin to add thumbnails.");
+      return;
+    }
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.multiple = true;
+
+    fileInput.onchange = async (e) => {
+      const files = e.target.files;
+      if (!files.length) return;
+
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append("thumbnail_images[]", files[i]);
+      }
+
+      try {
+        const response = await api.post(
+          `/products/${productId}/addthumbnail`,
+          formData,
+          axiosConfig
+        );
+        alert("✅ Thumbnails added successfully!");
+        setProduct(response.data.product);
+      } catch (error) {
+        console.error("❌ Failed to add thumbnails:", error);
+        if (error.response?.status === 401) {
+          alert("Session expired. Please login again as admin.");
+        } else {
+          alert("Failed to add thumbnails. Check console for details.");
         }
       }
     };
@@ -135,7 +175,16 @@ const ProductImageManager = () => {
       {/* Thumbnail Images */}
       {product.thumbnail_images?.length > 0 && (
         <div>
-          <h3 className="font-semibold mb-2">Thumbnail Images</h3>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold">Thumbnail Images</h3>
+            <button
+              onClick={handleAddThumbnails}
+              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+            >
+              + Add Thumbnails
+            </button>
+          </div>
+
           <div className="flex flex-wrap gap-3">
             {product.thumbnail_images.map((thumb, index) => (
               <div key={index} className="relative group">
@@ -153,6 +202,19 @@ const ProductImageManager = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* If no thumbnails exist, still show Add Button */}
+      {(!product.thumbnail_images || product.thumbnail_images.length === 0) && (
+        <div>
+          <h3 className="font-semibold mb-2">Thumbnail Images</h3>
+          <button
+            onClick={handleAddThumbnails}
+            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+          >
+            + Add Thumbnails
+          </button>
         </div>
       )}
     </div>

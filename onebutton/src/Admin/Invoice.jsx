@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import api from "./api";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -11,13 +12,13 @@ export default function AdminInvoice() {
     const token = localStorage.getItem("admin_token");
 
     useEffect(() => {
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, {
+        api
+            .get(`/orders/${orderId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(res => {
                 setOrder(res.data);
-                return axios.get(`${import.meta.env.VITE_API_URL}/carts/${res.data.cart_id}`);
+                return api.get(`/carts/${res.data.cart_id}`);
             })
             .then(res => setCart(res.data))
             .catch(err => console.error(err));

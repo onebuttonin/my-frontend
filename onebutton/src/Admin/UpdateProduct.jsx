@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import api from "./api";
 
 export default function EditProduct() {
   const { id } = useParams(); // Get product ID from URL
@@ -39,12 +40,12 @@ export default function EditProduct() {
       }
 
       try {
-        await axios.get(`${import.meta.env.VITE_API_URL}/admin/profile`, {
+        await api.get(`/admin/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAdmin(true);
 
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/${id}`, {
+        const res = await api.get(`/products/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const product = res.data || {};
@@ -119,8 +120,8 @@ export default function EditProduct() {
 
     try {
       const token = localStorage.getItem("admin_token");
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/products/${id}`,
+      const response = await api.put(
+        `/products/${id}`,
         updatedData,
         {
           headers: {
