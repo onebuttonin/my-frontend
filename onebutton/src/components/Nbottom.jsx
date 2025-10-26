@@ -102,30 +102,32 @@ export default function Nbottom() {
 
   // ✅ Fetch Hero Images from Backend
   useEffect(() => {
-    const fetchHeroImages = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/hero-images`);
-        const data = response.data;
+  const fetchHeroImages = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/hero-images`);
+      const data = response.data;
+      console.log("Hero image API response:", data);
 
-        // Map backend objects to full URLs
-        const largeImages = (data.large || []).map((img) =>
-          img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`
-        );
-        const smallImages = (data.small || []).map((img) =>
-          img.path.startsWith("https") ? img.path : `${BASE_URL}${img.path}`
-        );
+      const largeImages = (data.large || []).map((img) =>
+        img.startsWith("http") ? img : `${BASE_URL}${img}`
+      );
 
-        setLargeScreenImages(largeImages);
-        setSmallScreenImages(smallImages);
-      } catch (error) {
-        console.error("Error fetching hero images:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const smallImages = (data.small || []).map((img) =>
+        img.startsWith("http") ? img : `${BASE_URL}${img}`
+      );
 
-    fetchHeroImages();
-  }, [API_URL, BASE_URL]);
+      setLargeScreenImages(largeImages);
+      setSmallScreenImages(smallImages);
+    } catch (error) {
+      console.error("Error fetching hero images:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchHeroImages();
+}, [API_URL, BASE_URL]);
+
 
   if (loading) {
     return (

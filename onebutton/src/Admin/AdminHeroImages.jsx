@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Trash2, UploadCloud } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import api from "../Admin/api"
+import api from "../Admin/api";
 
 export default function AdminHeroImages() {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ export default function AdminHeroImages() {
   const [loading, setLoading] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   // ✅ Verify Admin Session
   useEffect(() => {
@@ -48,9 +49,21 @@ export default function AdminHeroImages() {
       const res = await api.get(`/hero-images`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(res.data); // check what 'path' actually looks like
-setHeroImages(res.data);
-      setHeroImages(res.data);
+
+      const data = res.data || { large: [], small: [] };
+      console.log("Hero images fetched:", data);
+
+      // Normalize data (handle both string and object formats)
+      const normalize = (arr) =>
+        (arr || []).map((img) => {
+          const path = typeof img === "string" ? img : img?.path || "";
+          return path.startsWith("http") ? path : `${BASE_URL}${path}`;
+        });
+
+      setHeroImages({
+        large: normalize(data.large),
+        small: normalize(data.small),
+      });
     } catch (err) {
       console.error("Error fetching hero images:", err);
     }
@@ -86,16 +99,18 @@ setHeroImages(res.data);
   };
 
   // ✅ Delete Hero Image
-  const handleDelete = async (id) => {
+  const handleDelete = async (imgPath) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this image?");
     if (!confirmDelete) return;
 
     const token = localStorage.getItem("admin_token");
     try {
-      await api.delete(`/hero-images/${id}`, {
+      await api.delete(`/hero-images`, {
         headers: { Authorization: `Bearer ${token}` },
+        data: { path: imgPath }, // send path to backend for deletion
       });
       await fetchHeroImages(token);
+      alert("Image deleted successfully!");
     } catch (err) {
       console.error("Error deleting image:", err);
       alert("Failed to delete image.");
@@ -139,63 +154,55 @@ setHeroImages(res.data);
         </button>
       </form>
 
-     {/* Display Large Screen Images */}
-<h3 className="text-lg font-semibold mb-2">Large Screen Images</h3>
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-  {heroImages.large.map((img) => (
-    <div key={img.id} className="relative group">
-     <img
-  src={
-    img?.path
-      ? img.path.startsWith("http")
-          ? img.path.replace("http://", "https://")
-          : `${import.meta.env.VITE_BASE_URL}${img.path}`
-      : "/placeholder.jpg" // fallback image if path is missing
-  }
-  alt="Hero"
-  className="w-full h-40 object-cover rounded shadow"
-/>
+      {/* Large Screen Images */}
+      <h3 className="text-lg font-semibold mb-2">Large Screen Images</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+        {heroImages.large.length > 0 ? (
+          heroImages.large.map((src, idx) => (
+            <div key={idx} className="relative group">
+              <img
+                src={src}
+                alt="Hero Large"
+                className="w-full h-60 object-cover rounded shadow"
+              />
+              <button
+                onClick={() => handleDelete(src)}
+                className="absolute top-2 right-2 bg-black/70 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition"
+                title="Delete"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 col-span-full text-center">No large images uploaded.</p>
+        )}
+      </div>
 
-      <button
-        onClick={() => handleDelete(img.id)}
-        className="absolute top-2 right-2 bg-black/70 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition"
-        title="Delete"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
-    </div>
-  ))}
-</div>
-
-{/* Display Small Screen Images */}
-<h3 className="text-lg font-semibold mb-2">Small Screen Images</h3>
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-  {heroImages.small.map((img) => (
-    <div key={img.id} className="relative group">
-      <img
-  src={
-    img?.path
-      ? img.path.startsWith("http")
-          ? img.path.replace("http://", "https://")
-          : `${import.meta.env.VITE_BASE_URL}${img.path}`
-      : "/placeholder.jpg" // fallback image if path is missing
-  }
-  alt="Hero"
-  className="w-full h-40 object-cover rounded shadow"
-/>
-
-      <button
-        onClick={() => handleDelete(img.id)}
-        className="absolute top-2 right-2 bg-black/70 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition"
-        title="Delete"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
-    </div>
-  ))}
-</div>
-
-      
+      {/* Small Screen Images */}
+      <h3 className="text-lg font-semibold mb-2">Small Screen Images</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {heroImages.small.length > 0 ? (
+          heroImages.small.map((src, idx) => (
+            <div key={idx} className="relative group">
+              <img
+                src={src}
+                alt="Hero Small"
+                className="w-full h-60 object-cover rounded shadow"
+              />
+              <button
+                onClick={() => handleDelete(src)}
+                className="absolute top-2 right-2 bg-black/70 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition"
+                title="Delete"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 col-span-full text-center">No small images uploaded.</p>
+        )}
+      </div>
     </div>
   );
 }
