@@ -143,7 +143,12 @@ export default function AdminHeroImages() {
   {heroImages.large.map((img) => (
     <div key={img.id} className="relative group">
       <img
-        src={img.path.startsWith("http") ? img.path : `${import.meta.env.VITE_BASE_URL}${img.path}`}
+        src={
+  img.path.startsWith("http")
+    ? img.path.replace("http://", "https://") // 🔒 Enforce HTTPS
+    : `${import.meta.env.VITE_BASE_URL}${img.path}`
+}
+
         alt="Large Hero"
         className="w-full h-40 object-cover rounded shadow"
       />
@@ -164,7 +169,12 @@ export default function AdminHeroImages() {
   {heroImages.small.map((img) => (
     <div key={img.id} className="relative group">
       <img
-        src={img.path.startsWith("http") ? img.path : `${import.meta.env.VITE_BASE_URL}${img.path}`}
+        src={
+  img.path.startsWith("http")
+    ? img.path.replace("http://", "https://") // 🔒 Enforce HTTPS
+    : `${import.meta.env.VITE_BASE_URL}${img.path}`
+}
+
         alt="Small Hero"
         className="w-full h-60 object-cover rounded shadow"
       />
