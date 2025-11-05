@@ -49,7 +49,7 @@ export default function Nbottom() {
   if (loading) {
     return (
       <div className="w-full h-[70vh] flex items-center justify-center text-gray-500">
-        Loading hero images...
+        Loading..
       </div>
     );
   }
@@ -59,7 +59,7 @@ export default function Nbottom() {
       {/* Overlay Text */}
       <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
         <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
-          ONE BUTTON
+          ONEBUTTON
         </h1>
         <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
           Luxury Redefined
