@@ -1,61 +1,78 @@
+
+
 // import axios from "axios";
 
 // // ✅ Create Axios instance
 // const api = axios.create({
-//     baseURL: import.meta.env.VITE_API_URL,
-//     withCredentials: true, // Required for refresh token cookie
+//   baseURL: import.meta.env.VITE_API_URL,
+//   withCredentials: true, // required for sending/receiving refresh token cookies
 // });
 
-// // ✅ Helper: logout admin
+// // ✅ Helper: Logout admin safely
 // const logout = () => {
-//     localStorage.removeItem("admin_token");
-//     window.location.href = "/admin/login"; // Redirect to login page
+//   localStorage.removeItem("admin_token");
+//   // Redirect only if not already on login page
+//   if (window.location.pathname !== "/admin/login") {
+//     window.location.href = "/admin/login";
+//   }
 // };
 
-// // ✅ Request interceptor to attach access token
+// // ✅ Request interceptor → Attach latest access token
 // api.interceptors.request.use(
-//     (config) => {
-//         const token = localStorage.getItem("admin_token");
-//         if (token) {
-//             config.headers.Authorization = `Bearer ${token}`;
-//         }
-//         return config;
-//     },
-//     (error) => Promise.reject(error)
+//   (config) => {
+//     const token = localStorage.getItem("admin_token");
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
 // );
 
-// // ✅ Response interceptor to handle token refresh
+// // ✅ Response interceptor → Auto refresh expired token
 // api.interceptors.response.use(
-//     (response) => response,
-//     async (error) => {
-//         const originalRequest = error.config;
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
 
-//         // Only retry once
-//         if (error.response?.status === 401 && !originalRequest._retry) {
-//             originalRequest._retry = true;
-//             try {
-//                 // Call refresh token endpoint
-//                 const refreshResponse = await api.post("/admin/refresh-token");
+//     // prevent infinite loop
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
 
-//                 const newAccessToken = refreshResponse.data.access_token;
-//                 localStorage.setItem("admin_token", newAccessToken);
+//       try {
+//         // ✅ Call your refresh endpoint (must return new access_token)
+//         const refreshResponse = await axios.post(
+//           `${import.meta.env.VITE_API_URL}/admin/refresh-token`,
+//           {},
+//           { withCredentials: true } // ensure cookie is sent
+//         );
 
-//                 // Retry original request with new token
-//                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-//                 return api(originalRequest);
-//             } catch (refreshErr) {
-//                 // Refresh token expired or invalid → logout
-//                 logout();
-//                 return Promise.reject(refreshErr);
-//             }
+//         const newAccessToken = refreshResponse.data.access_token;
+//         if (newAccessToken) {
+//           // ✅ Save new access token
+//           localStorage.setItem("admin_token", newAccessToken);
+
+//           // ✅ Update authorization headers for next requests
+//           api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+//           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+//           // ✅ Retry the original request
+//           return api(originalRequest);
+//         } else {
+//           logout();
 //         }
-
-//         return Promise.reject(error);
+//       } catch (refreshError) {
+//         // Refresh failed → logout and clear session
+//         logout();
+//         return Promise.reject(refreshError);
+//       }
 //     }
+
+//     return Promise.reject(error);
+//   }
 // );
 
 // export default api;
-
 
 
 
@@ -68,11 +85,34 @@ const api = axios.create({
 });
 
 // ✅ Helper: Logout admin safely
-const logout = () => {
+export const logout = () => {
   localStorage.removeItem("admin_token");
   // Redirect only if not already on login page
   if (window.location.pathname !== "/admin/login") {
     window.location.href = "/admin/login";
+  }
+};
+
+// ✅ Function: Silently check & refresh session (used on app load)
+export const checkSession = async () => {
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/admin/refresh-token`,
+      {},
+      { withCredentials: true } // send HttpOnly cookie
+    );
+
+    const newAccessToken = res.data.access_token;
+    if (newAccessToken) {
+      // ✅ Save and set token globally
+      localStorage.setItem("admin_token", newAccessToken);
+      api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+      return true;
+    }
+    return false;
+  } catch (err) {
+    localStorage.removeItem("admin_token");
+    return false;
   }
 };
 
@@ -94,34 +134,34 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // prevent infinite loop
+    // Prevent infinite loop
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // ✅ Call your refresh endpoint (must return new access_token)
+        // ✅ Call refresh endpoint to get a new access token
         const refreshResponse = await axios.post(
           `${import.meta.env.VITE_API_URL}/admin/refresh-token`,
           {},
-          { withCredentials: true } // ensure cookie is sent
+          { withCredentials: true }
         );
 
         const newAccessToken = refreshResponse.data.access_token;
+
         if (newAccessToken) {
-          // ✅ Save new access token
+          // ✅ Save new token
           localStorage.setItem("admin_token", newAccessToken);
 
-          // ✅ Update authorization headers for next requests
+          // ✅ Update headers globally and retry request
           api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-          // ✅ Retry the original request
           return api(originalRequest);
         } else {
           logout();
         }
       } catch (refreshError) {
-        // Refresh failed → logout and clear session
+        // ❌ Refresh token expired → force logout
         logout();
         return Promise.reject(refreshError);
       }

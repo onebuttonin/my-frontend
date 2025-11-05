@@ -11,6 +11,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ReviewsSection from "./Ratings";
 import { Link } from "react-router-dom";
+import apiUser from "../Api/apiUser";
 
 export default function ProductDetails() {
   const { id } = useParams(); 
@@ -37,45 +38,75 @@ const [totalReviews, setTotalReviews] = useState(0);
   
 
   // Fetch the existing cart_id when the component mounts
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-  
-    // if (!token) {
-    //   console.error("No token found. Please log in.");
-    //   return;
-    // }
-
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
     
-    axios.get(`${import.meta.env.VITE_API_URL}/cart`, {
+  //   apiUser.get(`/cart`, {
+  //     headers: { Authorization: `Bearer ${token}` }
+  //   })
+  //   .then(response => {
+      
+  //     if (response.data.id && response.data.status === "pending") {
+  //       setCartId(response.data.id);
+  //       // console.log("Pending Cart ID:", response.data.id);
+  //     } else {
+  //       // console.log("No pending cart found.");
+  //     }
+  //   })
+  //   .catch(error => {
+  //     console.error("Error fetching cart ID:", error.response?.data || error.message);
+  //   });
+
+  //   if (product && product.category) {
+  //     axios
+  //       .get(`${import.meta.env.VITE_API_URL}/products`)
+  //       .then((response) => {
+  //         const filtered = response.data
+  //           .filter(
+  //             (p) => p.category === product.category && p.id !== product.id
+  //           )
+  //           .slice(0, 4); // limit to 4 products
+  //         setSimilarProducts(filtered);
+  //       })
+  //       .catch((err) => console.error("Error fetching similar products:", err));
+  //   }
+  // }, [product, token, navigate, location]);
+
+useEffect(() => {
+  const token = localStorage.getItem("user_access_token");
+
+  // ✅ Only fetch cart if logged in
+  if (token) {
+    apiUser.get(`/cart`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => {
-      
       if (response.data.id && response.data.status === "pending") {
         setCartId(response.data.id);
-        // console.log("Pending Cart ID:", response.data.id);
-      } else {
-        // console.log("No pending cart found.");
       }
     })
     .catch(error => {
       console.error("Error fetching cart ID:", error.response?.data || error.message);
+      // Don't navigate or show login toast here — user can still see product page
     });
+  }
 
-    if (product && product.category) {
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/products`)
-        .then((response) => {
-          const filtered = response.data
-            .filter(
-              (p) => p.category === product.category && p.id !== product.id
-            )
-            .slice(0, 4); // limit to 4 products
-          setSimilarProducts(filtered);
-        })
-        .catch((err) => console.error("Error fetching similar products:", err));
-    }
-  }, [product, token, navigate, location]);
+  // ✅ Always fetch similar products (public)
+  if (product && product.category) {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/products`)
+      .then((response) => {
+        const filtered = response.data
+          .filter(
+            (p) => p.category === product.category && p.id !== product.id
+          )
+          .slice(0, 4);
+        setSimilarProducts(filtered);
+      })
+      .catch((err) => console.error("Error fetching similar products:", err));
+  }
+}, [product, id]);
+
 
 
 //   const handleAddToCart = async (productId) => {
@@ -136,7 +167,7 @@ const handleAddToCart = async (productId) => {
     return;
   }
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("user_access_token");
 
   // 🛑 Check for login before anything else
   if (!token) {
@@ -151,8 +182,8 @@ const handleAddToCart = async (productId) => {
 
   try {
     // Only runs if user is logged in
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/add-cart`,
+    await apiUser.post(
+      `/add-cart`,
       {
         product_id: productId,
         size: selectedSize,
@@ -185,21 +216,16 @@ const handleAddToCart = async (productId) => {
 
 const addToWishlist = async (productId) => {
   try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("You need to login first.");
-      return;
-    }
+    // const token = localStorage.getItem("user_access_token");
+    // if (!token) {
+    //   toast.error("You need to login first.");
+    //   return;
+    // }
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/wishlist`,
-      { product_id: productId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"   // ✅ Add Content-Type header
-        }
-      }
+    const response = await apiUser.post(
+      `/wishlist`,
+      { product_id: productId }
+     
     );
 
     toast.success(response.data.message);

@@ -1,91 +1,6 @@
 
-// import React from "react";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Autoplay, Pagination } from "swiper/modules";
-// import "swiper/css";
-// import "swiper/css/pagination";
-
-// export default function Nbottom() {
-//   // Images for large and small screens
-//   const largeScreenImages = [
-//     "images/Coming-soon-1.1.jpg",
-//   ];
-//   const smallScreenImages = [
-//      "/images/pos.png",
-//      "/images/simran-1.1.jpg"
-//   ];
-
-//   return (
-//     <div className="relative w-full bg:adaptive">
-//       {/* Overlay Text */}
-//      <div className="absolute bottom-10 inset-x-0 flex flex-col items-center text-center z-20 px-4">
-//   <h1 className="text-black text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide drop-shadow-md">
-//     ONE BUTTON
-//   </h1>
-//   <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
-//     Luxury Redefined
-//   </p>
-//   <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase  shadow-lg hover:bg-neutral-200 transition">
-//     Explore Collection
-//   </button>
-// </div>
-
-
-//       {/* Dark Gradient Overlay */}
-//       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
-
-//       {/* Large Screen Slider */}
-//       <div className="hidden lg:block w-full">
-//         <Swiper
-//           modules={[Autoplay, Pagination]}
-//           loop={true}
-//           autoplay={{ delay: 3500, disableOnInteraction: false }}
-//           speed={1000}
-//           slidesPerView={1}
-//           centeredSlides
-//           pagination={{ clickable: true }}
-//         >
-//           {largeScreenImages.map((src, idx) => (
-//             <SwiperSlide key={idx}>
-//               <img
-//                 src={src}
-//                 alt={`Large Slide ${idx}`}
-//                 className="w-full h-[90vh] object-cover"
-//               />
-//             </SwiperSlide>
-//           ))}
-//         </Swiper>
-//       </div>
-
-//       {/* Small Screen Slider */}
-//       <div className="block lg:hidden w-full">
-//         <Swiper
-//           modules={[Autoplay, Pagination]}
-//           loop={true}
-//           autoplay={{ delay: 3500, disableOnInteraction: false }}
-//           speed={1000}
-//           slidesPerView={1}
-//           centeredSlides
-//           pagination={{ clickable: true }}
-//         >
-//           {smallScreenImages.map((src, idx) => (
-//             <SwiperSlide key={idx}>
-//               <img
-//                 src={src}
-//                 alt={`Small Slide ${idx}`}
-//                 className="w-full h-[70vh] object-cover"
-//               />
-//             </SwiperSlide>
-//           ))}
-//         </Swiper>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,} from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -100,13 +15,15 @@ export default function Nbottom() {
   const API_URL = import.meta.env.VITE_API_URL;
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+  const navigate = useNavigate();
+
   // ✅ Fetch Hero Images from Backend
   useEffect(() => {
   const fetchHeroImages = async () => {
     try {
       const response = await axios.get(`${API_URL}/hero-images`);
       const data = response.data;
-      console.log("Hero image API response:", data);
+      // console.log("Hero image API response:", data);
 
       const largeImages = (data.large || []).map((img) =>
         img.startsWith("http") ? img : `${BASE_URL}${img}`
@@ -147,7 +64,8 @@ export default function Nbottom() {
         <p className="text-black text-sm sm:text-base lg:text-lg mt-3 font-extralight tracking-widest uppercase">
           Luxury Redefined
         </p>
-        <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase shadow-lg hover:bg-neutral-200 transition">
+        <button className="mt-6 px-6 py-3 bg-white text-black text-sm tracking-wide uppercase shadow-lg hover:bg-neutral-200 transition"
+        onClick={() => navigate("/category/AllProducts")}>
           Explore Collection
         </button>
       </div>

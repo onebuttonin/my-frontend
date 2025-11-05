@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Heart } from "lucide-react";
 import toast from "react-hot-toast";
+import userApi from "../Api/apiUser";
 
 export default function ProductGrid() {
   const navigate = useNavigate();
@@ -17,12 +18,9 @@ export default function ProductGrid() {
 
   const fetchWishlist = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+      
 
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/wishlist`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await userApi.get(`/wishlist`);
 
       setWishlist(response.data.map((item) => item.product_id));
     } catch (error) {
@@ -32,9 +30,7 @@ export default function ProductGrid() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await userApi.get(`/products`);
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -45,21 +41,11 @@ export default function ProductGrid() {
 
   const addToWishlist = async (productId) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("You need to login first.");
-        return;
-      }
+      
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/wishlist`,
+      const response = await userApi.post(
+        `/wishlist`,
         { product_id: productId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
       );
 
       toast.success(response.data.message);

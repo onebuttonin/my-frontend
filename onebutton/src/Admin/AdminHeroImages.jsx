@@ -51,7 +51,7 @@ export default function AdminHeroImages() {
       });
 
       const data = res.data || { large: [], small: [] };
-      console.log("Hero images fetched:", data);
+      // console.log("Hero images fetched:", data);
 
       // Normalize data (handle both string and object formats)
       const normalize = (arr) =>

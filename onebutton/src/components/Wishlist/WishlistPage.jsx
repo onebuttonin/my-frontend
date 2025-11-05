@@ -1,227 +1,242 @@
 
+
+
 // import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+// import { useNavigate, useLocation } from "react-router-dom";
 // import axios from "axios";
 // import { Trash } from "lucide-react";
 // import { useAuth } from "/src/components/Hooks/useAuth";
-// import toast from "react-hot-toast";
-
+// import toast, {Toaster}from "react-hot-toast";
+// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+// import userApi from "../Api/apiUser";
 
 // export default function ProductGrid() {
 //   const navigate = useNavigate();
-//   const [wishlist, setWishlist] = useState([]);
-//   const [loading, setLoading] = useState(true);
 //   const [selectedSize, setSelectedSize] = useState(null);
 //   const [showSizeSelector, setShowSizeSelector] = useState(null);
-//   const isLoggedIn = useAuth();
+//   // const isLoggedIn = useAuth();
+//   const isLoggedIn = !!localStorage.getItem("token");
 
+//   const queryClient = useQueryClient();
+
+//   const token = localStorage.getItem("token");
+
+//   const location = useLocation();
+
+
+
+//   // useEffect(() => {
+//   //   if (!token) {
+//   //     localStorage.setItem("redirectAfterLogin", window.location.pathname);
+//   //     navigate("/login");
+//   //   }
+//   // }, [token, navigate]);
+  
 //   useEffect(() => {
-//     if (!isLoggedIn) {
-//       toast.error("Please log in.");
-//       setTimeout(() => {
-//         navigate('/login');
-//       }, 1500);
-//       return
-//     } else {
-//       fetchWishlist();
+//     if (!token) {
+//       if (!localStorage.getItem("redirectAfterLogin")) {
+//         localStorage.setItem("redirectAfterLogin", location.pathname);
+//       }
+//       toast.error("Please log in first!");
+//       navigate("/login");
 //     }
-//   }, [isLoggedIn, navigate]);
+//   }, [token, navigate, location]);
+  
+
+  
 
 //   const fetchWishlist = async () => {
-//     const token = localStorage.getItem("token");
-//     if (!token) {
-//       // window.alert("Please Login!");
-//       navigate("/login");
-//       setLoading(false);
+//     if (!token) throw new Error("No token");
 
-//       return;
-//     }
+//     const { data: wishlistItems } = await userApi.get(
+//       `/wishlist`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//         withCredentials: true,
+//       }
+//     );
 
-//     try {
-//       const { data: wishlistItems } = await axios.get(
-//         "http://127.0.0.1:8000/api/wishlist",
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "Content-Type": "application/json",
-//           },
-//           withCredentials: true,
-//         }
-//       );
-
-//       if (wishlistItems.length > 0) {
-//         const productIds = wishlistItems.map((item) => item.product_id);
-
-//         // ✅ Fetch product details for each wishlist item
-//         const productDetails = await Promise.all(
-//           productIds.map(async (id) => {
-//             const { data } = await axios.get(
-//               `http://127.0.0.1:8000/api/products/${id}`,  // ✅ Use existing API
-//               {
-//                 headers: {
-//                   Authorization: `Bearer ${token}`,
-//                   "Content-Type": "application/json",
-//                 }
-//               }
-//             );
-//             return { ...data, product_id: id };
-//           })
-//         );
-
-//         // ✅ Enrich wishlist with product details
-//         const enrichedWishlist = wishlistItems.map((item) => {
-//           const product = productDetails.find((p) => p.id === item.product_id);
+//     if (wishlistItems.length > 0) {
+//       const productDetails = await Promise.all(
+//         wishlistItems.map(async (item) => {
+//           const { data } = await userApi.get(
+//             `/products/${item.product_id}`,
+//             {
+//               headers: {
+//                 Authorization: `Bearer ${token}`,
+//                 "Content-Type": "application/json",
+//               },
+//             }
+//           );
 //           return {
 //             ...item,
-//             product: product || {},  // Ensure fallback for missing products
+//             product: { ...data },
 //           };
-//         });
-
-//         setWishlist(enrichedWishlist);
-//       } else {
-//         setWishlist([]);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching wishlist:", error);
-//       if (error.response?.status === 401) {
-//         alert("Session expired. Please log in again.");
-//         localStorage.removeItem("token");
-//         navigate("/login");
-//       }
-//     } finally {
-//       setLoading(false);
+//         })
+//       );
+//       return productDetails;
 //     }
+
+//     return [];
 //   };
 
-//   // ✅ Handle Add to Cart with Size Selection
+ 
+  
+  
+  
+
+//   const { data: wishlist = [], isLoading } = useQuery({
+//     queryKey: ['wishlist'],
+//     queryFn: fetchWishlist,
+//     enabled: isLoggedIn, // ✅ fixed here
+//     refetchOnWindowFocus: false,
+//     staleTime: 1000 * 60 * 5,
+//   });
+
+//   const deleteMutation = useMutation({
+//     mutationFn: async (productId) => {
+//       await userApi.delete(`/wishlist/${productId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries(["wishlist"]);
+//     },
+//   });
+
 //   const handleAddToCart = async (productId) => {
 //     if (!selectedSize) {
-//       alert("Please select a size!");
+//       toast.error("Please select a size!");
 //       return;
 //     }
 
-//     const token = localStorage.getItem("token");
-//     if (!token) {
-//       alert("Please log in first!");
-//       navigate("/login");
-//       return;
-//     }
+   
 
 //     try {
-//       await axios.post(
-//         "http://127.0.0.1:8000/api/add-cart",
+//       await userApi.post(
+//         `/add-cart`,
 //         { product_id: productId, size: selectedSize, quantity: 1 },
 //         { headers: { Authorization: `Bearer ${token}` } }
 //       );
 
-//       alert("Product added to cart!");
+//       toast.success("Product added to cart!");
 //       setShowSizeSelector(null);
-//       setSelectedSize(null);  // Reset the size after adding to cart
+//       setSelectedSize(null);
+//       navigate("/cart")
 //     } catch (error) {
 //       console.error("Error adding to cart:", error);
 //     }
 //   };
 
-//   // ✅ Handle Delete from Wishlist
-//   const handleDelete = async (productId) => {
-//     const token = localStorage.getItem("token");
-
-//     if (!token) {
-//       alert("Please log in first!");
-//       navigate("/login");
-//       return;
-//     }
-
-//     try {
-//       await axios.delete(`http://127.0.0.1:8000/api/wishlist/${productId}`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-
-//       setWishlist(wishlist.filter((item) => item.product_id !== productId));
-//     } catch (error) {
-//       console.error("Error removing item from wishlist:", error);
-//     }
+//   const handleDelete = (e, productId) => {
+//     e.stopPropagation();
+//     deleteMutation.mutate(productId);
 //   };
 
-//   return (
-//     <div className="container mx-auto p-4 lg:p-10">
-//       <div className="text-center bg-zinc-100 px-4 py-3 mb-4">
-//         <h2 className="text-xl font-bold">Wishlist</h2>
-//       </div>
+  
 
-//       {loading ? (
-//         <p className="text-center text-gray-500">Loading...</p>
-//       ) : (
-//         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-//           {wishlist.length > 0 ? (
-//             wishlist.map((item) => (
-//               <div
-//                 key={item.product_id}
-//                 className="relative hover:border border-neutral-300 rounded-lg shadow-md p-4 flex flex-col"
-//                 onClick={() => navigate(`/product/${item.product_id}`, { state: item.product })}
+ 
+// return (
+//   <div className="container mx-auto px-2 lg:px-10 py-10">
+//     <Toaster position="top-center" reverseOrder={false} />
+
+//     {/* Title Section */}
+//     <div className="text-center px-4 py-3 mb-6">
+//       <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase">
+//         Wishlist
+//       </h2>
+//     </div>
+
+//     {isLoading ? (
+//       <p className="text-center text-gray-500">Loading...</p>
+//     ) : (
+//       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+//         {wishlist.length > 0 ? (
+//           wishlist.map((item) => (
+//             <div
+//               key={item.product_id}
+//               className="relative flex flex-col border border-neutral-200"
+//             >
+//               {/* Delete Button */}
+//               <button
+//                 className="absolute top-3 left-3 text-gray-500 hover:text-red-500"
+//                 onClick={(e) => handleDelete(e, item.product_id)}
 //               >
-//                 <button
-//                   className="absolute top-5 left-5 text-gray-500 hover:text-red-500"
-//                   onClick={(e) => {
-//                     e.stopPropagation();
-//                     handleDelete(item.product_id);
-//                   }}
-//                 >
-//                   <Trash className="w-6 h-6" />
-//                 </button>
+//                 <Trash className="w-5 h-5" />
+//               </button>
 
-//                 {/* Product Image */}
+//               {/* Product Image */}
+//               <div className="bg-white flex justify-center items-center">
 //                 <img
-//                   src={`http://127.0.0.1:8000/storage/${item.product?.image || 'default.jpg'}`}
-//                   alt={item.product?.name || 'Product'}
-//                   className="w-full h-60 lg:h-100 object-cover transition-all duration-300"
+//                   src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`}
+//                   alt={item.product?.name || "Product"}
+//                   className="w-full h-auto sm:max-h-80 lg:max-h-[450px] object-contain cursor-pointer transition-transform duration-500"
+//                   onClick={() =>
+//                     navigate(`/product/${item.product_id}`, {
+//                       state: item.product,
+//                     })
+//                   }
 //                   onMouseEnter={(e) => {
 //                     if (item.product?.hover_image) {
-//                       e.currentTarget.src = `http://127.0.0.1:8000/storage/${item.product.hover_image}`;
+//                       e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product.hover_image}`;
 //                     }
 //                   }}
 //                   onMouseLeave={(e) => {
-//                     e.currentTarget.src = `http://127.0.0.1:8000/storage/${item.product?.image || 'default.jpg'}`;
+//                     e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`;
 //                   }}
 //                 />
+//               </div>
 
-//                 <h3 className="text-sm sm:text-base md:text-lg font-semibold mt-2">
+//               {/* Product Details */}
+//               <div className="px-2 py-2 lg:pl-4">
+//                 <h3 className="text-sm sm:text-base md:text-lg font-semibold leading-tight">
 //                   {item.product?.name || "Unnamed Product"}
 //                 </h3>
-
 //                 <p className="text-gray-600">₹{item.product?.price || "N/A"}</p>
 
 //                 {/* Size Selector */}
 //                 {showSizeSelector === item.product_id ? (
-//                   <div className="flex justify-center mt-2">
-//                     {Object.entries(item.product.availableSizes).map(([size]) => (
-//                       <button
-//                         key={size}
-//                         className={`px-3 py-1 mx-1 border rounded-md ${selectedSize === size ? 'bg-black text-white' : 'bg-gray-200'}`}
-//                         onClick={(e) => {
-//                           e.stopPropagation();
-//                           setSelectedSize(size);
-//                         }}
-//                       >
-//                         {size.toUpperCase()}
-//                       </button>
-//                     ))}
+//                   <div className="flex flex-wrap justify-center gap-2 mt-3 px-2">
+//                     {["s", "m", "l", "xl", "xxl"].map((size) =>
+//                       item.product?.availableSizes &&
+//                       item.product.availableSizes[size] ? (
+//                         <button
+//                           key={size}
+//                           className={`px-3 py-1 border text-sm rounded transition 
+//                             ${
+//                               selectedSize === size
+//                                 ? "bg-black text-white"
+//                                 : "hover:bg-black hover:text-white border-gray-400"
+//                             }`}
+//                           onClick={(e) => {
+//                             e.stopPropagation();
+//                             setSelectedSize(size);
+//                           }}
+//                         >
+//                           {size.toUpperCase()}
+//                         </button>
+//                       ) : null
+//                     )}
 //                   </div>
 //                 ) : (
 //                   <button
-//                     className="mt-2 w-full py-2 bg-black text-white font-bold text-sm rounded-lg hover:bg-gray-800 transition-all"
+//                     className="mt-3 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
 //                     onClick={(e) => {
 //                       e.stopPropagation();
 //                       setShowSizeSelector(item.product_id);
 //                     }}
 //                   >
-//                     Add To Cart
+//                     Add To Bag
 //                   </button>
 //                 )}
 
+//                 {/* Add Button */}
 //                 {showSizeSelector === item.product_id && (
 //                   <button
-//                     className="mt-2 w-full py-2 bg-black text-white font-bold text-sm rounded-lg hover:bg-gray-800 transition-all"
+//                     className="mt-2 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
 //                     onClick={(e) => {
 //                       e.stopPropagation();
 //                       handleAddToCart(item.product_id);
@@ -231,143 +246,117 @@
 //                   </button>
 //                 )}
 //               </div>
-//             ))
-//           ) : (
-//             <p className="text-center text-gray-500">No items in wishlist</p>
-//           )}
-//         </div>
-//       )}
-//     </div>
-//   );
+//             </div>
+//           ))
+//         ) : (
+//           <div className="flex flex-col items-center justify-center col-span-full py-16">
+//             <p className="text-gray-700 text-lg font-medium mb-4">
+//               Your wishlist is empty
+//             </p>
+//             <button
+//               onClick={() => navigate("/category/AllProducts")}
+//               className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+//             >
+//               Continue Shopping
+//             </button>
+//           </div>
+//         )}
+//       </div>
+//     )}
+//   </div>
+// );
+
+  
+
 // }
+
 
 
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import { Trash } from "lucide-react";
-import { useAuth } from "/src/components/Hooks/useAuth";
-import toast, {Toaster}from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import userApi from "../Api/apiUser";
 
 export default function ProductGrid() {
   const navigate = useNavigate();
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [showSizeSelector, setShowSizeSelector] = useState(null);
-  // const isLoggedIn = useAuth();
-  const isLoggedIn = !!localStorage.getItem("token");
-
+  const location = useLocation();
   const queryClient = useQueryClient();
 
-  const token = localStorage.getItem("token");
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [showSizeSelector, setShowSizeSelector] = useState(null);
 
-  const location = useLocation();
+  // ✅ use new token key
+  const token = localStorage.getItem("user_access_token");
+  const isLoggedIn = !!token;
 
-
-
-  // useEffect(() => {
-  //   if (!token) {
-  //     localStorage.setItem("redirectAfterLogin", window.location.pathname);
-  //     navigate("/login");
-  //   }
-  // }, [token, navigate]);
-  
+  // ✅ redirect if not logged in
   useEffect(() => {
-    if (!token) {
+    if (!isLoggedIn) {
       if (!localStorage.getItem("redirectAfterLogin")) {
         localStorage.setItem("redirectAfterLogin", location.pathname);
       }
       toast.error("Please log in first!");
       navigate("/login");
     }
-  }, [token, navigate, location]);
-  
+  }, [isLoggedIn, navigate, location]);
 
-  
-
+  // ✅ Fetch wishlist (token handled by interceptor)
   const fetchWishlist = async () => {
-    if (!token) throw new Error("No token");
+    const { data: wishlistItems } = await userApi.get("/wishlist");
 
-    const { data: wishlistItems } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/wishlist`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
+    if (!wishlistItems?.length) return [];
+
+    const productDetails = await Promise.all(
+      wishlistItems.map(async (item) => {
+        const { data } = await userApi.get(`/products/${item.product_id}`);
+        return { ...item, product: data };
+      })
     );
 
-    if (wishlistItems.length > 0) {
-      const productDetails = await Promise.all(
-        wishlistItems.map(async (item) => {
-          const { data } = await axios.get(
-            `${import.meta.env.VITE_API_URL}/products/${item.product_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          return {
-            ...item,
-            product: { ...data },
-          };
-        })
-      );
-      return productDetails;
-    }
-
-    return [];
+    return productDetails;
   };
 
- 
-  
-  
-  
-
   const { data: wishlist = [], isLoading } = useQuery({
-    queryKey: ['wishlist'],
+    queryKey: ["wishlist"],
     queryFn: fetchWishlist,
-    enabled: isLoggedIn, // ✅ fixed here
+    enabled: isLoggedIn,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5,
   });
 
+  // ✅ Delete item from wishlist
   const deleteMutation = useMutation({
     mutationFn: async (productId) => {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/wishlist/${productId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await userApi.delete(`/wishlist/${productId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["wishlist"]);
     },
   });
 
+  // ✅ Add to cart
   const handleAddToCart = async (productId) => {
     if (!selectedSize) {
       toast.error("Please select a size!");
       return;
     }
 
-   
-
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/add-cart`,
-        { product_id: productId, size: selectedSize, quantity: 1 },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await userApi.post("/add-cart", {
+        product_id: productId,
+        size: selectedSize,
+        quantity: 1,
+      });
 
       toast.success("Product added to cart!");
       setShowSizeSelector(null);
       setSelectedSize(null);
-      navigate("/cart")
+      navigate("/cart");
     } catch (error) {
       console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
     }
   };
 
@@ -376,136 +365,130 @@ export default function ProductGrid() {
     deleteMutation.mutate(productId);
   };
 
-  
+  // ✅ UI
+  return (
+    <div className="container mx-auto px-2 lg:px-10 py-10">
+      <Toaster position="top-center" reverseOrder={false} />
 
- 
-return (
-  <div className="container mx-auto px-2 lg:px-10 py-10">
-    <Toaster position="top-center" reverseOrder={false} />
-
-    {/* Title Section */}
-    <div className="text-center px-4 py-3 mb-6">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase">
-        Wishlist
-      </h2>
-    </div>
-
-    {isLoading ? (
-      <p className="text-center text-gray-500">Loading...</p>
-    ) : (
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {wishlist.length > 0 ? (
-          wishlist.map((item) => (
-            <div
-              key={item.product_id}
-              className="relative flex flex-col border border-neutral-200"
-            >
-              {/* Delete Button */}
-              <button
-                className="absolute top-3 left-3 text-gray-500 hover:text-red-500"
-                onClick={(e) => handleDelete(e, item.product_id)}
-              >
-                <Trash className="w-5 h-5" />
-              </button>
-
-              {/* Product Image */}
-              <div className="bg-white flex justify-center items-center">
-                <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`}
-                  alt={item.product?.name || "Product"}
-                  className="w-full h-auto sm:max-h-80 lg:max-h-[450px] object-contain cursor-pointer transition-transform duration-500"
-                  onClick={() =>
-                    navigate(`/product/${item.product_id}`, {
-                      state: item.product,
-                    })
-                  }
-                  onMouseEnter={(e) => {
-                    if (item.product?.hover_image) {
-                      e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product.hover_image}`;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`;
-                  }}
-                />
-              </div>
-
-              {/* Product Details */}
-              <div className="px-2 py-2 lg:pl-4">
-                <h3 className="text-sm sm:text-base md:text-lg font-semibold leading-tight">
-                  {item.product?.name || "Unnamed Product"}
-                </h3>
-                <p className="text-gray-600">₹{item.product?.price || "N/A"}</p>
-
-                {/* Size Selector */}
-                {showSizeSelector === item.product_id ? (
-                  <div className="flex flex-wrap justify-center gap-2 mt-3 px-2">
-                    {["s", "m", "l", "xl", "xxl"].map((size) =>
-                      item.product?.availableSizes &&
-                      item.product.availableSizes[size] ? (
-                        <button
-                          key={size}
-                          className={`px-3 py-1 border text-sm rounded transition 
-                            ${
-                              selectedSize === size
-                                ? "bg-black text-white"
-                                : "hover:bg-black hover:text-white border-gray-400"
-                            }`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedSize(size);
-                          }}
-                        >
-                          {size.toUpperCase()}
-                        </button>
-                      ) : null
-                    )}
-                  </div>
-                ) : (
-                  <button
-                    className="mt-3 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowSizeSelector(item.product_id);
-                    }}
-                  >
-                    Add To Bag
-                  </button>
-                )}
-
-                {/* Add Button */}
-                {showSizeSelector === item.product_id && (
-                  <button
-                    className="mt-2 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToCart(item.product_id);
-                    }}
-                  >
-                    Add
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center col-span-full py-16">
-            <p className="text-gray-700 text-lg font-medium mb-4">
-              Your wishlist is empty
-            </p>
-            <button
-              onClick={() => navigate("/category/AllProducts")}
-              className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
-            >
-              Continue Shopping
-            </button>
-          </div>
-        )}
+      <div className="text-center px-4 py-3 mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase">
+          Wishlist
+        </h2>
       </div>
-    )}
-  </div>
-);
 
-  
+      {isLoading ? (
+        <p className="text-center text-gray-500">Loading...</p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {wishlist.length > 0 ? (
+            wishlist.map((item) => (
+              <div
+                key={item.product_id}
+                className="relative flex flex-col border border-neutral-200"
+              >
+                {/* Delete Button */}
+                <button
+                  className="absolute top-3 left-3 text-gray-500 hover:text-red-500"
+                  onClick={(e) => handleDelete(e, item.product_id)}
+                >
+                  <Trash className="w-5 h-5" />
+                </button>
 
+                {/* Product Image */}
+                <div className="bg-white flex justify-center items-center">
+                  <img
+                    src={`${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`}
+                    alt={item.product?.name || "Product"}
+                    className="w-full h-auto sm:max-h-80 lg:max-h-[450px] object-contain cursor-pointer transition-transform duration-500"
+                    onClick={() =>
+                      navigate(`/product/${item.product_id}`, {
+                        state: item.product,
+                      })
+                    }
+                    onMouseEnter={(e) => {
+                      if (item.product?.hover_image) {
+                        e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product.hover_image}`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.src = `${import.meta.env.VITE_BASE_URL}/storage/${item.product?.image || "default.jpg"}`;
+                    }}
+                  />
+                </div>
+
+                {/* Product Details */}
+                <div className="px-2 py-2 lg:pl-4">
+                  <h3 className="text-sm sm:text-base md:text-lg font-semibold leading-tight">
+                    {item.product?.name || "Unnamed Product"}
+                  </h3>
+                  <p className="text-gray-600">₹{item.product?.price || "N/A"}</p>
+
+                  {/* Size Selector */}
+                  {showSizeSelector === item.product_id ? (
+                    <div className="flex flex-wrap justify-center gap-2 mt-3 px-2">
+                      {["s", "m", "l", "xl", "xxl"].map((size) =>
+                        item.product?.availableSizes &&
+                        item.product.availableSizes[size] ? (
+                          <button
+                            key={size}
+                            className={`px-3 py-1 border text-sm rounded transition 
+                              ${
+                                selectedSize === size
+                                  ? "bg-black text-white"
+                                  : "hover:bg-black hover:text-white border-gray-400"
+                              }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedSize(size);
+                            }}
+                          >
+                            {size.toUpperCase()}
+                          </button>
+                        ) : null
+                      )}
+                    </div>
+                  ) : (
+                    <button
+                      className="mt-3 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSizeSelector(item.product_id);
+                      }}
+                    >
+                      Add To Bag
+                    </button>
+                  )}
+
+                  {/* Add Button */}
+                  {showSizeSelector === item.product_id && (
+                    <button
+                      className="mt-2 w-full py-2 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(item.product_id);
+                      }}
+                    >
+                      Add
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center col-span-full py-16">
+              <p className="text-gray-700 text-lg font-medium mb-4">
+                Your wishlist is empty
+              </p>
+              <button
+                onClick={() => navigate("/category/AllProducts")}
+                className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide hover:bg-gray-900 transition"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }

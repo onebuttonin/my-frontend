@@ -3,6 +3,7 @@ import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, {Toaster} from "react-hot-toast";
+import userApi from "../Api/apiUser";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
@@ -37,10 +38,7 @@ export default function AllProducts() {
   };
 
   const fetchWishlist = () => {
-    axios.get(`${import.meta.env.VITE_API_URL}/wishlist`, {
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: false,
-    })
+    userApi.get(`/wishlist`)
     .then(response => {
       const wishlistItems = response.data.map(item => item.product_id);
       setWishlist(wishlistItems);
@@ -50,21 +48,11 @@ export default function AllProducts() {
 
   const addToWishlist = async (productId) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("You need to login first.");
-        return;
-      }
+      
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/wishlist`,
+      const response = await userApi.post(
+        `/wishlist`,
         { product_id: productId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
       );
 
       toast.success("Product Added To Wishlist");

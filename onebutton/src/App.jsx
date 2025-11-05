@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import './App.css'
 import Navbar from './components/Navbar'
@@ -43,10 +43,35 @@ import PublicLayout from './components/Layouts/PublicRoute'
 import UpdateProductImages from './Admin/UpdateProductImages'
 import ProductImages from './Admin/ProductImages'
 import AdminHeroImages from './Admin/AdminHeroImages'
+import { checkSession } from "./Admin/api";
+
 
 
 function App() {
   const [count, setCount] = useState(0)
+const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      await checkSession(); // 🔁 silently refresh token if cookie exists
+      setLoading(false);
+    };
+    initAuth();
+
+    // Optional: refresh every 90 minutes while active
+    const interval = setInterval(checkSession, 90 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600">
+        Loading...
+      </div>
+    );
+  }
+
+  
 
   return (
     <>

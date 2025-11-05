@@ -4,7 +4,7 @@ import { FacebookIcon, InstagramIcon, XIcon } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-zinc-50 text-black py-10 mt-12 border-t border-gray-200 shadow-sm">
+    <footer className="bg-white text-black py-10 mt-12 border-t border-gray-200">
       <div className="container mx-auto px-6 text-center">
         
         {/* Footer Sections */}
@@ -51,13 +51,16 @@ export default function Footer() {
         <div className="border-t border-gray-300 pt-6">
           {/* Social Media Icons */}
           <div className="flex justify-center space-x-6 mb-4">
-            <a href="#" className="hover:text-black">
+            <a href="https://www.facebook.com/profile.php?id=61579609931771" className="hover:text-black"  target="_blank"
+  rel="noopener noreferrer">
               <FacebookIcon className="w-6 h-6" />
             </a>
-            <a href="#" className="hover:text-black">
+            <a href="https://www.instagram.com/onebutton.in/" className="hover:text-black"  target="_blank"
+  rel="noopener noreferrer">
               <InstagramIcon className="w-6 h-6" />
             </a>
-            <a href="#" className="hover:text-black">
+            <a href="#" className="hover:text-black"  target="_blank"
+  rel="noopener noreferrer">
               <XIcon className="w-6 h-6" />
             </a>
           </div>
