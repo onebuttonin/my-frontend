@@ -12,7 +12,7 @@ export default function PlaceOrder() {
 
   const [userId, setUserId] = useState("");
   const [address, setAddress] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState("new");
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [success, setSuccess] = useState("");
@@ -32,7 +32,7 @@ export default function PlaceOrder() {
     user_id: "",
   });
 
-  // ✅ Fetch user, cart, and previous address once
+  // ✅ Fetch user, cart, and address
   useEffect(() => {
     if (!token) {
       setError("Authentication token missing.");
@@ -55,7 +55,6 @@ export default function PlaceOrder() {
           const cartRes = await userApi.get(`/cart/${cartId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-
           if (cartRes.data) {
             setOrder((prev) => ({ ...prev, cart_id: cartId }));
           } else {
@@ -69,14 +68,23 @@ export default function PlaceOrder() {
         const addressRes = await userApi.get(`/get-previous-address`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (addressRes.data) {
+
+        if (
+          addressRes.data &&
+          Object.keys(addressRes.data).length > 0 &&
+          addressRes.data.name
+        ) {
           setAddress(addressRes.data);
+          setSelectedOption("existing");
         } else {
+          setAddress(null);
           setSelectedOption("new");
         }
       } catch (err) {
         console.error(err);
         setError("Failed to fetch user/cart/address info.");
+        setAddress(null);
+        setSelectedOption("new");
       } finally {
         setLoading(false);
       }
@@ -85,16 +93,16 @@ export default function PlaceOrder() {
     fetchData();
   }, [token]);
 
-  // ✅ Input change handler
+  // ✅ Handle input change
   const handleChange = async (e) => {
     const { name, value } = e.target;
     setOrder((prevOrder) => ({ ...prevOrder, [name]: value }));
 
+    // Auto-fill city/state from pincode
     if (name === "pincode" && value.length === 6) {
       try {
         const response = await fetch(`https://api.postalpincode.in/pincode/${value}`);
         const data = await response.json();
-
         if (data[0].Status === "Success") {
           const postOffice = data[0].PostOffice[0];
           setOrder((prevOrder) => ({
@@ -109,8 +117,7 @@ export default function PlaceOrder() {
             state: "",
           }));
         }
-      } catch (error) {
-        console.error("Error fetching pincode details:", error);
+      } catch {
         setOrder((prevOrder) => ({
           ...prevOrder,
           city: "",
@@ -122,8 +129,10 @@ export default function PlaceOrder() {
 
   // ✅ Handle address option switch
   const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
-    if (e.target.value === "existing" && address) {
+    const value = e.target.value;
+    setSelectedOption(value);
+
+    if (value === "existing" && address) {
       setOrder((prev) => ({
         ...prev,
         name: address.name,
@@ -161,11 +170,11 @@ export default function PlaceOrder() {
       "cart_id",
       "user_id",
     ];
+
     for (let field of requiredFields) {
-      if ((order[field] ?? "").toString().trim() === "") {
-        return false;
-      }
+      if ((order[field] ?? "").toString().trim() === "") return false;
     }
+
     if (order.pincode.length !== 6 || isNaN(order.pincode)) {
       setError("Invalid pincode.");
       return false;
@@ -185,7 +194,7 @@ export default function PlaceOrder() {
     }
 
     if (!order.cart_id || !order.user_id) {
-      setError("Order data incomplete. Please wait a moment and try again.");
+      setError("Order data incomplete. Please wait and try again.");
       return;
     }
 
@@ -193,7 +202,6 @@ export default function PlaceOrder() {
 
     try {
       if (order.payment_method === "Online Payment") {
-        console.log("Redirecting to payment gateway...");
         setTimeout(() => {
           alert("Demo Payment Gateway: Payment Successful.");
           finalizeOrder();
@@ -209,18 +217,16 @@ export default function PlaceOrder() {
     }
   };
 
-  // ✅ Finalize Order (with consistent token)
+  // ✅ Finalize Order
   const finalizeOrder = async () => {
     try {
-      const response = await userApi.post(`/orders`, order, {
+      await userApi.post(`/orders`, order, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Order placed:", response.data);
       toast.success("Order placed successfully!");
       setError("");
 
-      // Update cart status
       await userApi.post(
         `/cart/update-status`,
         { cart_id: order.cart_id, status: "completed" },
@@ -253,7 +259,8 @@ export default function PlaceOrder() {
           {error && <p className="text-red-500 text-center mb-2">{error}</p>}
           {success && <p className="text-green-500 text-center mb-2">{success}</p>}
 
-          {address && Object.values(address).some((val) => val) ? (
+          {/* Address Options */}
+          {address && Object.keys(address).length > 0 && address.name ? (
             <>
               <h2 className="text-lg font-bold mb-2">Choose Address</h2>
 
@@ -286,10 +293,11 @@ export default function PlaceOrder() {
               </div>
             </>
           ) : (
-            <p className="text-sm text-gray-600 italic mb-4"></p>
+            <h3 className="font-semibold mb-4">Add Delivery Address</h3>
           )}
 
-          {(!address || selectedOption === "new") && (
+          {/* Address Input Form */}
+          {selectedOption === "new" && (
             <div className="space-y-4">
               <input
                 type="text"
@@ -315,7 +323,6 @@ export default function PlaceOrder() {
                 placeholder="Street Address Line 2 (Optional)"
                 className="w-full border p-2 rounded"
               />
-
               <div className="grid grid-cols-3 gap-4">
                 <input
                   type="text"
@@ -342,7 +349,6 @@ export default function PlaceOrder() {
                   className="border p-2 rounded"
                 />
               </div>
-
               <input
                 type="text"
                 name="mobile"
@@ -359,6 +365,7 @@ export default function PlaceOrder() {
             </div>
           )}
 
+          {/* Payment Method */}
           {(selectedOption || address) && (
             <div className="mb-4">
               <label className="block font-bold mb-1">Select Payment Method:</label>
@@ -377,6 +384,7 @@ export default function PlaceOrder() {
             </div>
           )}
 
+          {/* Place Order Button */}
           <button
             onClick={placeOrder}
             disabled={placingOrder || loading}
