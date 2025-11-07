@@ -39,6 +39,7 @@ export default function Cart() {
     return cartDetails.data;
   };
 
+
   // ✅ Fetch Coupons
   const fetchCoupons = async () => {
     const res = await userApi.get(`/user-coupons`);
@@ -57,26 +58,35 @@ export default function Cart() {
     queryFn: fetchCoupons,
   });
 
+  
+  const cart__Id = localStorage.getItem("cart_id");
   // ✅ Update Quantity
-  const updateQuantityMutation = useMutation({
-    mutationFn: async ({ product_id, quantity }) => {
-      await userApi.put(`/cart/${product_id}`, { quantity });
-    },
-    onSuccess: () => queryClient.invalidateQueries(["cart"]),
-  });
+ const updateQuantityMutation = useMutation({
+  
+  mutationFn: async ({quantity, product_id }) => {
+    await userApi.put(`/cart/${cart__Id}`, {quantity,product_id});
+  },
+  onSuccess: () => queryClient.invalidateQueries(["cart"]),
+});
+
 
   // ✅ Remove Item
-  const removeItemMutation = useMutation({
-    mutationFn: async (product_id) => {
-      const res = await userApi.delete(`/cart/${product_id}`);
-      return res.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["cart"]);
-      queryClient.invalidateQueries(["wishlist"]);
-    },
-    onError: () => toast.error("Failed to remove item from cart."),
-  });
+ const removeItemMutation = useMutation({
+  mutationFn: async ({ product_id }) => {
+    const res = await userApi.delete(`/cart-delete/${cart__Id}`, {
+      data: { product_id },
+    });
+    return res.data;
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries(["cart"]);
+    queryClient.invalidateQueries(["wishlist"]);
+  },
+  onError: () => toast.error("Failed to remove item from cart."),
+});
+
+
+
 
   // ✅ Add to Wishlist
   const addToWishlist = async (productId) => {
@@ -98,15 +108,22 @@ export default function Cart() {
 
   // ✅ Move to Wishlist
   const handleMoveToWishlist = async (productId) => {
-    try {
-      if (removeItemMutation.isLoading) return;
-      await addToWishlist(productId);
-      await removeItemMutation.mutateAsync(productId);
-      toast.success("Moved to wishlist");
-    } catch (err) {
-      toast.error("Could not move item to wishlist.");
-    }
-  };
+  try {
+    if (removeItemMutation.isLoading) return;
+
+    // First add to wishlist
+    await addToWishlist(productId);
+
+    // Then remove from cart with correct argument format
+    await removeItemMutation.mutateAsync({ product_id: productId });
+
+    toast.success("Moved to wishlist");
+  } catch (err) {
+    console.error("Error moving to wishlist:", err);
+    toast.error("Could not move item to wishlist.");
+  }
+};
+
 
   // ✅ Apply Coupon
   const applyCoupon = async () => {
@@ -187,7 +204,7 @@ export default function Cart() {
         <div className="grid grid-cols-1 lg:grid-cols-[60%_auto] gap-8 items-start">
           {/* Cart Section */}
           <div className="bg-white/90 backdrop-blur-md p-3">
-            <h2 className="text-2xl text-center font-semibold mb-6 tracking-wide">BAG</h2>
+            <h2 className="text-xl text-center font-semibold mb-6 tracking-wide">BAG</h2>
 
             {cartData.items.map((item) => (
               <div
@@ -210,51 +227,61 @@ export default function Cart() {
 
                 {/* Product Info */}
                 <div className="flex-1 ml-6 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-base font-medium text-gray-900 truncate">
-                      {item.product?.name}
-                    </h3>
-                    <button
-                      onClick={() => removeItemMutation.mutate(item.product_id)}
-                      className="text-gray-600 hover:text-black text-lg ml-4"
-                    >
-                      🗑
-                    </button>
-                  </div>
+                  <div className="flex justify-between items-start w-full gap-2">
+  <h3 className="text-base font-medium text-gray-900 flex-1 break-words leading-snug">
+    {item.product?.name}
+  </h3>
+  <button
+    onClick={() =>
+      removeItemMutation.mutate({
+        product_id: item.product_id,
+      })
+    }
+    className="text-gray-600 hover:text-black text-lg flex-shrink-0 ml-2"
+  >
+    🗑
+  </button>
+</div>
+
 
                   <p className="text-gray-600 text-sm mt-2">
                     SIZE: <span className="font-semibold">{item.size?.toUpperCase()}</span>
                   </p>
 
-                  <div className="flex items-center gap-2 mt-3">
-                    <span className="text-sm text-gray-600">QTY</span>
-                    <div className="flex items-center border border-gray-300 rounded-lg shadow-sm">
-                      <button
-                        onClick={() =>
-                          item.quantity > 1 &&
-                          updateQuantityMutation.mutate({
-                            product_id: item.product_id,
-                            quantity: item.quantity - 1,
-                          })
-                        }
-                        className="px-3 py-1 text-gray-700 hover:bg-gray-100 transition rounded-l-lg"
-                      >
-                        -
-                      </button>
-                      <span className="px-4 py-1 text-sm">{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateQuantityMutation.mutate({
-                            product_id: item.product_id,
-                            quantity: item.quantity + 1,
-                          })
-                        }
-                        className="px-3 py-1 text-gray-700 hover:bg-gray-100 transition rounded-r-lg"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
+                 <div className="flex items-center gap-2 mt-3"> 
+  <span className="text-sm text-gray-600">QTY</span>
+  <div className="flex items-center border border-gray-300 rounded-lg shadow-sm">
+    <button
+      onClick={() =>
+        item.quantity > 1 &&
+        updateQuantityMutation.mutate({
+          product_id: item.product_id,
+          quantity: item.quantity - 1,
+        
+        })
+      }
+      className="px-3 py-1 text-gray-700 hover:bg-gray-100 transition rounded-l-lg"
+    >
+      -
+    </button>
+
+    <span className="px-4 py-1 text-sm">{item.quantity}</span>
+
+    <button
+      onClick={() =>
+        updateQuantityMutation.mutate({
+          product_id: item.product_id,
+          quantity: item.quantity + 1,
+      
+        })
+      }
+      className="px-3 py-1 text-gray-700 hover:bg-gray-100 transition rounded-r-lg"
+    >
+      +
+    </button>
+  </div>
+</div>
+
 
                   <div className="flex items-center justify-between mt-8">
                     <button
@@ -276,7 +303,7 @@ export default function Cart() {
 
           {/* Summary */}
           <div className="bg-white/90 backdrop-blur-md p-3">
-            <h2 className="text-2xl text-center font-semibold mb-6 tracking-wide">
+            <h2 className="text-xl text-center font-semibold mb-6 tracking-wide">
               PRICE DETAILS
             </h2>
 

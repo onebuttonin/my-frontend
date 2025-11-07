@@ -79,13 +79,13 @@ const cartQueries = useQueries({
   const isPageLoading = ordersLoading || cartLoading;
 
   // ✅ Error handling
-  if (isError) {
-    return (
-      <div className="flex justify-center items-center h-40 text-gray-700">
-        Something went wrong while fetching your orders.
-      </div>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <div className="flex justify-center items-center h-40 text-gray-700">
+  //       Something went wrong while fetching your orders.
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto px-4 py-3">
@@ -104,11 +104,20 @@ const cartQueries = useQueries({
       )}
 
       {/* No Orders */}
-      {!isPageLoading && allOrders.length === 0 && (
-        <div className="flex justify-center items-center h-40">
-          <p className="text-gray-600 font-medium text-lg">No orders found.</p>
-        </div>
-      )}
+{!isPageLoading && allOrders.length === 0 && (
+  <div className="flex flex-col justify-center items-center h-60">
+    <p className="flex justify-center items-center h-10 text-gray-700">
+      No orders found.
+    </p>
+    <button
+      onClick={() => navigate("/category/AllProducts")}
+      className="px-6 py-3 bg-black text-white text-sm font-medium tracking-wide transition hover:bg-gray-800"
+    >
+      Continue Shopping
+    </button>
+  </div>
+)}
+
 
       {/* Orders List */}
       {!isPageLoading &&
