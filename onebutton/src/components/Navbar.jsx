@@ -425,7 +425,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-white text-black transition-all duration-300 border-b 
+      className={`bg-red-500 text-black transition-all duration-300 border-b 
       ${isSticky ? "fixed top-0 w-full z-50 shadow-md" : "relative"}`}
     >
       <div className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4 relative">
