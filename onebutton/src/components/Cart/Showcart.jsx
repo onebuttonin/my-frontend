@@ -88,63 +88,26 @@ export default function Cart() {
 
 
 
-//   // ✅ Add to Wishlist
-//   const addToWishlist = async (productId) => {
-//     try {
-//       const res = await userApi.post(`/wishlist`, { product_id: productId });
-//       return res.data;
-//     } catch (error) {
-//       console.error("Error adding to wishlist:", error);
-//       if (error.response?.status === 401) {
-//         clearAccessToken();
-//         toast.error("Session expired. Please log in again.");
-//         navigate("/login");
-//       } else {
-//         toast.error("Failed to add to wishlist.");
-//       }
-//       throw error;
-//     }
-//   };
-
-//   // ✅ Move to Wishlist
-//   const handleMoveToWishlist = async (productId) => {
-//   try {
-//     if (removeItemMutation.isLoading) return;
-
-//     // First add to wishlist
-//     await addToWishlist(productId);
-
-//     // Then remove from cart with correct argument format
-//     await removeItemMutation.mutateAsync({ product_id: productId });
-
-//     toast.success("Moved to wishlist");
-//   } catch (err) {
-//     console.error("Error moving to wishlist:", err);
-//     toast.error("Could not move item to wishlist.");
-//   }
-// };
-
-
-// ✅ Add to Wishlist
-const addToWishlist = async (productId) => {
-  try {
-    const res = await userApi.post(`/wishlist`, { product_id: productId });
-    return res.data;
-  } catch (error) {
-    console.error("Error adding to wishlist:", error);
-    if (error.response?.status === 401) {
-      clearAccessToken();
-      toast.error("Session expired. Please log in again.");
-      navigate("/login");
-    } else {
-      toast.error("Failed to add to wishlist.");
+  // ✅ Add to Wishlist
+  const addToWishlist = async (productId) => {
+    try {
+      const res = await userApi.post(`/wishlist`, { product_id: productId });
+      return res.data;
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      if (error.response?.status === 401) {
+        clearAccessToken();
+        toast.error("Session expired. Please log in again.");
+        navigate("/login");
+      } else {
+        toast.error("Failed to add to wishlist.");
+      }
+      throw error;
     }
-    throw error;
-  }
-};
+  };
 
-// ✅ Move to Wishlist
-const handleMoveToWishlist = async (productId) => {
+  // ✅ Move to Wishlist
+  const handleMoveToWishlist = async (productId) => {
   try {
     if (removeItemMutation.isLoading) return;
 
@@ -154,18 +117,12 @@ const handleMoveToWishlist = async (productId) => {
     // Then remove from cart with correct argument format
     await removeItemMutation.mutateAsync({ product_id: productId });
 
-    // ⏳ Delay success toast slightly to allow backend sync
-    setTimeout(() => {
-      toast.success("Moved to wishlist");
-    }, 800); // 800ms delay — adjust if needed
+    toast.success("Moved to wishlist");
   } catch (err) {
     console.error("Error moving to wishlist:", err);
-    setTimeout(() => {
-      toast.error("Could not move item to wishlist.");
-    }, 500);
+    toast.error("Could not move item to wishlist.");
   }
 };
-
 
 
   // ✅ Apply Coupon
